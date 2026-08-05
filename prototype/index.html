@@ -358,6 +358,120 @@ img.img-fallback{
   background:linear-gradient(135deg,#EAF8F5 0%,#F1F0FF 55%,#FFE7DF 100%) !important;
   object-fit:cover;
 }
+/* ============ 预算对比页 page-budget ============ */
+.bud-top{background:var(--c-surface);border-radius:var(--r-card);box-shadow:var(--sh-sm);
+  padding:var(--sp-5) var(--sp-4);margin:var(--sp-4) var(--sp-5);}
+.bud-compare{display:flex;align-items:stretch;gap:var(--sp-3);}
+.bud-compare .bc{flex:1;text-align:center;padding:var(--sp-2) 0;}
+.bud-compare .bc .lbl{font-size:var(--fs-xs);color:var(--c-text-2);font-weight:700;margin-bottom:6px;}
+.bud-compare .bc .amt{font-size:26px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums;}
+.bud-compare .bc.plan .amt{color:var(--c-text-1);}
+.bud-compare .bc.actual .amt{color:var(--c-primary-700);}
+.bud-compare .vs{display:flex;align-items:center;justify-content:center;color:var(--c-text-3);
+  font-size:var(--fs-sm);font-weight:800;flex:0 0 auto;}
+.bud-status{margin-top:var(--sp-4);display:flex;align-items:center;justify-content:center;gap:8px;
+  border-radius:var(--r-chip);padding:10px 14px;font-size:var(--fs-body);font-weight:700;}
+.bud-status.saving{background:var(--c-primary-50);color:var(--c-primary-700);}
+.bud-status.over{background:var(--c-coral-100);color:var(--c-coral-600);}
+.bud-status .n{font-variant-numeric:tabular-nums;}
+/* 分类双条对比 */
+.bcat{padding:14px 0;border-bottom:1px solid var(--c-border);}
+.bcat:last-child{border-bottom:none;}
+.bcat .bc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.bcat .bc-name{display:flex;align-items:center;gap:8px;font-size:var(--fs-body);font-weight:700;}
+.bcat .bc-name .e{font-size:17px;}
+.bcat .bc-diff{font-size:var(--fs-sm);font-weight:800;font-variant-numeric:tabular-nums;color:var(--c-primary-700);}
+.bcat .bc-diff.over{color:var(--c-coral-600);}
+.bcat .bar-wrap{display:flex;flex-direction:column;gap:5px;}
+.bcat .bar{display:flex;align-items:center;gap:8px;}
+.bcat .bar .tag{font-size:var(--fs-xs);color:var(--c-text-3);font-weight:700;width:28px;flex:0 0 auto;}
+.bcat .bar .track{flex:1;height:9px;background:var(--c-surface-2);border-radius:999px;overflow:hidden;}
+.bcat .bar .track > i{display:block;height:100%;border-radius:999px;}
+.bcat .bar.plan .track > i{background:var(--c-primary-200);}
+.bcat .bar.actual .track > i{background:var(--c-primary-500);}
+.bcat.is-over .bar.actual .track > i{background:var(--c-coral-500);}
+.bcat .bar .val{font-size:var(--fs-xs);font-weight:700;font-variant-numeric:tabular-nums;
+  color:var(--c-text-2);width:52px;text-align:right;flex:0 0 auto;}
+.bcat.is-over{background:linear-gradient(90deg,rgba(255,111,82,.05),transparent);
+  border-radius:12px;padding-left:8px;padding-right:8px;margin:0 -8px;}
+.bud-legend{display:flex;gap:16px;justify-content:center;padding:10px 0 2px;}
+.bud-legend .lg{display:flex;align-items:center;gap:6px;font-size:var(--fs-xs);color:var(--c-text-2);font-weight:700;}
+.bud-legend .lg .sw{width:14px;height:9px;border-radius:999px;}
+.bud-legend .lg .sw.plan{background:var(--c-primary-200);}
+.bud-legend .lg .sw.actual{background:var(--c-primary-500);}
+/* 分类明细列表（每笔费用） */
+.bexp{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--c-border);}
+.bexp:last-child{border-bottom:none;}
+.bexp .e{width:38px;height:38px;flex:0 0 auto;border-radius:12px;background:var(--c-surface-2);
+  display:flex;align-items:center;justify-content:center;font-size:18px;}
+.bexp .bx-body{flex:1;min-width:0;}
+.bexp .bx-body .n{font-size:var(--fs-body);font-weight:700;}
+.bexp .bx-body .c{font-size:var(--fs-xs);color:var(--c-text-3);font-weight:600;margin-top:2px;}
+.bexp .bx-amt{text-align:right;flex:0 0 auto;}
+.bexp .bx-amt .row{display:flex;gap:6px;align-items:baseline;justify-content:flex-end;font-variant-numeric:tabular-nums;}
+.bexp .bx-amt .plan{font-size:var(--fs-xs);color:var(--c-text-3);font-weight:700;}
+.bexp .bx-amt .act{font-size:var(--fs-body);font-weight:800;color:var(--c-text-1);}
+.bexp .bx-amt .df{font-size:var(--fs-xs);font-weight:800;margin-top:2px;color:var(--c-primary-700);}
+.bexp .bx-amt .df.over{color:var(--c-coral-600);}
+.btn-soft{background:var(--c-surface);color:var(--c-primary-700);border:1.5px solid var(--c-primary-200);
+  height:46px;width:100%;font-size:var(--fs-h3);border-radius:var(--r-btn);}
+.btn-soft:active{background:var(--c-primary-50);}
+/* ============ 行程单打印预览页 page-print ============ */
+#page-print{padding-bottom:24px;background:var(--c-surface-2);}
+.print-bar{position:sticky;top:0;z-index:70;display:flex;align-items:center;gap:10px;
+  padding:12px var(--sp-4);background:var(--c-bg);border-bottom:1px solid var(--c-border);}
+.print-bar .pb-back{width:36px;height:36px;flex:0 0 auto;border-radius:50%;border:1px solid var(--c-border);
+  background:var(--c-surface);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.print-bar .pb-title{flex:1;font-size:var(--fs-sm);font-weight:700;color:var(--c-text-2);}
+.print-bar .pb-print{height:36px;border:none;border-radius:var(--r-btn);background:var(--c-coral-500);color:#fff;
+  font-weight:700;font-size:var(--fs-sm);font-family:inherit;padding:0 14px;cursor:pointer;display:flex;
+  align-items:center;gap:6px;box-shadow:var(--sh-cta);}
+.print-bar .pb-print:active{transform:scale(.97);}
+.pdf-hint{font-size:var(--fs-xs);color:var(--c-text-3);text-align:center;padding:10px 20px 0;}
+/* A4 纸张 */
+.sheet-a4{background:#fff;margin:var(--sp-4);border-radius:6px;box-shadow:var(--sh-md);
+  padding:24px 22px;color:#1c1c1c;font-family:'Nunito','PingFang SC',sans-serif;}
+.sheet-a4 .doc-head{text-align:center;border-bottom:2px solid #1c1c1c;padding-bottom:14px;margin-bottom:16px;}
+.sheet-a4 .doc-head .kicker{font-size:11px;letter-spacing:3px;color:#666;font-weight:700;text-transform:uppercase;}
+.sheet-a4 .doc-head h1{font-size:21px;font-weight:800;margin:8px 0 6px;color:#1c1c1c;letter-spacing:.5px;}
+.sheet-a4 .doc-head .sub{font-size:12px;color:#555;font-weight:600;}
+.doc-sec{margin-bottom:18px;}
+.doc-sec > .st{font-size:12px;font-weight:800;letter-spacing:1px;color:#1c1c1c;text-transform:uppercase;
+  border-left:3px solid #1c1c1c;padding-left:8px;margin-bottom:10px;}
+/* 每日行程简表（表单感） */
+.doc-day{display:flex;gap:12px;padding:8px 0;border-bottom:1px solid #E4E4E4;}
+.doc-day:last-child{border-bottom:none;}
+.doc-day .dd{flex:0 0 74px;font-size:12px;font-weight:800;color:#1c1c1c;}
+.doc-day .dd .date{display:block;font-size:10px;color:#777;font-weight:600;margin-top:1px;}
+.doc-day .dc{flex:1;font-size:12.5px;color:#333;line-height:1.55;}
+.doc-day .dc b{color:#1c1c1c;}
+/* 信息表格 */
+.doc-tbl{width:100%;border-collapse:collapse;font-size:12px;}
+.doc-tbl td{padding:6px 4px;border-bottom:1px solid #E4E4E4;vertical-align:top;color:#333;}
+.doc-tbl td.k{font-weight:800;color:#1c1c1c;width:80px;white-space:nowrap;}
+.doc-note{font-size:12px;color:#333;line-height:1.6;background:#F7F7F5;border:1px solid #E4E4E4;
+  border-radius:5px;padding:10px 12px;}
+.doc-sign{display:flex;justify-content:space-between;align-items:flex-end;margin-top:22px;
+  padding-top:14px;border-top:1px dashed #bbb;}
+.doc-sign .sg{font-size:11px;color:#666;font-weight:600;}
+.doc-sign .sg b{display:block;font-size:13px;color:#1c1c1c;margin-top:4px;border-bottom:1px solid #1c1c1c;
+  padding-bottom:3px;min-width:96px;}
+.doc-foot{text-align:center;font-size:10px;color:#999;margin-top:16px;letter-spacing:.5px;}
+/* 打印样式：只保留行程单，隐藏手机外壳与操作栏 */
+@media print{
+  @page{size:A4;margin:14mm;}
+  body{background:#fff !important;padding:0 !important;display:block !important;}
+  .stage-title,.frame-label,.tabbar,.print-bar,.pdf-hint,.notch,.statusbar,.sheet-mask{display:none !important;}
+  .screens{display:block !important;gap:0 !important;}
+  .phone{width:auto !important;height:auto !important;box-shadow:none !important;border-radius:0 !important;
+    overflow:visible !important;background:#fff !important;}
+  .app,.viewport{position:static !important;overflow:visible !important;height:auto !important;display:block !important;}
+  .page{display:none !important;}
+  .page#page-print{display:block !important;padding:0 !important;background:#fff !important;animation:none !important;}
+  .sheet-a4{margin:0 !important;box-shadow:none !important;border-radius:0 !important;padding:0 !important;color:#000 !important;}
+  .sheet-a4 *{color:#000 !important;}
+  .doc-note{background:#fff !important;border:1px solid #999 !important;}
+}
 </style>
 </head>
 <body>
@@ -565,19 +679,22 @@ img.img-fallback{
         </div>
       </div>
 
-      <!-- 预算 -->
+      <!-- 预算（概要 + 进入完整对比页入口） -->
       <div class="tabpane" id="tp-budget">
         <div class="block">
           <h3>💰 预算概览</h3>
           <div class="bud-row"><div class="l"><span class="e">✈️</span>往返机票</div><div class="v">¥ 6,800</div></div>
           <div class="bud-row"><div class="l"><span class="e">🏨</span>住宿 5 晚</div><div class="v">¥ 5,400</div></div>
-          <div class="bud-row"><div class="l"><span class="e">🍱</span>餐饮</div><div class="v">¥ 3,200</div></div>
-          <div class="bud-row"><div class="l"><span class="e">🎫</span>门票交通</div><div class="v">¥ 1,600</div></div>
-          <div class="bud-row"><div class="l"><b>合计（两人）</b></div><div class="v" style="color:var(--c-coral-500)">¥ 17,000</div></div>
+          <div class="bud-row"><div class="l"><span class="e">🍱</span>餐饮</div><div class="v">¥ 3,300</div></div>
+          <div class="bud-row"><div class="l"><span class="e">🎫</span>门票交通</div><div class="v">¥ 1,700</div></div>
+          <div class="bud-row"><div class="l"><b>已花（两人）</b></div><div class="v" style="color:var(--c-coral-500)">¥ 13,200</div></div>
           <div style="margin-top:12px;display:flex;align-items:center;gap:10px">
-            <div class="pbar coral"><i style="width:74%"></i></div>
-            <span class="sm" style="font-weight:700">已花 74%</span>
+            <div class="pbar coral"><i style="width:100%"></i></div>
+            <span class="sm" style="font-weight:700">超支 10%</span>
           </div>
+        </div>
+        <div style="padding:0 0 4px">
+          <button class="btn btn-soft" onclick="goBudget()">📊 查看计划 vs 实际完整对比 ›</button>
         </div>
       </div>
 
@@ -595,8 +712,246 @@ img.img-fallback{
 
       <!-- 底部操作 -->
       <div class="action-row">
-        <button class="btn btn-secondary" onclick="alert('已生成可打印行程单，可保存 / 打印备份 📄')">🖨 生成行程单</button>
+        <button class="btn btn-secondary" onclick="goPrint()">🖨 生成行程单（打印备份）</button>
         <button class="btn btn-secondary" style="flex:0 0 52px;padding:0" onclick="alert('已归档，可在「我的」中查看 📦')">📦</button>
+      </div>
+      <div class="spacer"></div>
+    </section>
+
+    <!-- ============ 页面⑤ 预算对比（计划 vs 实际） ============ -->
+    <section class="page" id="page-budget">
+      <div class="tabs" style="justify-content:flex-start">
+        <button class="tab" style="background:transparent;color:var(--c-text-2);padding-left:0" onclick="goDetail()">‹ 返回行程</button>
+      </div>
+      <div class="page-head" style="padding-top:4px">
+        <div class="display" style="font-size:22px">预算对比</div>
+        <div class="sub">京都樱花季七日 · 两人 · 计划 vs 实际花费</div>
+      </div>
+
+      <!-- 总览：计划 vs 实际 -->
+      <div class="bud-top">
+        <div class="bud-compare">
+          <div class="bc plan"><div class="lbl">计划预算</div><div class="amt mono">¥12,000</div></div>
+          <div class="vs">vs</div>
+          <div class="bc actual"><div class="lbl">实际花费</div><div class="amt mono">¥13,200</div></div>
+        </div>
+        <div class="bud-status over">
+          <span>⚠️ 超支</span><span class="n">¥1,200</span><span style="font-weight:600;font-size:var(--fs-sm)">（约 10%）</span>
+        </div>
+      </div>
+      <!-- 分类双条对比 -->
+      <div class="block">
+        <h3>📊 分类预算对比</h3>
+        <div class="bud-legend">
+          <span class="lg"><span class="sw plan"></span>计划</span>
+          <span class="lg"><span class="sw actual"></span>实际</span>
+        </div>
+
+        <div class="bcat is-over">
+          <div class="bc-head">
+            <span class="bc-name"><span class="e">🚄</span>交通</span>
+            <span class="bc-diff over">+¥400 超支</span>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:41%"></i></span><span class="val">¥2,200</span></div>
+            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:48%"></i></span><span class="val">¥2,600</span></div>
+          </div>
+        </div>
+
+        <div class="bcat">
+          <div class="bc-head">
+            <span class="bc-name"><span class="e">🏨</span>住宿</span>
+            <span class="bc-diff">-¥200 结余</span>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:100%"></i></span><span class="val">¥5,400</span></div>
+            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:96%"></i></span><span class="val">¥5,200</span></div>
+          </div>
+        </div>
+
+        <div class="bcat is-over">
+          <div class="bc-head">
+            <span class="bc-name"><span class="e">🍱</span>餐饮</span>
+            <span class="bc-diff over">+¥700 超支</span>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:48%"></i></span><span class="val">¥2,600</span></div>
+            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:61%"></i></span><span class="val">¥3,300</span></div>
+          </div>
+        </div>
+
+        <div class="bcat">
+          <div class="bc-head">
+            <span class="bc-name"><span class="e">🎫</span>门票</span>
+            <span class="bc-diff">-¥100 结余</span>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:22%"></i></span><span class="val">¥1,200</span></div>
+            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:20%"></i></span><span class="val">¥1,100</span></div>
+          </div>
+        </div>
+
+        <div class="bcat is-over">
+          <div class="bc-head">
+            <span class="bc-name"><span class="e">🛍️</span>购物</span>
+            <span class="bc-diff over">+¥500 超支</span>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:7%"></i></span><span class="val">¥400</span></div>
+            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:17%"></i></span><span class="val">¥900</span></div>
+          </div>
+        </div>
+
+        <div class="bcat">
+          <div class="bc-head">
+            <span class="bc-name"><span class="e">🧾</span>其他</span>
+            <span class="bc-diff">-¥100 结余</span>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:4%"></i></span><span class="val">¥200</span></div>
+            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:2%"></i></span><span class="val">¥100</span></div>
+          </div>
+        </div>
+      </div>
+      <!-- 分类明细列表 -->
+      <div class="block">
+        <h3>🧾 花费明细</h3>
+        <div class="bexp">
+          <div class="e">✈️</div>
+          <div class="bx-body"><div class="n">往返机票</div><div class="c">交通 · 春秋 CA</div></div>
+          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥1,800</span><span class="act">¥2,000</span></div><div class="df over">+¥200</div></div>
+        </div>
+        <div class="bexp">
+          <div class="e">🚄</div>
+          <div class="bx-body"><div class="n">JR 特急 + 市内交通</div><div class="c">交通 · ICOCA 卡</div></div>
+          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥400</span><span class="act">¥600</span></div><div class="df over">+¥200</div></div>
+        </div>
+        <div class="bexp">
+          <div class="e">🏯</div>
+          <div class="bx-body"><div class="n">祇园町屋 3 晚</div><div class="c">住宿 · 含早</div></div>
+          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥3,300</span><span class="act">¥3,200</span></div><div class="df">-¥100</div></div>
+        </div>
+        <div class="bexp">
+          <div class="e">🏨</div>
+          <div class="bx-body"><div class="n">大阪难波酒店 2 晚</div><div class="c">住宿 · 近地铁</div></div>
+          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥2,100</span><span class="act">¥2,000</span></div><div class="df">-¥100</div></div>
+        </div>
+        <div class="bexp">
+          <div class="e">🍣</div>
+          <div class="bx-body"><div class="n">怀石料理（一晚）</div><div class="c">餐饮 · 祇园</div></div>
+          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥1,000</span><span class="act">¥1,400</span></div><div class="df over">+¥400</div></div>
+        </div>
+        <div class="bexp">
+          <div class="e">🍜</div>
+          <div class="bx-body"><div class="n">日常餐饮 6 天</div><div class="c">餐饮 · 锦市场等</div></div>
+          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥1,600</span><span class="act">¥1,900</span></div><div class="df over">+¥300</div></div>
+        </div>
+        <div class="bexp">
+          <div class="e">🎫</div>
+          <div class="bx-body"><div class="n">寺院 · 景点门票</div><div class="c">门票 · 清水寺等</div></div>
+          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥1,200</span><span class="act">¥1,100</span></div><div class="df">-¥100</div></div>
+        </div>
+        <div class="bexp">
+          <div class="e">🛍️</div>
+          <div class="bx-body"><div class="n">手信 · 抹茶伴手礼</div><div class="c">购物 · 计划外</div></div>
+          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥400</span><span class="act">¥900</span></div><div class="df over">+¥500</div></div>
+        </div>
+        <div class="bexp">
+          <div class="e">🧾</div>
+          <div class="bx-body"><div class="n">境外流量卡 · 杂项</div><div class="c">其他</div></div>
+          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥200</span><span class="act">¥100</span></div><div class="df">-¥100</div></div>
+        </div>
+      </div>
+
+      <div style="padding:0 var(--sp-5) 4px">
+        <button class="btn btn-soft" onclick="alert('打开记账面板：选择类别 → 填金额 → 保存到明细 ✍️')">+ 记一笔</button>
+      </div>
+      <p class="hint">超支主要来自餐饮与计划外购物，下次可预留一点弹性 🌿</p>
+      <div class="spacer"></div>
+    </section>
+
+    <!-- ============ 页面⑥ 行程单打印预览 ============ -->
+    <section class="page" id="page-print">
+      <div class="print-bar">
+        <button class="pb-back" onclick="goDetail()">‹</button>
+        <span class="pb-title">行程单预览 · 打印备份</span>
+        <button class="pb-print" onclick="doPrint()">🖨️ 打印</button>
+      </div>
+      <p class="pdf-hint">在打印对话框中选择「另存为 PDF」即可导出 PDF 备份 · A4 纵向 · 黑白友好</p>
+
+      <div class="sheet-a4">
+        <div class="doc-head">
+          <div class="kicker">Trip Itinerary · 行程单</div>
+          <h1>京都樱花季七日</h1>
+          <div class="sub">2026.3.28 – 4.03 · 共 7 天 · 日本 京都 / 大阪 · 同行 2 人</div>
+        </div>
+
+        <div class="doc-sec">
+          <div class="st">每日行程 · Daily Schedule</div>
+          <div class="doc-day">
+            <div class="dd">Day 1<span class="date">3.28 周六</span></div>
+            <div class="dc">关西机场 → 京都（JR HARUKA 约 75 分钟）· 入住<b>祇园町屋</b> · 傍晚花见小路散步 + 晚餐</div>
+          </div>
+          <div class="doc-day">
+            <div class="dd">Day 2<span class="date">3.29 周日</span></div>
+            <div class="dc"><b>清水寺 · 二年坂三年坂</b>（上午，可和服体验）· 锦市场午餐（建议 11:30 前）· 下午八坂神社</div>
+          </div>
+          <div class="doc-day">
+            <div class="dd">Day 3<span class="date">3.30 周一</span></div>
+            <div class="dc"><b>哲学之道赏樱</b>（盛花期，上午光线好）· 银阁寺 · 南禅寺水路阁</div>
+          </div>
+          <div class="doc-day">
+            <div class="dd">Day 4<span class="date">3.31 周二</span></div>
+            <div class="dc"><b>岚山竹林 · 渡月桥</b> · 嵯峨野小火车 · 天龙寺 · 晚上退房，转场大阪</div>
+          </div>
+          <div class="doc-day">
+            <div class="dd">Day 5<span class="date">4.01 周三</span></div>
+            <div class="dc">京都 → 大阪（入住难波酒店）· 大阪城公园 · 道顿堀晚餐</div>
+          </div>
+          <div class="doc-day">
+            <div class="dd">Day 6<span class="date">4.02 周四</span></div>
+            <div class="dc">环球影城 或 海游馆（家庭自选）· 心斋桥采购手信</div>
+          </div>
+          <div class="doc-day">
+            <div class="dd">Day 7<span class="date">4.03 周五</span></div>
+            <div class="dc">难波 → 关西机场（南海电铁）· 返程</div>
+          </div>
+        </div>
+        <div class="doc-sec">
+          <div class="st">住宿信息 · Accommodation</div>
+          <table class="doc-tbl">
+            <tr><td class="k">3.28–3.31</td><td>祇园传统町屋（3 晚 · 含早）<br>京都市东山区祇园町 · Tel +81 75-xxx-xxxx</td></tr>
+            <tr><td class="k">4.01–4.03</td><td>大阪难波酒店（2 晚 · 近地铁）<br>大阪市中央区难波 · Tel +81 6-xxxx-xxxx</td></tr>
+          </table>
+        </div>
+
+        <div class="doc-sec">
+          <div class="st">紧急联系 · Emergency</div>
+          <table class="doc-tbl">
+            <tr><td class="k">日本报警</td><td>110（警察）/ 119（急救 · 消防）</td></tr>
+            <tr><td class="k">中国大使馆</td><td>驻大阪总领事馆 领保电话 +81 6-xxxx-xxxx</td></tr>
+            <tr><td class="k">随行紧急</td><td>明需 +86 138-xxxx-xxxx（家庭联系人）</td></tr>
+            <tr><td class="k">保险</td><td>境外旅行险 保单号 JP-2026-0328 · 24h 救援热线 400-xxx-xxxx</td></tr>
+          </table>
+        </div>
+
+        <div class="doc-sec">
+          <div class="st">备注 · Notes</div>
+          <div class="doc-note">
+            · 樱花盛花期集中在 3.30 前后，哲学之道建议上午前往，人少光线好。<br>
+            · 锦市场午餐高峰拥挤，尽量 11:30 前到达。<br>
+            · 随身携带 ICOCA 交通卡与护照复印件；离线地图已下载备用。<br>
+            · 怀石料理已预约，请提前 15 分钟到店。
+          </div>
+        </div>
+
+        <div class="doc-sign">
+          <div class="sg">制定人<b>明需</b></div>
+          <div class="sg">同行确认<b>&nbsp;</b></div>
+          <div class="sg">制定日期<b>2026.3.10</b></div>
+        </div>
+
+        <div class="doc-foot">由「旅记 TripDiary」生成 · 家庭 AI 旅行计划 · 打印备份留存</div>
       </div>
       <div class="spacer"></div>
     </section>
@@ -745,6 +1100,12 @@ function nav(name){
 }
 function goDetail(){ showPage('page-detail'); setTab(''); }
 function goHome(){ showPage('page-home'); setTab('home'); }
+/* 从详情页预算Tab进入完整预算对比页 */
+function goBudget(){ showPage('page-budget'); setTab(''); }
+/* 从详情页底部进入行程单打印预览页 */
+function goPrint(){ showPage('page-print'); setTab(''); }
+/* 触发浏览器打印（配合 @media print 只输出行程单内容） */
+function doPrint(){ window.print(); }
 
 /* ---------- 详情：Tab 切换 ---------- */
 function switchTab(btn, paneId){

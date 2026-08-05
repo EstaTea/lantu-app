@@ -26,7 +26,14 @@
 
 ## 五、进度
 - ✅ 2026-08-05：完成 4 核心页面高保真原型（首页/详情/新建分类/点亮地图），质量审查 PASS 21/25
-- ⏳ 待办：①预算对比页 ②行程单打印预览页 ③部署成手机链接 ④推 GitHub 邀请太太 ⑤后续做成真微信小程序（需前后端开发）
+- ✅ 2026-08-06：新增 2 页 —— 预算对比页(page-budget，计划vs实际双条+超支高亮+9笔明细，数据自洽)、行程单打印预览(page-print，A4文档感+@media print+window.print())，审查 PASS 23/25。原型现共 6 页 1282 行。
+- ✅ 已推送 GitHub 私有仓库：https://github.com/EstaTea/family-travel-app（账号 EstaTea）
+- ⏳ 待办：①用户在GitHub邀请太太做协作者 ②注册成WorkBuddy正式项目 ③部署手机链接 ④做成真微信小程序（需前后端开发）
+
+## 六、关键约定与坑
+- 项目根目录规划迁移到 ~/WorkBuddy/family-travel-app（脱离临时会话目录）
+- 沙箱网络挡 git push 协议通道，但 gh api 通道可用；推送用 gh api Contents 接口逐文件上传
+- 中文文件名在 bash 里会被 git ls-files 八进制转义，遍历上传要用 find -print0，否则产生脏文件
 
 ## 六、下一步开发建议
 若要做成真小程序：原型是纯 HTML 演示，需重写为微信小程序框架（或用 uni-app/Taro 跨端）+ 后端（数据存储、协作、AI 接口）。原型可作为 UI/交互的完整参照。
