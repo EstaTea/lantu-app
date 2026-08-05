@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!--
+  ============================================================================
+  旅记 / TripDiary — 家庭 AI 旅行计划小程序 · 手机端高保真可点击原型
+  ----------------------------------------------------------------------------
+  交付版本 · Delivery Build
+  设计系统：Soft Warm（Airbnb 基因 + 青绿×珊瑚双色 + AI 微紫渐变）
+  页面：① 我的行程首页  ② Project 详情  ③ 新建分类选择  ④ 点亮地图
+  质量审查：PASS 21/25，已完成 4 项优化
+  ----------------------------------------------------------------------------
+  使用方式：双击本文件，用浏览器（Chrome / Edge / Safari 均可）直接打开即可。
+  无需安装任何软件、无需启动服务器。CSS 与 JS 全部内联，单文件独立运行。
+  联网提示：卡片封面/缩略图使用了在线占位图（picsum.photos），
+            首次打开建议联网以显示图片；离线时图片会自动降级为柔和色块，
+            不影响布局与全部交互。
+  ============================================================================
+-->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#FBF9F6">
+<meta name="description" content="旅记 TripDiary — 家庭 AI 旅行计划小程序手机端高保真可点击原型">
+<title>旅记 TripDiary · 家庭 AI 旅行计划原型</title>
+<style>
+:root{
+  --c-primary-50:#EAF8F5; --c-primary-100:#CBEEE7; --c-primary-200:#9CDDD2;
+  --c-primary-300:#63C7B8; --c-primary-500:#17A398; --c-primary-600:#0E8A80; --c-primary-700:#0A6B63;
+  --c-coral-100:#FFE7DF; --c-coral-400:#FF8A65; --c-coral-500:#FF6F52; --c-coral-600:#ED5638;
+  --c-sun-100:#FFF3D6; --c-sun-400:#FFC65C;
+  --c-ai-tint:#F1F0FF; --c-ai-accent:#7C6CF0; --c-ai-border:#DED9FB;
+  --grad-ai:linear-gradient(135deg,#EAF8F5 0%,#F1F0FF 55%,#FFE7DF 100%);
+  --grad-ai-chip:linear-gradient(135deg,#7C6CF0 0%,#17A398 100%);
+  --c-cat-travel:#2E8BD6; --c-cat-travel-bg:#E6F2FC;
+  --c-cat-hike:#5B9E3F;  --c-cat-hike-bg:#EAF5E4;
+  --c-cat-resort:#F2994A; --c-cat-resort-bg:#FDEFE0;
+  --c-bg:#FBF9F6; --c-surface:#FFFFFF; --c-surface-2:#F4F1EC;
+  --c-border:#ECE7E0; --c-border-strong:#DBD4CA;
+  --c-text-1:#2A2622; --c-text-2:#6E665C; --c-text-3:#A79E92;
+  --c-success:#2FB170; --c-warning:#F0A82E; --c-info:#3E9BD8; --c-danger:#E5533C;
+  --c-map-dim:#D7D0C6; --c-map-lit:#FF6F52; --c-map-route:#17A398;
+  --c-map-lit-glow:0 0 0 6px rgba(255,111,82,.22),0 0 16px 2px rgba(255,198,92,.55);
+  --font-base:'Nunito','PingFang SC','HarmonyOS Sans SC','Noto Sans SC',sans-serif;
+  --fs-display:28px; --fs-h1:22px; --fs-h2:18px; --fs-h3:16px;
+  --fs-body:15px; --fs-sm:13px; --fs-xs:11px;
+  --fw-regular:400; --fw-medium:500; --fw-semibold:600; --fw-bold:700; --fw-extrabold:800;
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px;
+  --sp-6:24px; --sp-8:32px; --sp-10:40px;
+  --r-chip:999px; --r-btn:14px; --r-card:20px; --r-card-lg:24px;
+  --r-input:14px; --r-avatar:50%; --r-img:16px;
+  --sh-sm:0 2px 8px rgba(120,100,80,.06);
+  --sh-md:0 6px 18px rgba(120,100,80,.10);
+  --sh-lg:0 12px 32px rgba(120,100,80,.14);
+  --sh-cta:0 6px 16px rgba(255,111,82,.32);
+  --sh-tab:0 -2px 16px rgba(120,100,80,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{font-family:var(--font-base);color:var(--c-text-1);background:#EDE7DF;
+  -webkit-font-smoothing:antialiased;}
+body{min-height:100vh;padding:32px 16px;display:flex;flex-direction:column;align-items:center;gap:24px;}
+.stage-title{text-align:center;color:#6E665C;}
+.stage-title h1{font-size:24px;font-weight:800;color:#2A2622;letter-spacing:.5px;}
+.stage-title p{font-size:13px;margin-top:6px;}
+.screens{display:flex;flex-wrap:wrap;gap:36px;justify-content:center;align-items:flex-start;}
+
+/* ============ 手机外壳 Frame ============ */
+.phone{width:375px;height:812px;background:var(--c-bg);border-radius:44px;position:relative;
+  box-shadow:0 0 0 11px #14110E,0 0 0 13px #2C2621,0 30px 60px rgba(40,30,20,.35);
+  overflow:hidden;flex:0 0 auto;}
+.phone .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:150px;height:30px;
+  background:#14110E;border-bottom-left-radius:18px;border-bottom-right-radius:18px;z-index:500;}
+.statusbar{height:52px;display:flex;align-items:flex-end;justify-content:space-between;
+  padding:0 26px 6px;font-size:13px;font-weight:700;color:var(--c-text-1);position:relative;z-index:210;}
+.statusbar .r{display:flex;gap:6px;align-items:center;font-size:12px;}
+.frame-label{text-align:center;margin-top:14px;font-size:13px;font-weight:700;color:#6E665C;}
+
+/* App shell inside phone */
+.app{position:absolute;inset:0;display:flex;flex-direction:column;}
+.viewport{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;-webkit-overflow-scrolling:touch;}
+.viewport::-webkit-scrollbar{width:0;}
+.page{display:none;padding-bottom:96px;animation:fade .35s ease;}
+.page.active{display:block;}
+@keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+/* ============ Typography helpers ============ */
+.display{font-size:var(--fs-display);font-weight:800;line-height:1.25;}
+.h1{font-size:var(--fs-h1);font-weight:700;line-height:1.3;}
+.h2{font-size:var(--fs-h2);font-weight:700;line-height:1.35;}
+.h3{font-size:var(--fs-h3);font-weight:600;line-height:1.4;}
+.body{font-size:var(--fs-body);line-height:1.6;}
+.sm{font-size:var(--fs-sm);color:var(--c-text-2);}
+.xs{font-size:var(--fs-xs);font-weight:600;}
+.muted{color:var(--c-text-2);}
+.mono{font-variant-numeric:tabular-nums;}
+
+/* ============ Chips ============ */
+.chip{display:inline-flex;align-items:center;gap:4px;border-radius:var(--r-chip);
+  padding:4px 10px;font-size:var(--fs-xs);font-weight:600;line-height:1.4;}
+.chip-travel{background:var(--c-cat-travel-bg);color:var(--c-cat-travel);}
+.chip-hike{background:var(--c-cat-hike-bg);color:var(--c-cat-hike);}
+.chip-resort{background:var(--c-cat-resort-bg);color:var(--c-cat-resort);}
+.chip-progress{background:var(--c-primary-50);color:var(--c-primary-700);}
+.chip-done{background:#E6F6EE;color:var(--c-success);}
+
+/* ============ Buttons ============ */
+.btn{border:none;font-family:inherit;cursor:pointer;font-weight:700;border-radius:var(--r-btn);
+  transition:transform .12s ease,box-shadow .2s ease;display:inline-flex;align-items:center;
+  justify-content:center;gap:8px;}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:var(--c-coral-500);color:#fff;box-shadow:var(--sh-cta);height:48px;
+  width:100%;font-size:var(--fs-h3);}
+.btn-primary:active{background:var(--c-coral-600);}
+.btn-secondary{background:var(--c-surface);color:var(--c-primary-700);
+  border:1.5px solid var(--c-primary-300);height:48px;font-size:var(--fs-h3);}
+.btn-adopt{background:var(--c-primary-50);color:var(--c-primary-700);
+  border:1px solid var(--c-primary-200);border-radius:var(--r-chip);height:32px;padding:0 14px;
+  font-size:var(--fs-sm);}
+.btn-adopt.adopted{background:var(--c-primary-100);border-color:var(--c-primary-300);color:var(--c-primary-700);}
+.btn-ghost{background:transparent;color:var(--c-text-2);height:40px;padding:0 12px;font-size:var(--fs-sm);}
+
+/* ============ Avatars ============ */
+.avatars{display:flex;align-items:center;}
+.avatars .av{width:28px;height:28px;border-radius:var(--r-avatar);border:2px solid #fff;
+  margin-left:-8px;background-size:cover;background-position:center;position:relative;
+  font-size:12px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;}
+.avatars .av:first-child{margin-left:0;}
+.avatars .av.owner::after{content:"👑";position:absolute;right:-4px;bottom:-4px;font-size:11px;}
+.avatars .invite{width:28px;height:28px;border-radius:50%;border:1.5px dashed var(--c-primary-300);
+  margin-left:-8px;display:flex;align-items:center;justify-content:center;color:var(--c-primary-500);
+  font-size:16px;background:var(--c-primary-50);cursor:pointer;font-weight:400;}
+
+/* ============ Progress bar ============ */
+.pbar{height:6px;background:var(--c-surface-2);border-radius:999px;overflow:hidden;flex:1;}
+.pbar > i{display:block;height:100%;background:var(--c-primary-500);border-radius:999px;}
+.pbar.coral > i{background:var(--c-coral-500);}
+
+/* ============ Project card (home) ============ */
+.pcard{background:var(--c-surface);border-radius:var(--r-card);box-shadow:var(--sh-sm);
+  padding:var(--sp-4);margin:0 var(--sp-5) var(--sp-4);position:relative;overflow:hidden;
+  border-left:4px solid var(--c-border);transition:transform .14s ease,box-shadow .2s ease;cursor:pointer;}
+.pcard:active{transform:scale(.98);box-shadow:var(--sh-md);}
+.pcard.cat-travel{border-left-color:var(--c-cat-travel);}
+.pcard.cat-hike{border-left-color:var(--c-cat-hike);}
+.pcard.cat-resort{border-left-color:var(--c-cat-resort);}
+.pcard .cover{position:relative;border-radius:var(--r-img);overflow:hidden;height:150px;margin-bottom:var(--sp-3);}
+.pcard .cover img{width:100%;height:100%;object-fit:cover;display:block;}
+.pcard .cover .veil{position:absolute;inset:0;background:linear-gradient(to top,rgba(20,15,10,.42) 0%,transparent 45%);}
+.pcard .cover .chip{position:absolute;top:10px;left:10px;backdrop-filter:blur(4px);}
+.pcard .cover .status{position:absolute;top:10px;right:10px;}
+.pcard .ttl{font-size:var(--fs-h2);font-weight:700;margin-bottom:2px;}
+.pcard .meta{font-size:var(--fs-sm);color:var(--c-text-2);display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.pcard .foot{display:flex;align-items:center;gap:12px;margin-top:var(--sp-3);}
+.pcard .foot .budget{font-size:var(--fs-sm);color:var(--c-text-2);font-weight:700;white-space:nowrap;}
+
+/* section header */
+.sec-head{display:flex;align-items:center;justify-content:space-between;padding:var(--sp-5) var(--sp-5) var(--sp-3);}
+.sec-head h2{font-size:var(--fs-h2);font-weight:700;}
+.sec-head .count{font-size:var(--fs-sm);color:var(--c-text-3);font-weight:700;}
+
+/* ============ AI card ============ */
+.ai-card{background:var(--grad-ai);border:1px solid var(--c-ai-border);border-radius:var(--r-card);
+  padding:var(--sp-4);margin:var(--sp-4) var(--sp-5);}
+.ai-badge{display:inline-flex;align-items:center;gap:5px;background:var(--grad-ai-chip);color:#fff;
+  border-radius:var(--r-chip);padding:5px 12px;font-size:var(--fs-xs);font-weight:700;margin-bottom:var(--sp-3);}
+.ai-row{display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,.62);border-radius:14px;
+  padding:12px;margin-bottom:10px;}
+.ai-row .ico{font-size:16px;flex:0 0 auto;margin-top:1px;}
+.ai-row .txt{flex:1;font-size:var(--fs-sm);color:var(--c-text-1);line-height:1.5;}
+.ai-row .btn-adopt{flex:0 0 auto;align-self:center;}
+.ai-row.adopted{background:var(--c-primary-50);}
+.ai-row.adopted .done{color:var(--c-primary-700);font-size:var(--fs-sm);font-weight:700;
+  display:inline-flex;align-items:center;gap:4px;}
+.ai-genbtn{width:100%;height:44px;border:none;cursor:pointer;border-radius:var(--r-btn);
+  background:var(--grad-ai-chip);color:#fff;font-weight:700;font-size:var(--fs-h3);font-family:inherit;
+  margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .12s;}
+.ai-genbtn:active{transform:scale(.97);}
+
+/* ============ Detail page ============ */
+.detail-hero{position:relative;height:260px;}
+.detail-hero img{width:100%;height:100%;object-fit:cover;display:block;}
+.detail-hero .veil{position:absolute;inset:0;background:linear-gradient(to top,rgba(20,15,10,.66) 0%,rgba(20,15,10,.1) 45%,rgba(20,15,10,.28) 100%);}
+.detail-hero .back{position:absolute;top:14px;left:16px;width:38px;height:38px;border-radius:50%;
+  background:rgba(255,255,255,.9);border:none;font-size:18px;cursor:pointer;box-shadow:var(--sh-sm);
+  display:flex;align-items:center;justify-content:center;}
+.detail-hero .hinfo{position:absolute;left:20px;right:20px;bottom:18px;color:#fff;}
+.detail-hero .hinfo h1{font-size:var(--fs-h1);font-weight:800;text-shadow:0 1px 6px rgba(0,0,0,.4);}
+.detail-hero .hinfo .meta{font-size:var(--fs-sm);opacity:.95;margin-top:4px;text-shadow:0 1px 4px rgba(0,0,0,.4);}
+.detail-hero .hinfo .avatars{margin-top:10px;}
+
+.tabs{display:flex;gap:4px;padding:var(--sp-4) var(--sp-5) var(--sp-2);overflow-x:auto;position:sticky;top:0;
+  background:var(--c-bg);z-index:60;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex:0 0 auto;padding:8px 14px;border-radius:var(--r-chip);font-size:var(--fs-sm);font-weight:700;
+  color:var(--c-text-2);background:var(--c-surface-2);border:none;cursor:pointer;white-space:nowrap;
+  font-family:inherit;transition:all .18s;}
+.tab.active{background:var(--c-primary-500);color:#fff;}
+.tabpane{display:none;padding:0 var(--sp-5);}
+.tabpane.active{display:block;animation:fade .3s;}
+
+.block{background:var(--c-surface);border-radius:var(--r-card);padding:var(--sp-4);
+  margin-bottom:var(--sp-4);box-shadow:var(--sh-sm);}
+.block h3{font-size:var(--fs-h3);font-weight:700;margin-bottom:var(--sp-3);display:flex;align-items:center;gap:8px;}
+
+/* itinerary list (旅行类差异化) */
+.spot{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--c-border);}
+.spot:last-child{border-bottom:none;}
+.spot .idx{width:26px;height:26px;flex:0 0 auto;border-radius:50%;background:var(--c-cat-travel-bg);
+  color:var(--c-cat-travel);font-size:var(--fs-sm);font-weight:800;display:flex;align-items:center;justify-content:center;}
+.spot .sp-body{flex:1;}
+.spot .sp-body .n{font-size:var(--fs-body);font-weight:700;}
+.spot .sp-body .d{font-size:var(--fs-sm);color:var(--c-text-2);margin-top:2px;}
+.spot .sp-thumb{width:56px;height:56px;border-radius:12px;object-fit:cover;flex:0 0 auto;}
+
+.dayhead{display:inline-flex;align-items:center;gap:6px;background:var(--c-primary-50);
+  color:var(--c-primary-700);font-weight:700;font-size:var(--fs-sm);padding:5px 12px;border-radius:var(--r-chip);margin-bottom:8px;}
+.trans{display:flex;align-items:center;gap:8px;font-size:var(--fs-sm);color:var(--c-text-2);
+  padding:8px 0 8px 8px;border-left:2px dashed var(--c-primary-200);margin-left:12px;}
+
+/* budget rows */
+.bud-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--c-border);}
+.bud-row:last-child{border-bottom:none;}
+.bud-row .l{display:flex;align-items:center;gap:10px;font-size:var(--fs-body);}
+.bud-row .l .e{font-size:18px;}
+.bud-row .v{font-weight:800;font-variant-numeric:tabular-nums;}
+
+/* checklist */
+.check{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--c-border);cursor:pointer;}
+.check:last-child{border-bottom:none;}
+.check .box{width:22px;height:22px;border-radius:7px;border:2px solid var(--c-border-strong);
+  flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;transition:all .15s;}
+.check.done .box{background:var(--c-primary-500);border-color:var(--c-primary-500);}
+.check.done .lbl{color:var(--c-text-3);text-decoration:line-through;}
+.check .lbl{font-size:var(--fs-body);}
+
+/* ============ New project page ============ */
+.page-head{padding:var(--sp-5) var(--sp-5) var(--sp-3);}
+.page-head .display{font-size:24px;font-weight:800;}
+.page-head .sub{font-size:var(--fs-sm);color:var(--c-text-2);margin-top:6px;}
+.catcards{padding:0 var(--sp-5);display:flex;flex-direction:column;gap:var(--sp-3);}
+.catcard{display:flex;align-items:center;gap:14px;background:var(--c-surface);border:1px solid var(--c-border);
+  border-radius:var(--r-card);padding:var(--sp-4);cursor:pointer;position:relative;
+  transition:transform .16s ease,border-color .16s,background .16s;}
+.catcard .emo{font-size:34px;flex:0 0 auto;width:52px;height:52px;border-radius:16px;background:var(--c-surface-2);
+  display:flex;align-items:center;justify-content:center;transition:background .16s;}
+.catcard .cc-body .n{font-size:var(--fs-h3);font-weight:700;}
+.catcard .cc-body .d{font-size:var(--fs-sm);color:var(--c-text-2);margin-top:2px;}
+.catcard .tick{position:absolute;top:14px;right:14px;width:22px;height:22px;border-radius:50%;
+  display:none;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:800;}
+.catcard.sel{animation:pop .3s ease;}
+.catcard.sel .tick{display:flex;}
+@keyframes pop{0%{transform:scale(1);}50%{transform:scale(1.03);}100%{transform:scale(1);}}
+.catcard.sel.travel{background:var(--c-cat-travel-bg);border:2px solid var(--c-cat-travel);}
+.catcard.sel.travel .tick,.catcard.sel.travel .emo{background:var(--c-cat-travel);color:#fff;}
+.catcard.sel.hike{background:var(--c-cat-hike-bg);border:2px solid var(--c-cat-hike);}
+.catcard.sel.hike .tick,.catcard.sel.hike .emo{background:var(--c-cat-hike);color:#fff;}
+.catcard.sel.resort{background:var(--c-cat-resort-bg);border:2px solid var(--c-cat-resort);}
+.catcard.sel.resort .tick,.catcard.sel.resort .emo{background:var(--c-cat-resort);color:#fff;}
+
+/* dynamic fields preview */
+.fieldprev{margin:var(--sp-4) var(--sp-5);background:var(--c-surface);border-radius:var(--r-card);
+  padding:var(--sp-4);box-shadow:var(--sh-sm);display:none;animation:fade .3s;}
+.fieldprev.show{display:block;}
+.fieldprev .fp-head{font-size:var(--fs-sm);font-weight:700;color:var(--c-text-2);margin-bottom:12px;
+  display:flex;align-items:center;gap:6px;}
+.fieldprev .fp-tag{display:inline-flex;align-items:center;gap:5px;padding:8px 12px;border-radius:12px;
+  font-size:var(--fs-sm);font-weight:600;margin:0 8px 8px 0;background:var(--c-surface-2);color:var(--c-text-1);}
+
+/* form inputs */
+.field{margin:0 var(--sp-5) var(--sp-4);}
+.field label{font-size:var(--fs-sm);font-weight:700;color:var(--c-text-2);display:block;margin-bottom:8px;}
+.field input,.field .fakeinput{width:100%;height:48px;border-radius:var(--r-input);border:1px solid var(--c-border);
+  background:var(--c-surface-2);padding:0 14px;font-size:var(--fs-body);font-family:inherit;color:var(--c-text-1);
+  display:flex;align-items:center;}
+.field input::placeholder{color:var(--c-text-3);}
+.field .fakeinput{color:var(--c-text-3);gap:8px;}
+.coverpick{height:110px;border-radius:var(--r-img);border:2px dashed var(--c-border-strong);
+  background:var(--c-surface-2);display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:6px;color:var(--c-text-3);font-size:var(--fs-sm);}
+
+/* ============ Map page ============ */
+.map-toggle{display:flex;background:var(--c-surface-2);border-radius:var(--r-chip);padding:4px;
+  margin:var(--sp-4) var(--sp-5);}
+.map-toggle button{flex:1;height:38px;border:none;background:transparent;border-radius:var(--r-chip);
+  font-family:inherit;font-size:var(--fs-sm);font-weight:700;color:var(--c-text-2);cursor:pointer;transition:all .2s;}
+.map-toggle button.active{background:var(--c-surface);color:var(--c-primary-700);box-shadow:var(--sh-sm);}
+.mapstage{margin:0 var(--sp-5);background:linear-gradient(160deg,#EAF4F2 0%,#F3EEE7 100%);
+  border-radius:var(--r-card-lg);padding:var(--sp-4);box-shadow:var(--sh-sm);position:relative;overflow:hidden;}
+.mapview{display:none;}
+.mapview.active{display:block;}
+.mapsvg{width:100%;height:auto;display:block;}
+.dot{cursor:pointer;transition:transform .2s;}
+.stats{display:flex;gap:10px;margin:var(--sp-4) var(--sp-5);}
+.stat{flex:1;background:var(--c-surface);border-radius:var(--r-card);padding:14px;box-shadow:var(--sh-sm);text-align:center;}
+.stat .num{font-size:24px;font-weight:800;color:var(--c-coral-500);font-variant-numeric:tabular-nums;}
+.stat .lbl{font-size:var(--fs-xs);color:var(--c-text-2);margin-top:2px;font-weight:600;}
+
+/* ============ Bottom sheet ============ */
+.sheet-mask{position:absolute;inset:0;background:rgba(30,22,15,.42);z-index:300;display:none;
+  align-items:flex-end;animation:fade .25s;}
+.sheet-mask.show{display:flex;}
+.sheet{background:var(--c-surface);border-radius:var(--r-card-lg) var(--r-card-lg) 0 0;width:100%;
+  padding:var(--sp-5);box-shadow:var(--sh-lg);animation:slideup .32s cubic-bezier(.2,.8,.2,1);}
+@keyframes slideup{from{transform:translateY(100%);}to{transform:none;}}
+.sheet .grab{width:40px;height:4px;border-radius:999px;background:var(--c-border-strong);margin:0 auto 16px;}
+.hlcard .hl-img{width:100%;height:150px;object-fit:cover;border-radius:var(--r-img);margin-bottom:12px;}
+.hlcard .hl-ttl{font-size:var(--fs-h2);font-weight:800;}
+.hlcard .hl-quote{font-size:var(--fs-body);color:var(--c-text-2);margin:6px 0 14px;line-height:1.6;}
+.hlcard .hl-stats{display:flex;gap:10px;}
+.hlcard .hl-stat{flex:1;background:var(--c-surface-2);border-radius:14px;padding:12px;text-align:center;}
+.hlcard .hl-stat .n{font-weight:800;font-size:var(--fs-h3);color:var(--c-primary-700);font-variant-numeric:tabular-nums;}
+.hlcard .hl-stat .l{font-size:var(--fs-xs);color:var(--c-text-2);margin-top:2px;}
+
+/* ============ Bottom tab bar ============ */
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:64px;background:var(--c-surface);
+  box-shadow:var(--sh-tab);display:flex;align-items:flex-start;padding:8px 0 calc(8px + env(safe-area-inset-bottom));
+  z-index:250;border-top:1px solid var(--c-border);}
+.tabbar .tb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;
+  color:var(--c-text-3);font-size:10px;font-weight:700;position:relative;background:none;border:none;font-family:inherit;}
+.tabbar .tb .ic{font-size:21px;line-height:1;filter:grayscale(1) opacity(.55);transition:all .2s;}
+.tabbar .tb.active{color:var(--c-primary-700);}
+.tabbar .tb.active .ic{filter:none;}
+.tabbar .tb.active::before{content:"";position:absolute;top:-8px;width:5px;height:5px;border-radius:50%;background:var(--c-primary-500);}
+.tabbar .tb-add{flex:0 0 auto;width:56px;position:relative;}
+.tabbar .tb-add .plus{position:absolute;top:-22px;width:54px;height:54px;border-radius:50%;
+  background:var(--c-coral-500);color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:30px;box-shadow:var(--sh-cta);border:4px solid var(--c-surface);transition:transform .14s;}
+.tabbar .tb-add:active .plus{transform:scale(.94);}
+.tabbar .tb-add .lbl{position:absolute;bottom:0;font-size:10px;font-weight:700;color:var(--c-text-3);}
+
+/* misc */
+.divider{height:1px;background:var(--c-border);margin:var(--sp-4) var(--sp-5);}
+.spacer{height:8px;}
+.action-row{padding:var(--sp-4) var(--sp-5);display:flex;gap:12px;}
+.action-row .btn{flex:1;}
+.hint{font-size:var(--fs-sm);color:var(--c-text-3);text-align:center;padding:8px 20px 0;}
+.greet-emoji{font-size:22px;}
+
+/* AI 展开更多按钮 */
+.ai-more{display:block;width:100%;background:transparent;border:none;cursor:pointer;
+  color:var(--c-primary-700);font-weight:700;font-size:var(--fs-sm);font-family:inherit;
+  padding:6px 0 12px;text-align:center;}
+.ai-more:active{opacity:.6;}
+
+/* 概览 stat 行 */
+.stat-row{display:flex;gap:8px;}
+.stat-cell{flex:1;background:var(--c-surface-2);border-radius:14px;padding:12px 6px;text-align:center;}
+.stat-cell .n{font-size:var(--fs-h2);font-weight:800;color:var(--c-primary-700);line-height:1.1;}
+.stat-cell .l{font-size:var(--fs-xs);color:var(--c-text-2);margin-top:4px;font-weight:600;}
+
+/* 动效可访问性：尊重系统减弱动效 */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important;}
+  .page,.tabpane,.fieldprev,.sheet{animation:none !important;}
+}
+
+/* 离线降级：图片加载失败时以柔和渐变色块占位，保证布局不破坏 */
+img.img-fallback{
+  background:linear-gradient(135deg,#EAF8F5 0%,#F1F0FF 55%,#FFE7DF 100%) !important;
+  object-fit:cover;
+}
+</style>
+</head>
+<body>
+
+<div class="stage-title">
+  <h1>旅记 · TripDiary</h1>
+  <p>家庭 AI 旅行计划小程序 · 手机端高保真可点击原型（375×812）· 点击卡片 / 底部导航 / 分类切换均可交互</p>
+</div>
+
+<div class="screens">
+<div class="phone">
+  <div class="notch"></div>
+  <div class="app">
+    <div class="statusbar">
+      <span>9:41</span>
+      <span class="r">📶 &nbsp;🔋 100%</span>
+    </div>
+    <div class="viewport">
+
+    <!-- ============ 页面① 我的行程首页 ============ -->
+    <section class="page active" id="page-home">
+      <div class="page-head">
+        <div class="display">你好，明需 <span class="greet-emoji">🌿</span></div>
+        <div class="sub">已经和家人一起，记录了 5 段旅程 · 今天想去哪儿？</div>
+      </div>
+
+      <div class="sec-head">
+        <h2>进行中</h2><span class="count">2 段旅程</span>
+      </div>
+
+      <!-- 旅行类 进行中卡 -->
+      <article class="pcard cat-travel" onclick="goDetail()">
+        <div class="cover">
+          <img src="https://picsum.photos/seed/kyoto77/600/360" alt="京都">
+          <div class="veil"></div>
+          <span class="chip chip-travel" style="background:rgba(230,242,252,.92)">🧳 旅行</span>
+          <span class="chip chip-progress status" style="background:rgba(255,255,255,.9)">进行中</span>
+        </div>
+        <div class="ttl">京都樱花季七日</div>
+        <div class="meta">📍 日本·京都 · 大阪　|　🗓 3.28 – 4.03</div>
+        <div class="foot">
+          <div class="avatars">
+            <div class="av owner" style="background:#F2C0A8">明</div>
+            <div class="av" style="background:#9CDDD2">需</div>
+            <div class="invite">+</div>
+          </div>
+          <div class="pbar"><i style="width:62%"></i></div>
+          <div class="budget">62%</div>
+        </div>
+      </article>
+
+      <!-- 度假类 进行中卡 -->
+      <article class="pcard cat-resort" onclick="goDetail()">
+        <div class="cover">
+          <img src="https://picsum.photos/seed/bali42/600/360" alt="巴厘岛">
+          <div class="veil"></div>
+          <span class="chip chip-resort status" style="background:rgba(253,239,224,.92);top:10px;left:10px;right:auto">🏖️ 度假</span>
+          <span class="chip chip-progress" style="background:rgba(255,255,255,.9);position:absolute;top:10px;right:10px">进行中</span>
+        </div>
+        <div class="ttl">巴厘岛慢生活五日</div>
+        <div class="meta">📍 印尼·巴厘岛　|　🗓 5.15 – 5.19</div>
+        <div class="foot">
+          <div class="avatars">
+            <div class="av owner" style="background:#9CDDD2">需</div>
+            <div class="av" style="background:#F2C0A8">明</div>
+          </div>
+          <div class="pbar"><i style="width:28%"></i></div>
+          <div class="budget">28%</div>
+        </div>
+      </article>
+
+      <div class="sec-head">
+        <h2>已完成</h2><span class="count">3 段旅程</span>
+      </div>
+
+      <!-- 徒步类 已完成卡 -->
+      <article class="pcard cat-hike" onclick="goDetail()">
+        <div class="cover">
+          <img src="https://picsum.photos/seed/hike19/600/360" alt="雨崩">
+          <div class="veil"></div>
+          <span class="chip chip-hike" style="background:rgba(234,245,228,.92)">🥾 徒步</span>
+          <span class="chip chip-done status" style="background:rgba(255,255,255,.9)">✓ 已完成</span>
+        </div>
+        <div class="ttl">雨崩神瀑徒步四日</div>
+        <div class="meta">📍 云南·梅里雪山　|　🗓 去年 10.02 – 10.05</div>
+        <div class="foot">
+          <div class="avatars">
+            <div class="av owner" style="background:#F2C0A8">明</div>
+            <div class="av" style="background:#9CDDD2">需</div>
+            <div class="av" style="background:#FFC65C">朋</div>
+          </div>
+          <div class="pbar"><i style="width:100%"></i></div>
+          <div class="budget">✨ 100%</div>
+        </div>
+      </article>
+      <div class="spacer"></div>
+    </section>
+
+    <!-- ============ 页面② Project 详情（旅行类枢纽） ============ -->
+    <section class="page" id="page-detail">
+      <div class="detail-hero">
+        <img src="https://picsum.photos/seed/kyoto77/750/520" alt="京都封面">
+        <div class="veil"></div>
+        <button class="back" onclick="goHome()">‹</button>
+        <div class="hinfo">
+          <span class="chip chip-travel" style="background:rgba(230,242,252,.92)">🧳 旅行</span>
+          <h1 style="margin-top:8px">京都樱花季七日</h1>
+          <div class="meta">📍 日本·京都 · 大阪　·　🗓 3.28 – 4.03　·　7 天</div>
+          <div class="avatars">
+            <div class="av owner" style="background:#F2C0A8">明</div>
+            <div class="av" style="background:#9CDDD2">需</div>
+            <div class="invite">+</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI 概览卡 -->
+      <div class="ai-card">
+        <span class="ai-badge">✨ AI 旅行助手</span>
+        <div class="ai-row" id="ai-1">
+          <span class="ico">🌸</span>
+          <span class="txt">樱花季住宿紧俏，<b>建议提前 3 天预订</b>祇园一带的町屋，价格会更友好。</span>
+          <button class="btn btn-adopt" onclick="adopt('ai-1')">采纳</button>
+        </div>
+        <div class="ai-row" id="ai-2">
+          <span class="ico">📍</span>
+          <span class="txt">哲学之道 3.30 前后为盛花期，<b>建议安排在第 3 天上午</b>，人少光线好。</span>
+          <button class="btn btn-adopt" onclick="adopt('ai-2')">采纳</button>
+        </div>
+        <div class="ai-row" id="ai-3" style="display:none">
+          <span class="ico">🍜</span>
+          <span class="txt">锦市场周边午餐高峰拥挤，<b>建议 11:30 前到达</b>，避开旅行团。</span>
+          <button class="btn btn-adopt" onclick="adopt('ai-3')">采纳</button>
+        </div>
+        <button class="ai-more" id="ai-more" onclick="showMoreAI(this)">展开更多建议 ›</button>
+        <button class="ai-genbtn" onclick="genRoute(this)">✨ 一键生成七日路线</button>
+      </div>
+
+      <!-- 内容 Tab -->
+      <div class="tabs" id="detail-tabs">
+        <button class="tab active" onclick="switchTab(this,'tp-overview')">概览</button>
+        <button class="tab" onclick="switchTab(this,'tp-itin')">行程</button>
+        <button class="tab" onclick="switchTab(this,'tp-stay')">住宿</button>
+        <button class="tab" onclick="switchTab(this,'tp-budget')">预算</button>
+        <button class="tab" onclick="switchTab(this,'tp-check')">准备清单</button>
+      </div>
+
+      <!-- 概览 -->
+      <div class="tabpane active" id="tp-overview">
+        <div class="block">
+          <h3>🗺️ 这次旅行</h3>
+          <p class="body" style="color:var(--c-text-2)">春天的京都，跟着花期慢慢走。七天里安排了赏樱、老街、寺院和一顿念念不忘的怀石料理，中间也留白给你们随心的散步。不赶路，把节奏交给花期。</p>
+        </div>
+        <div class="block">
+          <h3>📊 一览</h3>
+          <div class="stat-row">
+            <div class="stat-cell"><div class="n mono">7</div><div class="l">天</div></div>
+            <div class="stat-cell"><div class="n mono">5</div><div class="l">个景点</div></div>
+            <div class="stat-cell"><div class="n mono">2</div><div class="l">人同行</div></div>
+            <div class="stat-cell"><div class="n mono">¥1.2<span style="font-size:12px">万</span></div><div class="l">预算</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 行程（日排 + 交通，旅行类差异化） -->
+      <div class="tabpane" id="tp-itin">
+        <div class="block">
+          <span class="dayhead">📅 Day 1 · 3.28</span>
+          <div class="spot"><div class="idx">✈</div><div class="sp-body"><div class="n">抵达关西机场 → 京都</div><div class="d">JR HARUKA 特急 · 约 75 分钟</div></div></div>
+          <div class="trans">🚌 机场巴士 / JR 二选一 · ¥2,900 起</div>
+          <div class="spot"><div class="idx">🏨</div><div class="sp-body"><div class="n">入住祇园町屋</div><div class="d">傍晚花见小路散步 + 晚餐</div></div></div>
+        </div>
+        <div class="block">
+          <span class="dayhead">📅 Day 2 · 3.29</span>
+          <div class="spot"><div class="idx">1</div><div class="sp-body"><div class="n">清水寺 · 二年坂三年坂</div><div class="d">上午 · 和服体验可选</div></div></div>
+          <div class="trans">🚶 步行 12 分钟</div>
+          <div class="spot"><div class="idx">2</div><div class="sp-body"><div class="n">锦市场午餐</div><div class="d">✨ AI 建议 11:30 前到达</div></div></div>
+        </div>
+        <div class="block">
+          <h3>📌 全部景点 <span class="sm" style="font-weight:400">· 旅行类专属</span></h3>
+          <div class="spot">
+            <div class="idx">1</div>
+            <div class="sp-body"><div class="n">清水寺 · 二年坂</div><div class="d">世界遗产 · 建议 2 小时 · 早去避人潮</div></div>
+            <img class="sp-thumb" src="https://picsum.photos/seed/kiyomizu/120/120" alt="清水寺">
+          </div>
+          <div class="spot">
+            <div class="idx">2</div>
+            <div class="sp-body"><div class="n">哲学之道</div><div class="d">樱花步道 · 建议 1.5 小时 · 3.30 盛花期</div></div>
+            <img class="sp-thumb" src="https://picsum.photos/seed/philopath/120/120" alt="哲学之道樱花步道">
+          </div>
+          <div class="spot">
+            <div class="idx">3</div>
+            <div class="sp-body"><div class="n">岚山竹林 · 渡月桥</div><div class="d">半日游 · 建议搭配小火车</div></div>
+            <img class="sp-thumb" src="https://picsum.photos/seed/arashiyama/120/120" alt="岚山竹林渡月桥">
+          </div>
+        </div>
+      </div>
+
+      <!-- 住宿 -->
+      <div class="tabpane" id="tp-stay">
+        <div class="block">
+          <h3>🏨 住宿安排</h3>
+          <div class="spot"><img class="sp-thumb" src="https://picsum.photos/seed/machiya/120/120" alt="祇园传统町屋"><div class="sp-body"><div class="n">祇园传统町屋</div><div class="d">3.28 – 3.31 · 3 晚 · 含早</div></div></div>
+          <div class="spot"><img class="sp-thumb" src="https://picsum.photos/seed/osakahtl/120/120" alt="大阪难波酒店"><div class="sp-body"><div class="n">大阪难波酒店</div><div class="d">4.01 – 4.03 · 2 晚 · 近地铁</div></div></div>
+        </div>
+      </div>
+
+      <!-- 预算 -->
+      <div class="tabpane" id="tp-budget">
+        <div class="block">
+          <h3>💰 预算概览</h3>
+          <div class="bud-row"><div class="l"><span class="e">✈️</span>往返机票</div><div class="v">¥ 6,800</div></div>
+          <div class="bud-row"><div class="l"><span class="e">🏨</span>住宿 5 晚</div><div class="v">¥ 5,400</div></div>
+          <div class="bud-row"><div class="l"><span class="e">🍱</span>餐饮</div><div class="v">¥ 3,200</div></div>
+          <div class="bud-row"><div class="l"><span class="e">🎫</span>门票交通</div><div class="v">¥ 1,600</div></div>
+          <div class="bud-row"><div class="l"><b>合计（两人）</b></div><div class="v" style="color:var(--c-coral-500)">¥ 17,000</div></div>
+          <div style="margin-top:12px;display:flex;align-items:center;gap:10px">
+            <div class="pbar coral"><i style="width:74%"></i></div>
+            <span class="sm" style="font-weight:700">已花 74%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 准备清单 -->
+      <div class="tabpane" id="tp-check">
+        <div class="block">
+          <h3>✅ 出行准备</h3>
+          <div class="check done" onclick="toggleCheck(this)"><div class="box">✓</div><div class="lbl">办理日本签证</div></div>
+          <div class="check done" onclick="toggleCheck(this)"><div class="box">✓</div><div class="lbl">兑换日元现金</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="box"></div><div class="lbl">购买境外流量卡</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="box"></div><div class="lbl">预约怀石料理餐厅</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="box"></div><div class="lbl">下载离线地图</div></div>
+        </div>
+      </div>
+
+      <!-- 底部操作 -->
+      <div class="action-row">
+        <button class="btn btn-secondary" onclick="alert('已生成可打印行程单，可保存 / 打印备份 📄')">🖨 生成行程单</button>
+        <button class="btn btn-secondary" style="flex:0 0 52px;padding:0" onclick="alert('已归档，可在「我的」中查看 📦')">📦</button>
+      </div>
+      <div class="spacer"></div>
+    </section>
+
+    <!-- ============ 页面③ 新建 project + 分类选择 ============ -->
+    <section class="page" id="page-new">
+      <div class="page-head">
+        <div class="display">开启一段新旅程 ✨</div>
+        <div class="sub">先选个类型，剩下的交给我们一起慢慢填</div>
+      </div>
+
+      <div class="catcards" id="catcards">
+        <div class="catcard travel" data-cat="travel" onclick="pickCat(this)">
+          <div class="emo">🧳</div>
+          <div class="cc-body"><div class="n">旅行</div><div class="d">城市与景点，走走停停看世界</div></div>
+          <div class="tick">✓</div>
+        </div>
+        <div class="catcard hike" data-cat="hike" onclick="pickCat(this)">
+          <div class="emo">🥾</div>
+          <div class="cc-body"><div class="n">徒步</div><div class="d">山野与路线，用脚步丈量风景</div></div>
+          <div class="tick">✓</div>
+        </div>
+        <div class="catcard resort" data-cat="resort" onclick="pickCat(this)">
+          <div class="emo">🏖️</div>
+          <div class="cc-body"><div class="n">度假</div><div class="d">住得好玩得松，什么都不用赶</div></div>
+          <div class="tick">✓</div>
+        </div>
+      </div>
+
+      <!-- 动态字段预览 -->
+      <div class="fieldprev" id="fieldprev">
+        <div class="fp-head">👀 <span id="fp-title">选好后，这类旅程会帮你记录：</span></div>
+        <div id="fp-tags"></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="field">
+        <label>给这次旅程起个名字</label>
+        <input type="text" placeholder="例如：冲绳跳岛之旅">
+      </div>
+      <div class="field">
+        <label>出发 – 返回日期</label>
+        <div class="fakeinput">🗓 选择日期</div>
+      </div>
+      <div class="field">
+        <label>目的地</label>
+        <div class="fakeinput">📍 想去哪里</div>
+      </div>
+      <div class="field">
+        <label>封面照片</label>
+        <div class="coverpick"><span style="font-size:26px">🖼️</span><span>选一张让人心动的照片</span></div>
+      </div>
+      <div style="padding:8px var(--sp-5) 0">
+        <button class="btn btn-primary" onclick="alert('已创建旅程，快去邀请家人一起完善吧 🎉')">创建这次旅程</button>
+      </div>
+      <p class="hint">选好类型后，我们会自动为你准备对应的记录模板</p>
+      <div class="spacer"></div>
+    </section>
+
+    <!-- ============ 页面④ 点亮地图 ============ -->
+    <section class="page" id="page-map">
+      <div class="page-head">
+        <div class="display">点亮地图 🗺️</div>
+        <div class="sub">每去过一处，就点亮一颗光点 —— 你们已经走过好多地方</div>
+      </div>
+
+      <div class="map-toggle">
+        <button class="active" onclick="switchMap(this,'map-cn')">🇨🇳 国内省份</button>
+        <button onclick="switchMap(this,'map-world')">🌏 世界地图</button>
+      </div>
+
+      <div class="mapstage">
+        <!-- 国内视图 -->
+        <div class="mapview active" id="map-cn">
+          <svg class="mapsvg" viewBox="0 0 300 200" id="cnsvg">
+            <!-- 抽象省份光点分布（示意，非真实地理） -->
+          </svg>
+        </div>
+        <!-- 世界视图 -->
+        <div class="mapview" id="map-world">
+          <svg class="mapsvg" viewBox="0 0 300 170" id="worldsvg"></svg>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="num" id="stat-a">8</div><div class="lbl">去过的省份</div></div>
+        <div class="stat"><div class="num" id="stat-b">4</div><div class="lbl">到过的国家</div></div>
+        <div class="stat"><div class="num mono">1.2<span style="font-size:13px">万</span></div><div class="lbl">累计公里</div></div>
+      </div>
+      <p class="hint">点击任意已点亮的光点，回看那段旅程 ✨</p>
+      <div class="spacer"></div>
+    </section>
+
+    </div><!-- /viewport -->
+
+    <!-- 底部弹层：地图高光卡 -->
+    <div class="sheet-mask" id="sheet-mask" onclick="closeSheet(event)">
+      <div class="sheet">
+        <div class="grab"></div>
+        <div class="hlcard">
+          <img class="hl-img" id="hl-img" src="https://picsum.photos/seed/hike19/600/300" alt="旅程精选照片">
+          <div class="hl-ttl" id="hl-ttl">雨崩神瀑徒步</div>
+          <div class="hl-quote" id="hl-quote">“走到神瀑那天下了小雨，但我们都说，值了。”</div>
+          <div class="hl-stats">
+            <div class="hl-stat"><div class="n mono" id="hl-s1">4</div><div class="l">天</div></div>
+            <div class="hl-stat"><div class="n mono" id="hl-s2">38</div><div class="l">公里</div></div>
+            <div class="hl-stat"><div class="n mono" id="hl-s3">3</div><div class="l">同行</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ 底部 Tab 栏 ============ -->
+    <nav class="tabbar">
+      <button class="tb active" id="tab-home" onclick="nav('home')"><span class="ic">🏝️</span>行程</button>
+      <button class="tb" id="tab-map" onclick="nav('map')"><span class="ic">🗺️</span>地图</button>
+      <button class="tb tb-add" onclick="nav('new')"><span class="plus">+</span><span class="lbl">新建</span></button>
+      <button class="tb" id="tab-mine" onclick="nav('mine')"><span class="ic">👤</span>我的</button>
+    </nav>
+
+  </div><!-- /app -->
+</div><!-- /phone -->
+</div><!-- /screens -->
+
+<script>
+/* ---------- 页面切换 ---------- */
+var VP = null;
+function showPage(id){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  if(VP) VP.scrollTop = 0;
+}
+function setTab(name){
+  ['home','map','mine'].forEach(function(n){
+    var el = document.getElementById('tab-'+n);
+    if(el) el.classList.toggle('active', n===name);
+  });
+}
+function nav(name){
+  if(name==='home'){ showPage('page-home'); setTab('home'); }
+  else if(name==='map'){ showPage('page-map'); setTab('map'); }
+  else if(name==='new'){ showPage('page-new'); setTab(''); }
+  else if(name==='mine'){ showPage('page-home'); setTab('mine');
+    setTimeout(function(){alert('「我的」页示意：个人资料 / 归档旅程 / 打印记录 / 邀请管理');},80);}
+}
+function goDetail(){ showPage('page-detail'); setTab(''); }
+function goHome(){ showPage('page-home'); setTab('home'); }
+
+/* ---------- 详情：Tab 切换 ---------- */
+function switchTab(btn, paneId){
+  btn.parentNode.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  btn.classList.add('active');
+  document.querySelectorAll('#page-detail .tabpane').forEach(function(p){p.classList.remove('active');});
+  document.getElementById(paneId).classList.add('active');
+}
+
+/* ---------- AI 采纳 ---------- */
+function adopt(id){
+  var row = document.getElementById(id);
+  if(row.classList.contains('adopted')) return;
+  row.classList.add('adopted');
+  var btn = row.querySelector('.btn-adopt');
+  btn.outerHTML = '<span class="done">✓ 已加入</span>';
+}
+function showMoreAI(btn){
+  document.getElementById('ai-3').style.display = 'flex';
+  btn.style.display = 'none';
+}
+function genRoute(btn){
+  btn.textContent = '✨ 正在为你规划…';
+  btn.style.opacity = '.75';
+  setTimeout(function(){
+    btn.textContent = '✓ 已生成七日路线';
+    btn.style.opacity = '1';
+    var itinTab = document.querySelectorAll('#detail-tabs .tab')[1];
+    if(itinTab){ switchTab(itinTab,'tp-itin'); }
+  }, 1100);
+}
+
+/* ---------- 准备清单勾选 ---------- */
+function toggleCheck(el){
+  el.classList.toggle('done');
+  el.querySelector('.box').textContent = el.classList.contains('done') ? '✓' : '';
+}
+
+/* ---------- 新建：分类选择 + 动态字段 ---------- */
+var CAT_FIELDS = {
+  travel: {t:'旅行类会帮你记录：', tags:['📌 景点清单','🚄 交通接驳','📅 每日行程','🍜 美食收藏','🏨 住宿安排']},
+  hike:   {t:'徒步类会帮你记录：', tags:['⛰️ 海拔爬升','🎯 难度等级','🎒 装备清单勾选','🧭 路线轨迹','💧 补给点']},
+  resort: {t:'度假类会帮你记录：', tags:['🏨 住宿体验','🧖 放松活动','🏖️ 海滩 / 泳池','🍹 餐厅预约','🌅 慵懒时刻']}
+};
+function pickCat(el){
+  document.querySelectorAll('#catcards .catcard').forEach(function(c){c.classList.remove('sel');});
+  void el.offsetWidth;
+  el.classList.add('sel');
+  var cat = el.getAttribute('data-cat');
+  var data = CAT_FIELDS[cat];
+  document.getElementById('fp-title').textContent = data.t;
+  var box = document.getElementById('fp-tags');
+  box.innerHTML = data.tags.map(function(t){return '<span class="fp-tag">'+t+'</span>';}).join('');
+  var fp = document.getElementById('fieldprev');
+  fp.classList.remove('show'); void fp.offsetWidth; fp.classList.add('show');
+}
+
+/* ---------- 地图模式切换 ---------- */
+function switchMap(btn, viewId){
+  btn.parentNode.querySelectorAll('button').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  document.querySelectorAll('.mapview').forEach(function(v){v.classList.remove('active');});
+  document.getElementById(viewId).classList.add('active');
+  document.getElementById('stat-a').style.display = (viewId==='map-cn')?'':'none';
+}
+
+/* ---------- 地图点位数据 ---------- */
+var CN_DOTS = [
+  {x:210,y:70,lit:true, name:'云南·雨崩', img:'hike19', quote:'“走到神瀑那天下了小雨，但我们都说，值了。”', s:['4','38','3']},
+  {x:235,y:45,lit:true, name:'四川·稻城', img:'daocheng', quote:'“蓝色星球上的最后一片净土，名不虚传。”', s:['6','52','2']},
+  {x:245,y:110,lit:true,name:'广西·桂林', img:'guilin', quote:'“漓江竹筏漂下来，像走进一幅水墨画。”', s:['3','—','2']},
+  {x:190,y:100,lit:false},{x:170,y:60,lit:false},{x:150,y:130,lit:false},
+  {x:120,y:90,lit:false},{x:100,y:50,lit:false},{x:200,y:140,lit:false},
+  {x:225,y:150,lit:false},{x:80,y:120,lit:false},{x:130,y:40,lit:false}
+];
+var WORLD_DOTS = [
+  {x:245,y:60,lit:true, name:'日本·京都', img:'kyoto77', quote:'“樱花落进抹茶里，那一刻只想留在春天。”', s:['7','—','2']},
+  {x:230,y:95,lit:true, name:'印尼·巴厘岛', img:'bali42', quote:'“海浪声里睡到自然醒，度假就该这样。”', s:['5','—','2']},
+  {x:120,y:70,lit:true, name:'法国·巴黎', img:'paris88', quote:'“塞纳河边走了一整晚，谁也没想回酒店。”', s:['8','—','2']},
+  {x:60,y:90,lit:true, name:'冰岛·雷克雅未克', img:'iceland', quote:'“凌晨三点被极光叫醒，值了。”', s:['9','—','4']},
+  {x:40,y:120,lit:false},{x:160,y:110,lit:false},{x:200,y:130,lit:false},
+  {x:90,y:50,lit:false},{x:270,y:120,lit:false},{x:150,y:140,lit:false}
+];
+
+function buildMap(svgId, dots, land){
+  var svg = document.getElementById(svgId);
+  var ns='http://www.w3.org/2000/svg';
+  svg.innerHTML='';
+  // 大陆轮廓底 (抽象柔和形状)
+  var bg = document.createElementNS(ns,'path');
+  bg.setAttribute('d', land);
+  bg.setAttribute('fill','#DDEDE8');
+  bg.setAttribute('opacity','.85');
+  svg.appendChild(bg);
+  // 连线（青绿路径，连接已点亮点）
+  var litPts = dots.filter(function(d){return d.lit;});
+  for(var i=0;i<litPts.length-1;i++){
+    var ln=document.createElementNS(ns,'line');
+    ln.setAttribute('x1',litPts[i].x);ln.setAttribute('y1',litPts[i].y);
+    ln.setAttribute('x2',litPts[i+1].x);ln.setAttribute('y2',litPts[i+1].y);
+    ln.setAttribute('stroke','#17A398');ln.setAttribute('stroke-width','1.4');
+    ln.setAttribute('stroke-dasharray','3 3');ln.setAttribute('opacity','.5');
+    svg.appendChild(ln);
+  }
+  dots.forEach(function(d,i){
+    var g=document.createElementNS(ns,'g');
+    g.setAttribute('class','dot');
+    if(d.lit){
+      // 双层光晕
+      var glowB=document.createElementNS(ns,'circle');
+      glowB.setAttribute('cx',d.x);glowB.setAttribute('cy',d.y);glowB.setAttribute('r','11');
+      glowB.setAttribute('fill','#FFC65C');glowB.setAttribute('opacity','.28');
+      var glowA=document.createElementNS(ns,'circle');
+      glowA.setAttribute('cx',d.x);glowA.setAttribute('cy',d.y);glowA.setAttribute('r','7.5');
+      glowA.setAttribute('fill','#FF6F52');glowA.setAttribute('opacity','.22');
+      var core=document.createElementNS(ns,'circle');
+      core.setAttribute('cx',d.x);core.setAttribute('cy',d.y);core.setAttribute('r','4');
+      core.setAttribute('fill','#FF6F52');core.setAttribute('stroke','#fff');core.setAttribute('stroke-width','1.5');
+      g.appendChild(glowB);g.appendChild(glowA);g.appendChild(core);
+      g.style.cursor='pointer';
+      (function(dd){ g.addEventListener('click',function(){openSheet(dd);}); })(d);
+      // 弹入微交互
+      g.style.transformOrigin=d.x+'px '+d.y+'px';
+      g.style.animation='popdot .5s '+(i*0.08)+'s both';
+    } else {
+      var dim=document.createElementNS(ns,'circle');
+      dim.setAttribute('cx',d.x);dim.setAttribute('cy',d.y);dim.setAttribute('r','3');
+      dim.setAttribute('fill','none');dim.setAttribute('stroke','#D7D0C6');dim.setAttribute('stroke-width','1.5');
+      g.appendChild(dim);
+    }
+    svg.appendChild(g);
+  });
+}
+
+/* popdot keyframes 注入 */
+var st=document.createElement('style');
+st.textContent='@keyframes popdot{0%{transform:scale(0);opacity:0}60%{transform:scale(1.25);opacity:1}100%{transform:scale(1)}}';
+document.head.appendChild(st);
+
+/* ---------- 高光弹层 ---------- */
+function openSheet(d){
+  document.getElementById('hl-img').src='https://picsum.photos/seed/'+d.img+'/600/300';
+  document.getElementById('hl-ttl').textContent=d.name;
+  document.getElementById('hl-quote').textContent=d.quote;
+  document.getElementById('hl-s1').textContent=d.s[0];
+  document.getElementById('hl-s2').textContent=d.s[1];
+  document.getElementById('hl-s3').textContent=d.s[2];
+  document.getElementById('sheet-mask').classList.add('show');
+}
+function closeSheet(e){
+  if(e.target.id==='sheet-mask') document.getElementById('sheet-mask').classList.remove('show');
+}
+
+/* ---------- init ---------- */
+document.addEventListener('DOMContentLoaded',function(){
+  VP=document.querySelector('.viewport');
+  var cnLand='M70,55 C90,35 150,30 200,45 C245,50 265,80 255,120 C245,155 190,170 140,158 C95,148 60,120 62,90 C63,72 62,66 70,55 Z';
+  var wLand='M20,70 C60,45 110,50 140,70 C150,55 200,50 235,55 C270,60 285,90 270,120 C240,145 180,140 150,120 C120,140 60,140 35,115 C15,100 10,85 20,70 Z';
+  buildMap('cnsvg',CN_DOTS,cnLand);
+  buildMap('worldsvg',WORLD_DOTS,wLand);
+
+  /* 离线降级：为所有图片挂载加载失败回退，图片加载不出时以柔和色块占位 */
+  function attachFallback(img){
+    img.addEventListener('error',function(){
+      if(this.classList.contains('img-fallback')) return;
+      this.classList.add('img-fallback');
+      this.removeAttribute('src');
+    });
+  }
+  document.querySelectorAll('img').forEach(attachFallback);
+});
+</script>
+</body>
+</html>
