@@ -1,6 +1,6 @@
-# 旅记 TripDiary 🧳
+# 兰途 LanTu 🧳
 
-> 家庭 AI 旅行计划小程序 —— 每一次出行，都是一个值得记录的项目。
+> 家庭 AI 兰途旅行 —— 每一次出行，都是一个值得记录的项目。
 
 一个家庭协作项目：既是实用的旅行规划工具，也是我们俩一起上手 AI 工具的练手场。
 
@@ -15,7 +15,7 @@
 
 ## 📂 项目结构
 ```
-family-travel-app/
+lantu-app/
 ├─ prototype/
 │  ├─ index.html            原型（部署首页，双击可运行）
 │  └─ prototype-source.html 原型源版本

@@ -1,9 +1,9 @@
-# 项目长期记忆 · 旅记 TripDiary
+# 项目长期记忆 · 兰途 LanTu
 
 > 本文件是项目的"大脑"。每次在 WorkBuddy 打开这个项目，AI 都会读它，从而记得项目背景、约定和进度，无需重新交代。请保持更新。
 
 ## 一、项目是什么
-家庭 AI 旅行计划小程序原型（品牌名"旅记 / TripDiary"）。手机端竖屏。
+家庭 AI 兰途旅行原型（品牌名"兰途 / LanTu"）。手机端竖屏。
 双重目的：①实用旅行规划工具（每次出行=一个 project）②让 AI 新手（太太）在真实项目里上手 AI 协作。
 
 ## 二、协作模式（重要）
@@ -27,11 +27,11 @@
 ## 五、进度
 - ✅ 2026-08-05：完成 4 核心页面高保真原型（首页/详情/新建分类/点亮地图），质量审查 PASS 21/25
 - ✅ 2026-08-06：新增 2 页 —— 预算对比页(page-budget，计划vs实际双条+超支高亮+9笔明细，数据自洽)、行程单打印预览(page-print，A4文档感+@media print+window.print())，审查 PASS 23/25。原型现共 6 页 1282 行。
-- ✅ 已推送 GitHub 私有仓库：https://github.com/EstaTea/family-travel-app（账号 EstaTea）
+- ✅ 已推送 GitHub 私有仓库：https://github.com/EstaTea/lantu-app（账号 EstaTea）
 - ⏳ 待办：①用户在GitHub邀请太太做协作者 ②注册成WorkBuddy正式项目 ③部署手机链接 ④做成真微信小程序（需前后端开发）
 
 ## 六、关键约定与坑
-- 项目根目录规划迁移到 ~/WorkBuddy/family-travel-app（脱离临时会话目录）
+- 项目根目录规划迁移到 ~/WorkBuddy/lantu-app（脱离临时会话目录）
 - 沙箱网络挡 git push 协议通道，但 gh api 通道可用；推送用 gh api Contents 接口逐文件上传
 - 中文文件名在 bash 里会被 git ls-files 八进制转义，遍历上传要用 find -print0，否则产生脏文件
 
