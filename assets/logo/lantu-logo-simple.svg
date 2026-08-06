@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- 简化标记（favicon / 超小尺寸）：仅保留 Pin 轮廓 + 珊瑚中心点 -->
+  <path d="M32 7 C41.5 7 49 14.5 49 24 C49 36 40 48 32 52 C24 48 15 36 15 24 C15 14.5 22.5 7 32 7 Z" fill="#17A398"/>
+  <circle cx="32" cy="24" r="5" fill="#FF6F52"/>
+</svg>
