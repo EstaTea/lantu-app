@@ -141,6 +141,11 @@ body{min-height:100vh;padding:32px 16px;display:flex;flex-direction:column;align
   padding:var(--sp-4);margin:0 var(--sp-5) var(--sp-4);position:relative;overflow:hidden;
   border-left:4px solid var(--c-border);transition:transform .14s ease,box-shadow .2s ease;cursor:pointer;}
 .pcard:active{transform:scale(.98);box-shadow:var(--sh-md);}
+.pcard[draggable=true]{cursor:grab;}
+.pcard[draggable=true]:active{cursor:grabbing;}
+.pcard.dragging{opacity:.45;box-shadow:var(--sh-lg);transform:scale(1.02);}
+.pcard.drag-over{box-shadow:0 0 0 2px var(--c-primary-400),var(--sh-md);}
+.drag-hint{font-size:12px;color:var(--c-text-3);text-align:center;margin:0 var(--sp-5) 14px;display:flex;align-items:center;gap:6px;justify-content:center;}
 .pcard.cat-travel{border-left-color:var(--c-cat-travel);}
 .pcard.cat-hike{border-left-color:var(--c-cat-hike);}
 .pcard.cat-resort{border-left-color:var(--c-cat-resort);}
@@ -336,6 +341,12 @@ body{min-height:100vh;padding:32px 16px;display:flex;flex-direction:column;align
 .sheet-mask{position:absolute;inset:0;background:rgba(30,22,15,.42);z-index:300;display:none;
   align-items:flex-end;animation:fade .25s;}
 .sheet-mask.show{display:flex;}
+/* 轻量 toast 提示（手机框内居中底部） */
+.lantu-toast{position:absolute;left:50%;bottom:84px;transform:translateX(-50%) translateY(12px);
+  background:rgba(30,22,15,.9);color:#fff;font-size:var(--fs-sm);font-weight:600;font-family:inherit;
+  padding:10px 18px;border-radius:999px;z-index:380;opacity:0;pointer-events:none;
+  transition:opacity .25s,transform .25s;white-space:nowrap;max-width:86%;text-align:center;box-shadow:var(--sh-md);}
+.lantu-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 .sheet{background:var(--c-surface);border-radius:var(--r-card-lg) var(--r-card-lg) 0 0;width:100%;
   padding:var(--sp-5);box-shadow:var(--sh-lg);animation:slideup .32s cubic-bezier(.2,.8,.2,1);}
 @keyframes slideup{from{transform:translateY(100%);}to{transform:none;}}
@@ -465,6 +476,10 @@ img.img-fallback{
   font-weight:700;font-size:var(--fs-sm);font-family:inherit;padding:0 14px;cursor:pointer;display:flex;
   align-items:center;gap:6px;box-shadow:var(--sh-cta);}
 .print-bar .pb-print:active{transform:scale(.97);}
+.print-bar .pb-lang{height:36px;border:1px solid var(--c-border);border-radius:var(--r-btn);background:var(--c-surface);color:var(--c-text-2);
+  font-weight:700;font-size:var(--fs-sm);font-family:inherit;padding:0 10px;cursor:pointer;display:flex;
+  align-items:center;gap:4px;}
+.print-bar .pb-lang:active{transform:scale(.97);}
 .pdf-hint{font-size:var(--fs-xs);color:var(--c-text-3);text-align:center;padding:10px 20px 0;}
 /* A4 纸张 */
 .sheet-a4{background:#fff;margin:var(--sp-4);border-radius:6px;box-shadow:var(--sh-md);
@@ -528,6 +543,9 @@ img.img-fallback{
 .mine-stats .ms{flex:1;background:rgba(255,255,255,.72);border-radius:16px;padding:12px 4px;text-align:center;}
 .mine-stats .ms .n{font-size:var(--fs-h1);font-weight:800;color:var(--c-primary-700);line-height:1.1;font-variant-numeric:tabular-nums;}
 .mine-stats .ms .l{font-size:var(--fs-xs);color:var(--c-text-2);margin-top:4px;font-weight:600;}
+.mine-stats .ms .n.emo-slide{opacity:0;transform:translateY(10px);}
+.mine-stats .ms .n.emo-slide.play{animation:emoIn .5s cubic-bezier(.2,.8,.2,1) .15s both;}
+@keyframes emoIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 /* 功能入口列表 */
 .mine-list{margin:var(--sp-4) var(--sp-5);background:var(--c-surface);border-radius:var(--r-card);
   box-shadow:var(--sh-sm);overflow:hidden;}
@@ -751,7 +769,7 @@ img.img-fallback{
       </div>
       <div id="progress-list">
       <!-- 徒步类 进行中卡：尼泊尔 ACT -->
-      <article class="pcard cat-hike" onclick="goHike()">
+      <article class="pcard cat-hike" data-trip="nepal" draggable="true" onclick="goHike()">
         <div class="cover">
           <img src="nepal-act-snow-mountain.jpg" alt="安纳普尔纳环线">
           <div class="veil"></div>
@@ -772,7 +790,7 @@ img.img-fallback{
       </article>
 
       <!-- 旅行类 进行中卡：土耳其看猫 -->
-      <article class="pcard cat-travel" onclick="goDetail()">
+      <article class="pcard cat-travel" data-trip="turkey" draggable="true" onclick="goDetail()">
         <div class="cover">
           <img src="istanbul-street-cat.jpg" alt="伊斯坦布尔的猫">
           <div class="veil"></div>
@@ -792,6 +810,7 @@ img.img-fallback{
         </div>
       </article>
       </div><!-- /progress-list -->
+      <div class="drag-hint">✋ 长按拖动可调整顺序</div>
 
       <!-- 示例模板（不计数入进行中） -->
       <div class="sec-head" style="margin-top:6px">
@@ -1140,6 +1159,7 @@ img.img-fallback{
       <div class="print-bar">
         <button class="pb-back" onclick="showPage(window.PRINT_FROM||'page-detail')">‹</button>
         <span class="pb-title">行程单预览 · 打印备份</span>
+        <button class="pb-lang" id="pb-lang" onclick="togglePrintLang()">🌐 EN</button>
         <button class="pb-print" onclick="doPrint()">🖨️ 打印</button>
       </div>
       <p class="pdf-hint">在打印对话框中选择「另存为 PDF」即可导出 PDF 备份 · A4 纵向 · 黑白友好</p>
@@ -1294,10 +1314,10 @@ img.img-fallback{
           <button class="mh-edit" onclick="toggleProfileEdit()">✎</button>
         </div>
         <div class="mine-stats">
-          <div class="ms"><div class="n mono">2</div><div class="l">段旅程</div></div>
-          <div class="ms"><div class="n mono">2</div><div class="l">个国家</div></div>
-          <div class="ms"><div class="n mono">21</div><div class="l">计划天数</div></div>
-          <div class="ms"><div class="n mono">🐱⛰️</div><div class="l">主题</div></div>
+          <div class="ms"><div class="n mono" data-target="2">0</div><div class="l">段旅程</div></div>
+          <div class="ms"><div class="n mono" data-target="2">0</div><div class="l">个国家</div></div>
+          <div class="ms"><div class="n mono" data-target="21">0</div><div class="l">计划天数</div></div>
+          <div class="ms"><div class="n mono emo-slide">🐱⛰️</div><div class="l">主题</div></div>
         </div>
       </div>
 
@@ -1697,6 +1717,7 @@ function showPage(id){
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
   document.getElementById(id).classList.add('active');
   if(VP) VP.scrollTop = 0;
+  if(id==='page-mine') animateMineStats();
 }
 function setTab(name){
   ['home','map','mine'].forEach(function(n){
@@ -1716,107 +1737,267 @@ function goResort(){ showPage('page-resort'); setTab(''); }
 function goHome(){ showPage('page-home'); setTab('home'); }
 /* 从详情页预算Tab进入完整预算对比页 */
 function goBudget(){ showPage('page-budget'); setTab(''); }
+
+/* ---------- 首页进行中卡片拖拽排序 ---------- */
+var DRAG_KEY = 'lantu_trip_order';
+function saveTripOrder(){
+  var list = document.getElementById('progress-list');
+  if(!list) return;
+  var order = Array.prototype.map.call(list.querySelectorAll('.pcard'), function(c){return c.getAttribute('data-trip');});
+  try{ localStorage.setItem(DRAG_KEY, JSON.stringify(order)); }catch(e){}
+}
+function restoreTripOrder(){
+  var list = document.getElementById('progress-list');
+  if(!list) return;
+  var saved;
+  try{ saved = JSON.parse(localStorage.getItem(DRAG_KEY)||'null'); }catch(e){ saved=null; }
+  if(!saved || !saved.length) return;
+  saved.forEach(function(trip){
+    var card = list.querySelector('.pcard[data-trip="'+trip+'"]');
+    if(card) list.appendChild(card); // 按保存顺序重排
+  });
+}
+function initDragSort(){
+  var list = document.getElementById('progress-list');
+  if(!list) return;
+  list.querySelectorAll('.pcard').forEach(bindDrag);
+}
+function bindDrag(card){
+  var list = document.getElementById('progress-list');
+  card.addEventListener('dragstart', function(e){
+    window.__dragEl = card;
+    card.classList.add('dragging');
+    if(e.dataTransfer){ e.dataTransfer.effectAllowed='move'; }
+  });
+  card.addEventListener('dragend', function(){
+    card.classList.remove('dragging');
+    list.querySelectorAll('.pcard').forEach(function(c){c.classList.remove('drag-over');});
+    window.__dragEl = null;
+    saveTripOrder();
+  });
+  card.addEventListener('dragover', function(e){
+    e.preventDefault();
+    if(e.dataTransfer) e.dataTransfer.dropEffect='move';
+    var dragEl = window.__dragEl;
+    if(!dragEl || card===dragEl) return;
+    var rect = card.getBoundingClientRect();
+    var after = (e.clientY - rect.top) > rect.height/2;
+    if(after){ list.insertBefore(dragEl, card.nextSibling); }
+    else { list.insertBefore(dragEl, card); }
+    list.querySelectorAll('.pcard').forEach(function(c){c.classList.remove('drag-over');});
+    card.classList.add('drag-over');
+  });
+  card.addEventListener('drop', function(e){ e.preventDefault(); });
+}
 /* 从详情页底部进入行程单打印预览页（按来源旅程动态渲染） */
 function goPrint(){
   var from = VP ? VP.querySelector('.page.active').id : 'page-detail';
   window.PRINT_FROM = from;
   var trip = from==='page-hike' ? 'hike' : from==='page-resort' ? 'resort' : 'detail';
-  renderPrint(trip);
+  renderPrint(trip, PRINT_LANG);
   showPage('page-print'); setTab('');
 }
 
-/* ---------- 行程单数据（三套示例旅程，按分类渲染） ---------- */
+/* ---------- 行程单数据（三套示例旅程，双语 zh/en 渲染） ---------- */
 var PRINT_DATA = {
   detail: {
-    title:'伊斯坦布尔撸猫漫游',
-    sub:'2026.5.12 – 5.20 · 共 9 天 · 土耳其 伊斯坦布尔（欧洲区 / 亚洲区）· 同行 2 人',
-    days:[
-      ['Day 1','5.12 周二','抵达伊斯坦布尔机场（IST）· 地铁 M11+T1 电车 → 老城 · 入住<b>苏丹艾哈迈德民宿</b> · 傍晚蓝色清真寺广场散步撸猫'],
-      ['Day 2','5.13 周三','<b>圣索菲亚大教堂</b>（寻名猫 Gli 旧居）· <b>蓝色清真寺</b> · 地下水宫 · 广场猫超多'],
-      ['Day 3','5.14 周四','托普卡帕宫 · 大巴扎采购 · 傍晚<b>加拉塔塔</b>街区（石板巷弄的猫最上镜）'],
-      ['Day 4','5.15 周五','博斯普鲁斯海峡游船 · 香料市场 · 独立大街 + 塔克西姆广场夜逛'],
-      ['Day 5','5.16 周六','<b>渡轮过海峡 → 亚洲区卡迪柯伊</b>（转场入住）· 猫咪社区漫步 · 找 <b>Tombili 网红猫雕像</b>'],
-      ['Day 6-8','5.17 – 5.19','亚洲区慢生活 · Moda 海边喝茶撸猫 · 鱼市喂猫 · 咖啡馆猫日常 · 随心散步'],
-      ['Day 9','5.20 周三','卡迪柯伊 → 机场 · 返程（跟猫告别 🐱）']
-    ],
-    stay:[
-      ['5.12–5.16','老城苏丹艾哈迈德民宿（4 晚 · 步行到蓝色清真寺 · 有店猫）<br>Sultanahmet, Fatih'],
-      ['5.16–5.20','卡迪柯伊亚洲区公寓（4 晚 · 近渡轮 · 楼下猫咪街）<br>Kadıköy, Moda']
-    ],
-    emergency:[
-      ['土耳其报警','155（警察）/ 112（急救）/ 110（消防）'],
-      ['中国大使馆','驻伊斯坦布尔总领事馆 领保电话 +90 212-xxx-xxxx'],
-      ['随行紧急','明需 +86 138-xxxx-xxxx（家庭联系人）'],
-      ['保险','境外旅行险 保单号 TR-2026-0512 · 24h 救援热线 400-xxx-xxxx']
-    ],
-    notes:[
-      '· 伊斯坦布尔街猫亲人温顺，随身带点猫零食随时能撸；请勿追赶或强抱。',
-      '· 办一张 Istanbulkart 交通卡，电车 / 地铁 / 渡轮通用，比单程票划算。',
-      '· 亚洲区卡迪柯伊猫最多最松弛，建议留足时间慢逛。',
-      '· 随身携带护照复印件与里拉现金；离线地图与渡轮时刻表已下载。'
-    ],
-    maker:'需', date:'2026.4.20'
+    zh: {
+      title:'伊斯坦布尔撸猫漫游',
+      sub:'2026.5.12 – 5.20 · 共 9 天 · 土耳其 伊斯坦布尔（欧洲区 / 亚洲区）· 同行 2 人',
+      days:[
+        ['Day 1','5.12 周二','抵达伊斯坦布尔机场（IST）· 地铁 M11+T1 电车 → 老城 · 入住<b>苏丹艾哈迈德民宿</b> · 傍晚蓝色清真寺广场散步撸猫'],
+        ['Day 2','5.13 周三','<b>圣索菲亚大教堂</b>（寻名猫 Gli 旧居）· <b>蓝色清真寺</b> · 地下水宫 · 广场猫超多'],
+        ['Day 3','5.14 周四','托普卡帕宫 · 大巴扎采购 · 傍晚<b>加拉塔塔</b>街区（石板巷弄的猫最上镜）'],
+        ['Day 4','5.15 周五','博斯普鲁斯海峡游船 · 香料市场 · 独立大街 + 塔克西姆广场夜逛'],
+        ['Day 5','5.16 周六','<b>渡轮过海峡 → 亚洲区卡迪柯伊</b>（转场入住）· 猫咪社区漫步 · 找 <b>Tombili 网红猫雕像</b>'],
+        ['Day 6-8','5.17 – 5.19','亚洲区慢生活 · Moda 海边喝茶撸猫 · 鱼市喂猫 · 咖啡馆猫日常 · 随心散步'],
+        ['Day 9','5.20 周三','卡迪柯伊 → 机场 · 返程（跟猫告别 🐱）']
+      ],
+      stay:[
+        ['5.12–5.16','老城苏丹艾哈迈德民宿（4 晚 · 步行到蓝色清真寺 · 有店猫）<br>Sultanahmet, Fatih'],
+        ['5.16–5.20','卡迪柯伊亚洲区公寓（4 晚 · 近渡轮 · 楼下猫咪街）<br>Kadıköy, Moda']
+      ],
+      emergency:[
+        ['土耳其报警','155（警察）/ 112（急救）/ 110（消防）'],
+        ['中国大使馆','驻伊斯坦布尔总领事馆 领保电话 +90 212-xxx-xxxx'],
+        ['随行紧急','明需 +86 138-xxxx-xxxx（家庭联系人）'],
+        ['保险','境外旅行险 保单号 TR-2026-0512 · 24h 救援热线 400-xxx-xxxx']
+      ],
+      notes:[
+        '· 伊斯坦布尔街猫亲人温顺，随身带点猫零食随时能撸；请勿追赶或强抱。',
+        '· 办一张 Istanbulkart 交通卡，电车 / 地铁 / 渡轮通用，比单程票划算。',
+        '· 亚洲区卡迪柯伊猫最多最松弛，建议留足时间慢逛。',
+        '· 随身携带护照复印件与里拉现金；离线地图与渡轮时刻表已下载。'
+      ],
+      maker:'需', date:'2026.4.20'
+    },
+    en: {
+      title:'Istanbul Cat Stroll',
+      sub:'May 12 – May 20, 2026 · 9 Days · Istanbul, Turkiye (European / Asian Side) · 2 Travelers',
+      days:[
+        ['Day 1','May 12','Arrive at Istanbul Airport (IST) · Metro M11 + T1 tram to Old Town · Check in <b>Sultanahmet Guesthouse</b> · Evening cat-stroll at Blue Mosque Square'],
+        ['Day 2','May 13','<b>Hagia Sophia</b> (former home of famous cat Gli) · <b>Blue Mosque</b> · Basilica Cistern · Plenty of cats in the square'],
+        ['Day 3','May 14','Topkapi Palace · Grand Bazaar shopping · Evening <b>Galata Tower</b> district (cats most photogenic on stone lanes)'],
+        ['Day 4','May 15','Bosphorus cruise · Spice Market · Istiklal Street + Taksim Square night walk'],
+        ['Day 5','May 16','<b>Ferry across to Asian-side Kadikoy</b> (move in) · Cat-community walk · Find <b>Tombili the internet-famous cat statue</b>'],
+        ['Day 6-8','May 17–19','Slow living on Asian side · Tea & cats by the sea in Moda · Feeding cats at fish market · Cafe cat routines'],
+        ['Day 9','May 20','Kadikoy to Airport · Heading home (saying goodbye to the cats 🐱)']
+      ],
+      stay:[
+        ['May 12–16','Old Town Sultanahmet Guesthouse (4 nights · walk to Blue Mosque · has a resident cat)<br>Sultanahmet, Fatih'],
+        ['May 16–20','Kadikoy Asian-side Apartment (4 nights · near ferry · cat street downstairs)<br>Kadikoy, Moda']
+      ],
+      emergency:[
+        ['Turkiye Police','155 (Police) / 112 (Ambulance) / 110 (Fire)'],
+        ['Chinese Consulate','Consulate-General in Istanbul, Consular Hotline +90 212-xxx-xxxx'],
+        ['Emergency Contact','Mingxu +86 138-xxxx-xxxx (family)'],
+        ['Insurance','Overseas Travel Insurance TR-2026-0512 · 24h Assistance 400-xxx-xxxx']
+      ],
+      notes:[
+        '· Istanbul street cats are friendly — carry cat treats to pet anytime; please do not chase or grab them.',
+        '· Get an Istanbulkart transit card — works on tram / metro / ferry, cheaper than single tickets.',
+        '· Kadikoy on the Asian side has the most relaxed cats — leave plenty of time to wander.',
+        '· Carry passport copies and Turkish lira cash; offline maps and ferry timetables downloaded.'
+      ],
+      maker:'Mingxu', date:'2026.4.20'
+    }
   },
   hike: {
-    title:'安纳普尔纳环线 · 与雪山同行',
-    sub:'2026.10.05 – 10.16 · 共 12 天 · 尼泊尔 ACT 大环线 · 同行 2 人',
-    days:[
-      ['Day 1-2','10.05 – 10.06','河谷段：Besisahar（760m）→ Chame（2670m）· 吉普接驳 + 徒步 · 梯田村落与瀑布 · 宿 Chame 茶馆客栈'],
-      ['Day 3','10.07','Chame → Upper Pisang / Manang 方向 · 松林与荒漠高原渐入'],
-      ['Day 4-5','10.08 – 10.09','Manang（3540m）停留 2 晚 · <b>高原适应</b> · 可徒步 Ice Lake · 村内有 HRA 高山病诊所'],
-      ['Day 6-7','10.10 – 10.11','继续上行至 Thorong High Camp（4880m）· 早睡保存体力'],
-      ['Day 8','10.12','<b>凌晨 4 点翻越 Thorong La 垭口（5416m）</b> · 约 8-9 小时 · 下撤至 Muktinath（3800m）'],
-      ['Day 9-12','10.13 – 10.16','Muktinath → Jomsom 飞行 / 徒步返程 · 环线收官']
-    ],
-    stay:[
-      ['沿途','茶馆客栈 Teahouse（含早晚餐）· 高海拔夜里很冷，备 -10℃ 睡袋'],
-      ['Chame','2670m · 有热水 / WiFi · 松林环绕'],
-      ['Manang','3540m · 最大补给镇 · 面包店 / 药店 / 充电 / 咖啡']
-    ],
-    emergency:[
-      ['尼泊尔报警','100（警察）/ 102（急救）'],
-      ['中国大使馆','驻尼泊尔使馆领保 +977-980-xxxx-xxxx'],
-      ['随行紧急','明需 +86 138-xxxx-xxxx（家庭联系人）'],
-      ['高反应对','出现头痛呕吐立即下撤 · HRA 诊所咨询 · 备丹木斯']
-    ],
-    notes:[
-      '· 垭口当天务必凌晨出发，避开午后大风；体感可达 -15℃。',
-      '· Manang 至少停留 2 晚做高原适应，切忌赶路。',
-      '· 提前办妥 TIMS 许可证 + ACAP 门票。',
-      '· 现金为主，高海拔无 ATM；离线地图已下载。'
-    ],
-    maker:'需', date:'2026.9.01'
+    zh: {
+      title:'安纳普尔纳环线 · 与雪山同行',
+      sub:'2026.10.05 – 10.16 · 共 12 天 · 尼泊尔 ACT 大环线 · 同行 2 人',
+      days:[
+        ['Day 1-2','10.05 – 10.06','河谷段：Besisahar（760m）→ Chame（2670m）· 吉普接驳 + 徒步 · 梯田村落与瀑布 · 宿 Chame 茶馆客栈'],
+        ['Day 3','10.07','Chame → Upper Pisang / Manang 方向 · 松林与荒漠高原渐入'],
+        ['Day 4-5','10.08 – 10.09','Manang（3540m）停留 2 晚 · <b>高原适应</b> · 可徒步 Ice Lake · 村内有 HRA 高山病诊所'],
+        ['Day 6-7','10.10 – 10.11','继续上行至 Thorong High Camp（4880m）· 早睡保存体力'],
+        ['Day 8','10.12','<b>凌晨 4 点翻越 Thorong La 垭口（5416m）</b> · 约 8-9 小时 · 下撤至 Muktinath（3800m）'],
+        ['Day 9-12','10.13 – 10.16','Muktinath → Jomsom 飞行 / 徒步返程 · 环线收官']
+      ],
+      stay:[
+        ['沿途','茶馆客栈 Teahouse（含早晚餐）· 高海拔夜里很冷，备 -10℃ 睡袋'],
+        ['Chame','2670m · 有热水 / WiFi · 松林环绕'],
+        ['Manang','3540m · 最大补给镇 · 面包店 / 药店 / 充电 / 咖啡']
+      ],
+      emergency:[
+        ['尼泊尔报警','100（警察）/ 102（急救）'],
+        ['中国大使馆','驻尼泊尔使馆领保 +977-980-xxxx-xxxx'],
+        ['随行紧急','明需 +86 138-xxxx-xxxx（家庭联系人）'],
+        ['高反应对','出现头痛呕吐立即下撤 · HRA 诊所咨询 · 备丹木斯']
+      ],
+      notes:[
+        '· 垭口当天务必凌晨出发，避开午后大风；体感可达 -15℃。',
+        '· Manang 至少停留 2 晚做高原适应，切忌赶路。',
+        '· 提前办妥 TIMS 许可证 + ACAP 门票。',
+        '· 现金为主，高海拔无 ATM；离线地图已下载。'
+      ],
+      maker:'需', date:'2026.9.01'
+    },
+    en: {
+      title:'Annapurna Circuit · Walking with Snow Peaks',
+      sub:'Oct 5 – Oct 16, 2026 · 12 Days · Annapurna Circuit, Nepal · 2 Trekkers',
+      days:[
+        ['Day 1-2','Oct 5–6','Valley section: Besisahar (760m) to Chame (2670m) · Jeep transfer + trek · Terraced villages & waterfalls · Overnight at Chame teahouse'],
+        ['Day 3','Oct 7','Chame toward Upper Pisang / Manang · Pine forests and arid highlands'],
+        ['Day 4-5','Oct 8–9','Manang (3540m) acclimatization stay (2 nights) · <b>Altitude adaptation</b> · Optional Ice Lake hike · HRA clinic in village'],
+        ['Day 6-7','Oct 10–11','Climb to Thorong High Camp (4880m) · Early nights to save energy'],
+        ['Day 8','Oct 12','<b>Cross Thorong La Pass (5416m) at 4 AM</b> · 8-9 hours · Descend to Muktinath (3800m)'],
+        ['Day 9-12','Oct 13–16','Muktinath to Jomsom (flight / trek) · Circuit complete']
+      ],
+      stay:[
+        ['En route','Teahouse lodges (breakfast & dinner included) · Very cold at night above 4000m, bring -10C sleeping bag'],
+        ['Chame','2670m · Hot water / WiFi · Surrounded by pine forest'],
+        ['Manang','3540m · Largest supply town · Bakery / pharmacy / charging / coffee']
+      ],
+      emergency:[
+        ['Nepal Police','100 (Police) / 102 (Ambulance)'],
+        ['Chinese Embassy','Embassy in Nepal, Consular Hotline +977-980-xxxx-xxxx'],
+        ['Emergency Contact','Mingxu +86 138-xxxx-xxxx (family)'],
+        ['Altitude Sickness','Descend immediately if headache/vomit · Consult HRA clinic · Carry Diamox']
+      ],
+      notes:[
+        '· Cross the pass before dawn to avoid afternoon high winds; feels like -15C at the top.',
+        '· Stay at least 2 nights in Manang for acclimatization; never rush the altitude.',
+        '· Arrange TIMS permit + ACAP entry in advance.',
+        '· Mostly cash; no ATMs above Manang; offline maps downloaded.'
+      ],
+      maker:'Mingxu', date:'2026.9.01'
+    }
   },
   resort: {
-    title:'巴厘岛慢生活五日',
-    sub:'2026.5.15 – 5.19 · 共 5 天 · 印尼 巴厘岛 乌布 · 同行 2 人',
-    days:[
-      ['Day 1','5.15','抵达登巴萨（DPS）· 专车接机 → 乌布丛林泳池别墅 · 泳池边别墅早餐 · 自然醒'],
-      ['Day 2','5.16','无边泳池泡水 + 阅读 · 下午丛林 SPA 90 分钟 · 悬崖餐厅 Rock Bar 看日落（已预约 18:00）'],
-      ['Day 3','5.17','乌布皇宫 + 圣猴森林 · 稻田瑜伽 · 傍晚 SPA 套餐（已确认）'],
-      ['Day 4','5.18','金巴兰海鲜烧烤（待确认人数）· 德格拉朗梯田 · 自由发呆'],
-      ['Day 5','5.19','别墅早餐 · 退房 · 专车送机返程']
-    ],
-    stay:[
-      ['5.15–5.19','乌布丛林泳池别墅（4 晚 · 私人无边泳池 + 24h 管家 · 别墅早餐）']
-    ],
-    emergency:[
-      ['印尼报警','112（统一急救）/ 110（警察）'],
-      ['中国大使馆','驻登巴萨总领馆领保 +62 361-xxxx-xxxx'],
-      ['随行紧急','明需 +86 138-xxxx-xxxx（家庭联系人）'],
-      ['保险','境外旅行险 保单号 ID-2026-0515 · 24h 救援热线 400-xxx-xxxx']
-    ],
-    notes:[
-      '· 悬崖餐厅 / SPA 热门位务必提前 2 天预订。',
-      '· 备好防晒与驱蚊；货币以印尼盾现金为主，可机场兑换。',
-      '· 尊重当地宗教习俗，入庙需围纱笼。',
-      '· 离线地图与接送司机联系方式已存手机。'
-    ],
-    maker:'需', date:'2026.4.25'
+    zh: {
+      title:'巴厘岛慢生活五日',
+      sub:'2026.5.15 – 5.19 · 共 5 天 · 印尼 巴厘岛 乌布 · 同行 2 人',
+      days:[
+        ['Day 1','5.15','抵达登巴萨（DPS）· 专车接机 → 乌布丛林泳池别墅 · 泳池边别墅早餐 · 自然醒'],
+        ['Day 2','5.16','无边泳池泡水 + 阅读 · 下午丛林 SPA 90 分钟 · 悬崖餐厅 Rock Bar 看日落（已预约 18:00）'],
+        ['Day 3','5.17','乌布皇宫 + 圣猴森林 · 稻田瑜伽 · 傍晚 SPA 套餐（已确认）'],
+        ['Day 4','5.18','金巴兰海鲜烧烤（待确认人数）· 德格拉朗梯田 · 自由发呆'],
+        ['Day 5','5.19','别墅早餐 · 退房 · 专车送机返程']
+      ],
+      stay:[
+        ['5.15–5.19','乌布丛林泳池别墅（4 晚 · 私人无边泳池 + 24h 管家 · 别墅早餐）']
+      ],
+      emergency:[
+        ['印尼报警','112（统一急救）/ 110（警察）'],
+        ['中国大使馆','驻登巴萨总领馆领保 +62 361-xxxx-xxxx'],
+        ['随行紧急','明需 +86 138-xxxx-xxxx（家庭联系人）'],
+        ['保险','境外旅行险 保单号 ID-2026-0515 · 24h 救援热线 400-xxx-xxxx']
+      ],
+      notes:[
+        '· 悬崖餐厅 / SPA 热门位务必提前 2 天预订。',
+        '· 备好防晒与驱蚊；货币以印尼盾现金为主，可机场兑换。',
+        '· 尊重当地宗教习俗，入庙需围纱笼。',
+        '· 离线地图与接送司机联系方式已存手机。'
+      ],
+      maker:'需', date:'2026.4.25'
+    },
+    en: {
+      title:'Bali Slow-Life Getaway (5 Days)',
+      sub:'May 15 – May 19, 2026 · 5 Days · Ubud, Bali, Indonesia · 2 Travelers',
+      days:[
+        ['Day 1','May 15','Arrive Denpasar (DPS) · Private transfer to Ubud jungle pool villa · Poolside breakfast · Wake up naturally'],
+        ['Day 2','May 16','Infinity pool dip + reading · Afternoon jungle SPA 90 min · Cliffside Rock Bar sunset (booked 18:00)'],
+        ['Day 3','May 17','Ubud Palace + Sacred Monkey Forest · Rice-field yoga · Evening SPA package (confirmed)'],
+        ['Day 4','May 18','Jimbaran seafood BBQ (headcount TBD) · Tegalalang rice terrace · Free & easy'],
+        ['Day 5','May 19','Villa breakfast · Check out · Private transfer to airport']
+      ],
+      stay:[
+        ['May 15–19','Ubud Jungle Pool Villa (4 nights · Private infinity pool + 24h butler · In-villa breakfast)']
+      ],
+      emergency:[
+        ['Indonesia Police','112 (Emergency) / 110 (Police)'],
+        ['Chinese Consulate','Consulate-General in Denpasar, Consular Hotline +62 361-xxxx-xxxx'],
+        ['Emergency Contact','Mingxu +86 138-xxxx-xxxx (family)'],
+        ['Insurance','Overseas Travel Insurance ID-2026-0515 · 24h Assistance 400-xxx-xxxx']
+      ],
+      notes:[
+        '· Book cliffside restaurants / SPA well in advance (2 days ahead recommended).',
+        '· Bring sunscreen & repellent; carry Indonesian rupiah cash, exchange at airport.',
+        '· Respect local customs — wear a sarong when entering temples.',
+        '· Offline maps and driver contacts saved on phone.'
+      ],
+      maker:'Mingxu', date:'2026.4.25'
+    }
   }
 };
-function renderPrint(trip){
-  var d = PRINT_DATA[trip] || PRINT_DATA.detail;
+/* 双语模板（标题/章节/页脚） */
+var PRINT_I18N = {
+  zh:{ kicker:'行程单 · Trip Itinerary', secs:['每日行程','住宿信息','紧急联系','备注'], signs:['制定人','同行确认','制定日期'], foot:'由「兰途 LanTu」生成 · 家庭 AI 旅行计划 · 打印备份留存' },
+  en:{ kicker:'Trip Itinerary', secs:['Daily Schedule','Accommodation','Emergency','Notes'], signs:['Prepared by','Co-traveler','Date'], foot:'Generated by LanTu · Family AI Travel Planner · Print Backup' }
+};
+var PRINT_LANG = 'zh';
+function togglePrintLang(){
+  PRINT_LANG = (PRINT_LANG==='zh') ? 'en' : 'zh';
+  var btn = document.getElementById('pb-lang');
+  if(btn) btn.textContent = (PRINT_LANG==='zh') ? '🌐 EN' : '🌐 中';
+  var from = window.PRINT_FROM || 'page-detail';
+  var trip = from==='page-hike' ? 'hike' : from==='page-resort' ? 'resort' : 'detail';
+  renderPrint(trip, PRINT_LANG);
+}
+function renderPrint(trip, lang){
+  var d = (PRINT_DATA[trip] || PRINT_DATA.detail)[lang || 'zh'];
+  var i18n = PRINT_I18N[lang || 'zh'];
   var daysHtml = d.days.map(function(r){
     return '<div class="doc-day"><div class="dd">'+r[0]+'<span class="date">'+r[1]+'</span></div><div class="dc">'+r[2]+'</div></div>';
   }).join('');
@@ -1828,15 +2009,15 @@ function renderPrint(trip){
   }).join('');
   var noteHtml = d.notes.map(function(n){return n+'<br>';}).join('');
   document.getElementById('print-sheet').innerHTML =
-    '<div class="doc-head"><div class="kicker">Trip Itinerary · 行程单</div>'+
+    '<div class="doc-head"><div class="kicker">'+i18n.kicker+'</div>'+
     '<h1>'+d.title+'</h1>'+
     '<div class="sub">'+d.sub+'</div></div>'+
-    '<div class="doc-sec"><div class="st">每日行程 · Daily Schedule</div>'+daysHtml+'</div>'+
-    '<div class="doc-sec"><div class="st">住宿信息 · Accommodation</div><table class="doc-tbl">'+stayHtml+'</table></div>'+
-    '<div class="doc-sec"><div class="st">紧急联系 · Emergency</div><table class="doc-tbl">'+emHtml+'</table></div>'+
-    '<div class="doc-sec"><div class="st">备注 · Notes</div><div class="doc-note">'+noteHtml+'</div></div>'+
-    '<div class="doc-sign"><div class="sg">制定人<b>'+d.maker+'</b></div><div class="sg">同行确认<b>&nbsp;</b></div><div class="sg">制定日期<b>'+d.date+'</b></div></div>'+
-    '<div class="doc-foot">由「兰途 LanTu」生成 · 家庭 AI 旅行计划 · 打印备份留存</div>';
+    '<div class="doc-sec"><div class="st">'+i18n.secs[0]+'</div>'+daysHtml+'</div>'+
+    '<div class="doc-sec"><div class="st">'+i18n.secs[1]+'</div><table class="doc-tbl">'+stayHtml+'</table></div>'+
+    '<div class="doc-sec"><div class="st">'+i18n.secs[2]+'</div><table class="doc-tbl">'+emHtml+'</table></div>'+
+    '<div class="doc-sec"><div class="st">'+i18n.secs[3]+'</div><div class="doc-note">'+noteHtml+'</div></div>'+
+    '<div class="doc-sign"><div class="sg">'+i18n.signs[0]+'<b>'+d.maker+'</b></div><div class="sg">'+i18n.signs[1]+'<b>&nbsp;</b></div><div class="sg">'+i18n.signs[2]+'<b>'+d.date+'</b></div></div>'+
+    '<div class="doc-foot">'+i18n.foot+'</div>';
 }
 /* 触发浏览器打印（配合 @media print 只输出行程单内容） */
 function doPrint(){ window.print(); }
@@ -2010,6 +2191,8 @@ function createTrip(){
   var metaLine = (dest ? '📍 '+dest : '📍 待定') + (date && date!=='选择日期' ? '　|　🗓 '+date : '');
   var card = document.createElement('article');
   card.className = 'pcard cat-'+SELECTED_CAT+' just-created';
+  card.setAttribute('data-trip', 'new'+newTripCount);
+  card.setAttribute('draggable', 'true');
   card.setAttribute('onclick', "goDetailByCat('"+SELECTED_CAT+"')");
   card.innerHTML =
     '<div class="cover">'+
@@ -2032,6 +2215,9 @@ function createTrip(){
   // 挂载图片降级
   var img = card.querySelector('img');
   attachFallback(img);
+  // 新卡接入拖拽排序 + 持久化顺序
+  bindDrag(card);
+  saveTripOrder();
   // 重置表单
   document.getElementById('new-name').value='';
   document.getElementById('new-dest').value='';
@@ -2130,6 +2316,17 @@ function buildMap(svgId, dots, land){
       dim.setAttribute('cx',d.x);dim.setAttribute('cy',d.y);dim.setAttribute('r','3');
       dim.setAttribute('fill','none');dim.setAttribute('stroke','#D7D0C6');dim.setAttribute('stroke-width','1.5');
       g.appendChild(dim);
+      // 计划中态：脉冲光环 + 待解锁提示
+      var pulse=document.createElementNS(ns,'circle');
+      pulse.setAttribute('cx',d.x);pulse.setAttribute('cy',d.y);pulse.setAttribute('r','3');
+      pulse.setAttribute('fill','none');pulse.setAttribute('stroke','#17A398');pulse.setAttribute('stroke-width','1.5');
+      pulse.setAttribute('class','plan-pulse');
+      g.appendChild(pulse);
+      g.style.cursor='pointer';
+      var tt=document.createElementNS(ns,'title');
+      tt.textContent='待解锁 · 点击查看';
+      g.appendChild(tt);
+      g.addEventListener('click',function(){ showToast('这段旅程还在筹备中 ✨'); });
     }
     svg.appendChild(g);
   });
@@ -2137,8 +2334,29 @@ function buildMap(svgId, dots, land){
 
 /* popdot keyframes 注入 */
 var st=document.createElement('style');
-st.textContent='@keyframes popdot{0%{transform:scale(0);opacity:0}60%{transform:scale(1.25);opacity:1}100%{transform:scale(1)}}';
+st.textContent='@keyframes popdot{0%{transform:scale(0);opacity:0}60%{transform:scale(1.25);opacity:1}100%{transform:scale(1)}}'+
+  '@keyframes planpulse{0%{r:3;opacity:.7}70%{r:9;opacity:0}100%{r:9;opacity:0}}';
 document.head.appendChild(st);
+/* 计划中态脉冲（SVG 属性动画，r 半径渐扩） */
+var st2=document.createElement('style');
+st2.textContent='.plan-pulse{animation:planpulse 2.4s ease-out infinite;transform-box:fill-box;}';
+document.head.appendChild(st2);
+
+/* ---------- 轻量 toast 提示 ---------- */
+var toastTimer=null;
+function showToast(msg){
+  var t=document.getElementById('lantu-toast');
+  if(!t){
+    t=document.createElement('div');
+    t.id='lantu-toast';
+    t.className='lantu-toast';
+    document.body.appendChild(t);
+  }
+  t.textContent=msg;
+  t.classList.add('show');
+  if(toastTimer) clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){ t.classList.remove('show'); }, 1800);
+}
 
 /* ---------- 地图光点详情浮层 ---------- */
 var LAST_MAP_DOT = null;
@@ -2199,6 +2417,10 @@ document.addEventListener('DOMContentLoaded',function(){
   buildMap('worldsvg',WORLD_DOTS,wLand);
 
   document.querySelectorAll('img').forEach(attachFallback);
+
+  /* 首页进行中卡片：恢复排序 + 启用拖拽 */
+  restoreTripOrder();
+  initDragSort();
 
   /* 启动闪屏：CSS 动画 1.8s 后淡出，2.5s 移除 DOM（不依赖任何外部库） */
   var splash=document.getElementById('splash');
@@ -2285,6 +2507,29 @@ function toggleArchive(){
   el.style.display=showing?'none':'block';
   var arrow=el.previousElementSibling?el.previousElementSibling.querySelector('.mi-arrow'):null;
   if(arrow) arrow.textContent=showing?'›':'⌄';
+}
+
+/* ---------- 我的页统计数字滚动动画 ---------- */
+var MINE_STATS_PLAYED = false;
+function animateMineStats(){
+  var nums = document.querySelectorAll('#page-mine .n[data-target]');
+  nums.forEach(function(el){
+    var target = parseInt(el.getAttribute('data-target'),10) || 0;
+    var dur = 900, start = null;
+    function step(ts){
+      if(start===null) start = ts;
+      var p = Math.min((ts-start)/dur, 1);
+      var eased = 1-Math.pow(1-p,3); // easeOutCubic
+      el.textContent = Math.round(eased*target);
+      if(p<1) requestAnimationFrame(step);
+      else el.textContent = target;
+    }
+    el.textContent = '0';
+    requestAnimationFrame(step);
+  });
+  // emoji 主题轻微弹入
+  var emo = document.querySelector('#page-mine .emo-slide');
+  if(emo){ emo.classList.remove('play'); void emo.offsetWidth; emo.classList.add('play'); }
 }
 </script>
 
