@@ -1,0 +1,1834 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!--
+  ============================================================================
+  兰途 / LanTu — 家庭 AI 兰途旅行 · 手机端高保真可点击原型
+  ----------------------------------------------------------------------------
+  交付版本 · Delivery Build
+  设计系统：Soft Warm（Airbnb 基因 + 青绿×珊瑚双色 + AI 微紫渐变）
+  页面：① 我的行程首页  ② Project 详情  ③ 新建分类选择  ④ 点亮地图
+  质量审查：PASS 21/25，已完成 4 项优化
+  ----------------------------------------------------------------------------
+  使用方式：双击本文件，用浏览器（Chrome / Edge / Safari 均可）直接打开即可。
+  无需安装任何软件、无需启动服务器。CSS 与 JS 全部内联，单文件独立运行。
+  联网提示：卡片封面/缩略图使用了在线占位图（picsum.photos），
+            首次打开建议联网以显示图片；离线时图片会自动降级为柔和色块，
+            不影响布局与全部交互。
+  ============================================================================
+-->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#FBF9F6">
+<meta name="description" content="兰途 LanTu — 家庭 AI 兰途旅行手机端高保真可点击原型">
+<title>兰途 LanTu · 家庭 AI 旅行计划原型</title>
+<style>
+:root{
+  --c-primary-50:#EAF8F5; --c-primary-100:#CBEEE7; --c-primary-200:#9CDDD2;
+  --c-primary-300:#63C7B8; --c-primary-500:#17A398; --c-primary-600:#0E8A80; --c-primary-700:#0A6B63;
+  --c-coral-100:#FFE7DF; --c-coral-400:#FF8A65; --c-coral-500:#FF6F52; --c-coral-600:#ED5638;
+  --c-sun-100:#FFF3D6; --c-sun-400:#FFC65C;
+  --c-ai-tint:#F1F0FF; --c-ai-accent:#7C6CF0; --c-ai-border:#DED9FB;
+  --grad-ai:linear-gradient(135deg,#EAF8F5 0%,#F1F0FF 55%,#FFE7DF 100%);
+  --grad-ai-chip:linear-gradient(135deg,#7C6CF0 0%,#17A398 100%);
+  --c-cat-travel:#2E8BD6; --c-cat-travel-bg:#E6F2FC;
+  --c-cat-hike:#5B9E3F;  --c-cat-hike-bg:#EAF5E4;
+  --c-cat-resort:#F2994A; --c-cat-resort-bg:#FDEFE0;
+  --c-bg:#FBF9F6; --c-surface:#FFFFFF; --c-surface-2:#F4F1EC;
+  --c-border:#ECE7E0; --c-border-strong:#DBD4CA;
+  --c-text-1:#2A2622; --c-text-2:#6E665C; --c-text-3:#A79E92;
+  --c-success:#2FB170; --c-warning:#F0A82E; --c-info:#3E9BD8; --c-danger:#E5533C;
+  --c-map-dim:#D7D0C6; --c-map-lit:#FF6F52; --c-map-route:#17A398;
+  --c-map-lit-glow:0 0 0 6px rgba(255,111,82,.22),0 0 16px 2px rgba(255,198,92,.55);
+  --font-base:'Nunito','PingFang SC','HarmonyOS Sans SC','Noto Sans SC',sans-serif;
+  --fs-display:28px; --fs-h1:22px; --fs-h2:18px; --fs-h3:16px;
+  --fs-body:15px; --fs-sm:13px; --fs-xs:11px;
+  --fw-regular:400; --fw-medium:500; --fw-semibold:600; --fw-bold:700; --fw-extrabold:800;
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px;
+  --sp-6:24px; --sp-8:32px; --sp-10:40px;
+  --r-chip:999px; --r-btn:14px; --r-card:20px; --r-card-lg:24px;
+  --r-input:14px; --r-avatar:50%; --r-img:16px;
+  --sh-sm:0 2px 8px rgba(120,100,80,.06);
+  --sh-md:0 6px 18px rgba(120,100,80,.10);
+  --sh-lg:0 12px 32px rgba(120,100,80,.14);
+  --sh-cta:0 6px 16px rgba(255,111,82,.32);
+  --sh-tab:0 -2px 16px rgba(120,100,80,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{font-family:var(--font-base);color:var(--c-text-1);background:#EDE7DF;
+  -webkit-font-smoothing:antialiased;}
+body{min-height:100vh;padding:32px 16px;display:flex;flex-direction:column;align-items:center;gap:24px;}
+.stage-title{text-align:center;color:#6E665C;}
+.stage-title h1{font-size:24px;font-weight:800;color:#2A2622;letter-spacing:.5px;}
+.stage-title p{font-size:13px;margin-top:6px;}
+.screens{display:flex;flex-wrap:wrap;gap:36px;justify-content:center;align-items:flex-start;}
+
+/* ============ 手机外壳 Frame ============ */
+.phone{width:375px;height:812px;background:var(--c-bg);border-radius:44px;position:relative;
+  box-shadow:0 0 0 11px #14110E,0 0 0 13px #2C2621,0 30px 60px rgba(40,30,20,.35);
+  overflow:hidden;flex:0 0 auto;}
+.phone .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:150px;height:30px;
+  background:#14110E;border-bottom-left-radius:18px;border-bottom-right-radius:18px;z-index:500;}
+.statusbar{height:52px;display:flex;align-items:flex-end;justify-content:space-between;
+  padding:0 26px 6px;font-size:13px;font-weight:700;color:var(--c-text-1);position:relative;z-index:210;}
+.statusbar .r{display:flex;gap:6px;align-items:center;font-size:12px;}
+.frame-label{text-align:center;margin-top:14px;font-size:13px;font-weight:700;color:#6E665C;}
+
+/* App shell inside phone */
+.app{position:absolute;inset:0;display:flex;flex-direction:column;}
+.viewport{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;-webkit-overflow-scrolling:touch;}
+.viewport::-webkit-scrollbar{width:0;}
+.page{display:none;padding-bottom:96px;animation:fade .35s ease;}
+.page.active{display:block;}
+@keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+/* ============ Typography helpers ============ */
+.display{font-size:var(--fs-display);font-weight:800;line-height:1.25;}
+.h1{font-size:var(--fs-h1);font-weight:700;line-height:1.3;}
+.h2{font-size:var(--fs-h2);font-weight:700;line-height:1.35;}
+.h3{font-size:var(--fs-h3);font-weight:600;line-height:1.4;}
+.body{font-size:var(--fs-body);line-height:1.6;}
+.sm{font-size:var(--fs-sm);color:var(--c-text-2);}
+.xs{font-size:var(--fs-xs);font-weight:600;}
+.muted{color:var(--c-text-2);}
+.mono{font-variant-numeric:tabular-nums;}
+
+/* ============ Chips ============ */
+.chip{display:inline-flex;align-items:center;gap:4px;border-radius:var(--r-chip);
+  padding:4px 10px;font-size:var(--fs-xs);font-weight:600;line-height:1.4;}
+.chip-travel{background:var(--c-cat-travel-bg);color:var(--c-cat-travel);}
+.chip-hike{background:var(--c-cat-hike-bg);color:var(--c-cat-hike);}
+.chip-resort{background:var(--c-cat-resort-bg);color:var(--c-cat-resort);}
+.chip-progress{background:var(--c-primary-50);color:var(--c-primary-700);}
+.chip-done{background:#E6F6EE;color:var(--c-success);}
+
+/* ============ Buttons ============ */
+.btn{border:none;font-family:inherit;cursor:pointer;font-weight:700;border-radius:var(--r-btn);
+  transition:transform .12s ease,box-shadow .2s ease;display:inline-flex;align-items:center;
+  justify-content:center;gap:8px;}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:var(--c-coral-500);color:#fff;box-shadow:var(--sh-cta);height:48px;
+  width:100%;font-size:var(--fs-h3);}
+.btn-primary:active{background:var(--c-coral-600);}
+.btn-secondary{background:var(--c-surface);color:var(--c-primary-700);
+  border:1.5px solid var(--c-primary-300);height:48px;font-size:var(--fs-h3);}
+.btn-adopt{background:var(--c-primary-50);color:var(--c-primary-700);
+  border:1px solid var(--c-primary-200);border-radius:var(--r-chip);height:32px;padding:0 14px;
+  font-size:var(--fs-sm);}
+.btn-adopt.adopted{background:var(--c-primary-100);border-color:var(--c-primary-300);color:var(--c-primary-700);}
+.btn-ghost{background:transparent;color:var(--c-text-2);height:40px;padding:0 12px;font-size:var(--fs-sm);}
+
+/* ============ Avatars ============ */
+.avatars{display:flex;align-items:center;}
+.avatars .av{width:28px;height:28px;border-radius:var(--r-avatar);border:2px solid #fff;
+  margin-left:-8px;background-size:cover;background-position:center;position:relative;
+  font-size:12px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;}
+.avatars .av:first-child{margin-left:0;}
+.avatars .av.owner::after{content:"👑";position:absolute;right:-4px;bottom:-4px;font-size:11px;}
+.avatars .invite{width:28px;height:28px;border-radius:50%;border:1.5px dashed var(--c-primary-300);
+  margin-left:-8px;display:flex;align-items:center;justify-content:center;color:var(--c-primary-500);
+  font-size:16px;background:var(--c-primary-50);cursor:pointer;font-weight:400;}
+
+/* ============ Progress bar ============ */
+.pbar{height:6px;background:var(--c-surface-2);border-radius:999px;overflow:hidden;flex:1;}
+.pbar > i{display:block;height:100%;background:var(--c-primary-500);border-radius:999px;}
+.pbar.coral > i{background:var(--c-coral-500);}
+
+/* ============ Project card (home) ============ */
+.pcard{background:var(--c-surface);border-radius:var(--r-card);box-shadow:var(--sh-sm);
+  padding:var(--sp-4);margin:0 var(--sp-5) var(--sp-4);position:relative;overflow:hidden;
+  border-left:4px solid var(--c-border);transition:transform .14s ease,box-shadow .2s ease;cursor:pointer;}
+.pcard:active{transform:scale(.98);box-shadow:var(--sh-md);}
+.pcard.cat-travel{border-left-color:var(--c-cat-travel);}
+.pcard.cat-hike{border-left-color:var(--c-cat-hike);}
+.pcard.cat-resort{border-left-color:var(--c-cat-resort);}
+.pcard .cover{position:relative;border-radius:var(--r-img);overflow:hidden;height:150px;margin-bottom:var(--sp-3);}
+.pcard .cover img{width:100%;height:100%;object-fit:cover;display:block;}
+.pcard .cover .veil{position:absolute;inset:0;background:linear-gradient(to top,rgba(20,15,10,.42) 0%,transparent 45%);}
+.pcard .cover .chip{position:absolute;top:10px;left:10px;backdrop-filter:blur(4px);}
+.pcard .cover .status{position:absolute;top:10px;right:10px;}
+.pcard .ttl{font-size:var(--fs-h2);font-weight:700;margin-bottom:2px;}
+.pcard .meta{font-size:var(--fs-sm);color:var(--c-text-2);display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.pcard .foot{display:flex;align-items:center;gap:12px;margin-top:var(--sp-3);}
+.pcard .foot .budget{font-size:var(--fs-sm);color:var(--c-text-2);font-weight:700;white-space:nowrap;}
+
+/* section header */
+.sec-head{display:flex;align-items:center;justify-content:space-between;padding:var(--sp-5) var(--sp-5) var(--sp-3);}
+.sec-head h2{font-size:var(--fs-h2);font-weight:700;}
+.sec-head .count{font-size:var(--fs-sm);color:var(--c-text-3);font-weight:700;}
+
+/* ============ AI card ============ */
+.ai-card{background:var(--grad-ai);border:1px solid var(--c-ai-border);border-radius:var(--r-card);
+  padding:var(--sp-4);margin:var(--sp-4) var(--sp-5);}
+.ai-badge{display:inline-flex;align-items:center;gap:5px;background:var(--grad-ai-chip);color:#fff;
+  border-radius:var(--r-chip);padding:5px 12px;font-size:var(--fs-xs);font-weight:700;margin-bottom:var(--sp-3);}
+.ai-row{display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,.62);border-radius:14px;
+  padding:12px;margin-bottom:10px;}
+.ai-row .ico{font-size:16px;flex:0 0 auto;margin-top:1px;}
+.ai-row .txt{flex:1;font-size:var(--fs-sm);color:var(--c-text-1);line-height:1.5;}
+.ai-row .btn-adopt{flex:0 0 auto;align-self:center;}
+.ai-row.adopted{background:var(--c-primary-50);}
+.ai-row.adopted .done{color:var(--c-primary-700);font-size:var(--fs-sm);font-weight:700;
+  display:inline-flex;align-items:center;gap:4px;}
+.ai-genbtn{width:100%;height:44px;border:none;cursor:pointer;border-radius:var(--r-btn);
+  background:var(--grad-ai-chip);color:#fff;font-weight:700;font-size:var(--fs-h3);font-family:inherit;
+  margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .12s;}
+.ai-genbtn:active{transform:scale(.97);}
+
+/* ============ Detail page ============ */
+.detail-hero{position:relative;height:260px;}
+.detail-hero img{width:100%;height:100%;object-fit:cover;display:block;}
+.detail-hero .veil{position:absolute;inset:0;background:linear-gradient(to top,rgba(20,15,10,.66) 0%,rgba(20,15,10,.1) 45%,rgba(20,15,10,.28) 100%);}
+.detail-hero .back{position:absolute;top:14px;left:16px;width:38px;height:38px;border-radius:50%;
+  background:rgba(255,255,255,.9);border:none;font-size:18px;cursor:pointer;box-shadow:var(--sh-sm);
+  display:flex;align-items:center;justify-content:center;}
+.detail-hero .hinfo{position:absolute;left:20px;right:20px;bottom:18px;color:#fff;}
+.detail-hero .hinfo h1{font-size:var(--fs-h1);font-weight:800;text-shadow:0 1px 6px rgba(0,0,0,.4);}
+.detail-hero .hinfo .meta{font-size:var(--fs-sm);opacity:.95;margin-top:4px;text-shadow:0 1px 4px rgba(0,0,0,.4);}
+.detail-hero .hinfo .avatars{margin-top:10px;}
+
+.tabs{display:flex;gap:4px;padding:var(--sp-4) var(--sp-5) var(--sp-2);overflow-x:auto;position:sticky;top:0;
+  background:var(--c-bg);z-index:60;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex:0 0 auto;padding:8px 14px;border-radius:var(--r-chip);font-size:var(--fs-sm);font-weight:700;
+  color:var(--c-text-2);background:var(--c-surface-2);border:none;cursor:pointer;white-space:nowrap;
+  font-family:inherit;transition:all .18s;}
+.tab.active{background:var(--c-primary-500);color:#fff;}
+.tabpane{display:none;padding:0 var(--sp-5);}
+.tabpane.active{display:block;animation:fade .3s;}
+
+.block{background:var(--c-surface);border-radius:var(--r-card);padding:var(--sp-4);
+  margin-bottom:var(--sp-4);box-shadow:var(--sh-sm);}
+.block h3{font-size:var(--fs-h3);font-weight:700;margin-bottom:var(--sp-3);display:flex;align-items:center;gap:8px;}
+
+/* itinerary list (旅行类差异化) */
+.spot{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--c-border);}
+.spot:last-child{border-bottom:none;}
+.spot .idx{width:26px;height:26px;flex:0 0 auto;border-radius:50%;background:var(--c-cat-travel-bg);
+  color:var(--c-cat-travel);font-size:var(--fs-sm);font-weight:800;display:flex;align-items:center;justify-content:center;}
+.spot .sp-body{flex:1;}
+.spot .sp-body .n{font-size:var(--fs-body);font-weight:700;}
+.spot .sp-body .d{font-size:var(--fs-sm);color:var(--c-text-2);margin-top:2px;}
+.spot .sp-thumb{width:56px;height:56px;border-radius:12px;object-fit:cover;flex:0 0 auto;}
+
+.dayhead{display:inline-flex;align-items:center;gap:6px;background:var(--c-primary-50);
+  color:var(--c-primary-700);font-weight:700;font-size:var(--fs-sm);padding:5px 12px;border-radius:var(--r-chip);margin-bottom:8px;}
+.trans{display:flex;align-items:center;gap:8px;font-size:var(--fs-sm);color:var(--c-text-2);
+  padding:8px 0 8px 8px;border-left:2px dashed var(--c-primary-200);margin-left:12px;}
+
+/* budget rows */
+.bud-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--c-border);}
+.bud-row:last-child{border-bottom:none;}
+.bud-row .l{display:flex;align-items:center;gap:10px;font-size:var(--fs-body);}
+.bud-row .l .e{font-size:18px;}
+.bud-row .v{font-weight:800;font-variant-numeric:tabular-nums;}
+
+/* checklist */
+.check{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--c-border);cursor:pointer;}
+.check:last-child{border-bottom:none;}
+.check .box{width:22px;height:22px;border-radius:7px;border:2px solid var(--c-border-strong);
+  flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;transition:all .15s;}
+.check.done .box{background:var(--c-primary-500);border-color:var(--c-primary-500);}
+.check.done .lbl{color:var(--c-text-3);text-decoration:line-through;}
+.check .lbl{font-size:var(--fs-body);}
+
+/* ============ New project page ============ */
+.page-head{padding:var(--sp-5) var(--sp-5) var(--sp-3);}
+.page-head .display{font-size:24px;font-weight:800;}
+.page-head .sub{font-size:var(--fs-sm);color:var(--c-text-2);margin-top:6px;}
+.catcards{padding:0 var(--sp-5);display:flex;flex-direction:column;gap:var(--sp-3);}
+.catcard{display:flex;align-items:center;gap:14px;background:var(--c-surface);border:1px solid var(--c-border);
+  border-radius:var(--r-card);padding:var(--sp-4);cursor:pointer;position:relative;
+  transition:transform .16s ease,border-color .16s,background .16s;}
+.catcard .emo{font-size:34px;flex:0 0 auto;width:52px;height:52px;border-radius:16px;background:var(--c-surface-2);
+  display:flex;align-items:center;justify-content:center;transition:background .16s;}
+.catcard .cc-body .n{font-size:var(--fs-h3);font-weight:700;}
+.catcard .cc-body .d{font-size:var(--fs-sm);color:var(--c-text-2);margin-top:2px;}
+.catcard .tick{position:absolute;top:14px;right:14px;width:22px;height:22px;border-radius:50%;
+  display:none;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:800;}
+.catcard.sel{animation:pop .3s ease;}
+.catcard.sel .tick{display:flex;}
+@keyframes pop{0%{transform:scale(1);}50%{transform:scale(1.03);}100%{transform:scale(1);}}
+.catcard.sel.travel{background:var(--c-cat-travel-bg);border:2px solid var(--c-cat-travel);}
+.catcard.sel.travel .tick,.catcard.sel.travel .emo{background:var(--c-cat-travel);color:#fff;}
+.catcard.sel.hike{background:var(--c-cat-hike-bg);border:2px solid var(--c-cat-hike);}
+.catcard.sel.hike .tick,.catcard.sel.hike .emo{background:var(--c-cat-hike);color:#fff;}
+.catcard.sel.resort{background:var(--c-cat-resort-bg);border:2px solid var(--c-cat-resort);}
+.catcard.sel.resort .tick,.catcard.sel.resort .emo{background:var(--c-cat-resort);color:#fff;}
+
+/* dynamic fields preview */
+.fieldprev{margin:var(--sp-4) var(--sp-5);background:var(--c-surface);border-radius:var(--r-card);
+  padding:var(--sp-4);box-shadow:var(--sh-sm);display:none;animation:fade .3s;}
+.fieldprev.show{display:block;}
+.fieldprev .fp-head{font-size:var(--fs-sm);font-weight:700;color:var(--c-text-2);margin-bottom:12px;
+  display:flex;align-items:center;gap:6px;}
+.fieldprev .fp-tag{display:inline-flex;align-items:center;gap:5px;padding:8px 12px;border-radius:12px;
+  font-size:var(--fs-sm);font-weight:600;margin:0 8px 8px 0;background:var(--c-surface-2);color:var(--c-text-1);}
+
+/* form inputs */
+.field{margin:0 var(--sp-5) var(--sp-4);}
+.field label{font-size:var(--fs-sm);font-weight:700;color:var(--c-text-2);display:block;margin-bottom:8px;}
+.field input,.field .fakeinput{width:100%;height:48px;border-radius:var(--r-input);border:1px solid var(--c-border);
+  background:var(--c-surface-2);padding:0 14px;font-size:var(--fs-body);font-family:inherit;color:var(--c-text-1);
+  display:flex;align-items:center;}
+.field input::placeholder{color:var(--c-text-3);}
+.field .fakeinput{color:var(--c-text-3);gap:8px;}
+.coverpick{height:110px;border-radius:var(--r-img);border:2px dashed var(--c-border-strong);
+  background:var(--c-surface-2);display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:6px;color:var(--c-text-3);font-size:var(--fs-sm);}
+
+/* ============ Map page ============ */
+.map-toggle{display:flex;background:var(--c-surface-2);border-radius:var(--r-chip);padding:4px;
+  margin:var(--sp-4) var(--sp-5);}
+.map-toggle button{flex:1;height:38px;border:none;background:transparent;border-radius:var(--r-chip);
+  font-family:inherit;font-size:var(--fs-sm);font-weight:700;color:var(--c-text-2);cursor:pointer;transition:all .2s;}
+.map-toggle button.active{background:var(--c-surface);color:var(--c-primary-700);box-shadow:var(--sh-sm);}
+.mapstage{margin:0 var(--sp-5);background:linear-gradient(160deg,#EAF4F2 0%,#F3EEE7 100%);
+  border-radius:var(--r-card-lg);padding:var(--sp-4);box-shadow:var(--sh-sm);position:relative;overflow:hidden;}
+.mapview{display:none;}
+.mapview.active{display:block;}
+.mapsvg{width:100%;height:auto;display:block;}
+.dot{cursor:pointer;transition:transform .2s;}
+.stats{display:flex;gap:10px;margin:var(--sp-4) var(--sp-5);}
+.stat{flex:1;background:var(--c-surface);border-radius:var(--r-card);padding:14px;box-shadow:var(--sh-sm);text-align:center;}
+.stat .num{font-size:24px;font-weight:800;color:var(--c-coral-500);font-variant-numeric:tabular-nums;}
+.stat .lbl{font-size:var(--fs-xs);color:var(--c-text-2);margin-top:2px;font-weight:600;}
+
+/* ============ 地图页：统计图表 ============ */
+.mini-chart{flex:1;background:var(--c-surface);border-radius:var(--r-card);padding:12px;box-shadow:var(--sh-sm);}
+.mc-head{font-size:var(--fs-sm);font-weight:700;color:var(--c-text-1);margin-bottom:10px;}
+.mc-pie{display:flex;justify-content:center;margin:6px 0 10px;}
+.mc-legend{font-size:11px;display:flex;flex-direction:column;gap:4px;}
+.mc-legend>div{display:flex;align-items:center;gap:6px;color:var(--c-text-2);}
+.mc-legend .sw{width:12px;height:12px;border-radius:2px;display:inline-block;}
+.mc-bars{display:flex;flex-direction:column;gap:8px;margin-top:8px;}
+.mcb{display:flex;align-items:center;gap:8px;font-size:12px;}
+.mcb-lbl{width:40px;font-weight:600;color:var(--c-text-2);flex-shrink:0;}
+.mcb-bar{flex:1;height:18px;background:var(--c-surface-2);border-radius:4px;overflow:hidden;}
+.mcb-bar i{display:block;height:100%;transition:width .4s cubic-bezier(.2,.8,.2,1);}
+.mcb-val{width:20px;text-align:right;font-weight:700;color:var(--c-text-1);font-variant-numeric:tabular-nums;}
+
+/* ============ 地图页：光点详情浮层 ============ */
+.map-detail-overlay{position:absolute;inset:0;background:rgba(30,22,15,.5);z-index:400;display:flex;align-items:center;justify-content:center;padding:var(--sp-5);animation:fade .2s;}
+.map-detail-card{background:var(--c-surface);border-radius:var(--r-card-lg);overflow:hidden;box-shadow:var(--sh-xl);max-width:340px;width:100%;position:relative;animation:popIn .3s cubic-bezier(.2,.8,.2,1);}
+@keyframes popIn{from{transform:scale(.88);opacity:0;}to{transform:scale(1);opacity:1;}}
+.mdc-close{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.92);border:none;font-size:22px;line-height:1;color:var(--c-text-1);cursor:pointer;box-shadow:var(--sh-md);z-index:10;transition:transform .15s;}
+.mdc-close:active{transform:scale(.9);}
+.mdc-img{width:100%;height:180px;object-fit:cover;display:block;}
+.mdc-body{padding:var(--sp-5);}
+.mdc-ttl{font-size:18px;font-weight:800;color:var(--c-text-1);margin-bottom:6px;}
+.mdc-meta{font-size:var(--fs-sm);color:var(--c-text-2);margin-bottom:10px;}
+.mdc-quote{font-size:var(--fs-sm);color:var(--c-text-2);font-style:italic;line-height:1.5;padding:10px 14px;background:var(--c-ai-bg);border-radius:8px;margin-bottom:12px;}
+.mdc-stats{display:flex;gap:10px;margin-bottom:14px;}
+.mdc-stats>div{flex:1;text-align:center;}
+.mdc-stats .n{font-size:20px;font-weight:800;color:var(--c-primary-600);font-variant-numeric:tabular-nums;}
+.mdc-stats .l{font-size:10px;color:var(--c-text-2);margin-top:2px;font-weight:600;}
+
+/* ============ Bottom sheet ============ */
+.sheet-mask{position:absolute;inset:0;background:rgba(30,22,15,.42);z-index:300;display:none;
+  align-items:flex-end;animation:fade .25s;}
+.sheet-mask.show{display:flex;}
+.sheet{background:var(--c-surface);border-radius:var(--r-card-lg) var(--r-card-lg) 0 0;width:100%;
+  padding:var(--sp-5);box-shadow:var(--sh-lg);animation:slideup .32s cubic-bezier(.2,.8,.2,1);}
+@keyframes slideup{from{transform:translateY(100%);}to{transform:none;}}
+.sheet .grab{width:40px;height:4px;border-radius:999px;background:var(--c-border-strong);margin:0 auto 16px;}
+.hlcard .hl-img{width:100%;height:150px;object-fit:cover;border-radius:var(--r-img);margin-bottom:12px;}
+.hlcard .hl-ttl{font-size:var(--fs-h2);font-weight:800;}
+.hlcard .hl-quote{font-size:var(--fs-body);color:var(--c-text-2);margin:6px 0 14px;line-height:1.6;}
+.hlcard .hl-stats{display:flex;gap:10px;}
+.hlcard .hl-stat{flex:1;background:var(--c-surface-2);border-radius:14px;padding:12px;text-align:center;}
+.hlcard .hl-stat .n{font-weight:800;font-size:var(--fs-h3);color:var(--c-primary-700);font-variant-numeric:tabular-nums;}
+.hlcard .hl-stat .l{font-size:var(--fs-xs);color:var(--c-text-2);margin-top:2px;}
+
+/* ============ Bottom tab bar ============ */
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:64px;background:var(--c-surface);
+  box-shadow:var(--sh-tab);display:flex;align-items:flex-start;padding:8px 0 calc(8px + env(safe-area-inset-bottom));
+  z-index:250;border-top:1px solid var(--c-border);}
+.tabbar .tb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;
+  color:var(--c-text-3);font-size:10px;font-weight:700;position:relative;background:none;border:none;font-family:inherit;}
+.tabbar .tb .ic{font-size:21px;line-height:1;filter:grayscale(1) opacity(.55);transition:all .2s;}
+.tabbar .tb.active{color:var(--c-primary-700);}
+.tabbar .tb.active .ic{filter:none;}
+.tabbar .tb.active::before{content:"";position:absolute;top:-8px;width:5px;height:5px;border-radius:50%;background:var(--c-primary-500);}
+.tabbar .tb-add{flex:0 0 auto;width:56px;position:relative;}
+.tabbar .tb-add .plus{position:absolute;top:-22px;width:54px;height:54px;border-radius:50%;
+  background:var(--c-coral-500);color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:30px;box-shadow:var(--sh-cta);border:4px solid var(--c-surface);transition:transform .14s;}
+.tabbar .tb-add:active .plus{transform:scale(.94);}
+.tabbar .tb-add .lbl{position:absolute;bottom:3px;left:0;right:0;text-align:center;font-size:10px;font-weight:700;color:var(--c-text-3);}
+
+/* misc */
+.divider{height:1px;background:var(--c-border);margin:var(--sp-4) var(--sp-5);}
+.spacer{height:8px;}
+.action-row{padding:var(--sp-4) var(--sp-5);display:flex;gap:12px;}
+.action-row .btn{flex:1;}
+.hint{font-size:var(--fs-sm);color:var(--c-text-3);text-align:center;padding:8px 20px 0;}
+.greet-emoji{font-size:22px;}
+
+/* AI 展开更多按钮 */
+.ai-more{display:block;width:100%;background:transparent;border:none;cursor:pointer;
+  color:var(--c-primary-700);font-weight:700;font-size:var(--fs-sm);font-family:inherit;
+  padding:6px 0 12px;text-align:center;}
+.ai-more:active{opacity:.6;}
+
+/* 概览 stat 行 */
+.stat-row{display:flex;gap:8px;}
+.stat-cell{flex:1;background:var(--c-surface-2);border-radius:14px;padding:12px 6px;text-align:center;}
+.stat-cell .n{font-size:var(--fs-h2);font-weight:800;color:var(--c-primary-700);line-height:1.1;}
+.stat-cell .l{font-size:var(--fs-xs);color:var(--c-text-2);margin-top:4px;font-weight:600;}
+
+/* 动效可访问性：尊重系统减弱动效 */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important;}
+  .page,.tabpane,.fieldprev,.sheet{animation:none !important;}
+}
+
+/* 离线降级：图片加载失败时以柔和渐变色块占位，保证布局不破坏 */
+img.img-fallback{
+  background:linear-gradient(135deg,#EAF8F5 0%,#F1F0FF 55%,#FFE7DF 100%) !important;
+  object-fit:cover;
+}
+/* ============ 预算对比页 page-budget ============ */
+.bud-top{background:var(--c-surface);border-radius:var(--r-card);box-shadow:var(--sh-sm);
+  padding:var(--sp-5) var(--sp-4);margin:var(--sp-4) var(--sp-5);}
+.bud-compare{display:flex;align-items:stretch;gap:var(--sp-3);}
+.bud-compare .bc{flex:1;text-align:center;padding:var(--sp-2) 0;}
+.bud-compare .bc .lbl{font-size:var(--fs-xs);color:var(--c-text-2);font-weight:700;margin-bottom:6px;}
+.bud-compare .bc .amt{font-size:26px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums;}
+.bud-compare .bc.plan .amt{color:var(--c-text-1);}
+.bud-compare .bc.actual .amt{color:var(--c-primary-700);}
+.bud-compare .vs{display:flex;align-items:center;justify-content:center;color:var(--c-text-3);
+  font-size:var(--fs-sm);font-weight:800;flex:0 0 auto;}
+.bud-status{margin-top:var(--sp-4);display:flex;align-items:center;justify-content:center;gap:8px;
+  border-radius:var(--r-chip);padding:10px 14px;font-size:var(--fs-body);font-weight:700;}
+.bud-status.saving{background:var(--c-primary-50);color:var(--c-primary-700);}
+.bud-status.over{background:var(--c-coral-100);color:var(--c-coral-600);}
+.bud-status .n{font-variant-numeric:tabular-nums;}
+/* 分类双条对比 */
+.bcat{padding:14px 0;border-bottom:1px solid var(--c-border);}
+.bcat:last-child{border-bottom:none;}
+.bcat .bc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.bcat .bc-name{display:flex;align-items:center;gap:8px;font-size:var(--fs-body);font-weight:700;}
+.bcat .bc-name .e{font-size:17px;}
+.bcat .bc-diff{font-size:var(--fs-sm);font-weight:800;font-variant-numeric:tabular-nums;color:var(--c-primary-700);}
+.bcat .bc-diff.over{color:var(--c-coral-600);}
+.bcat .bar-wrap{display:flex;flex-direction:column;gap:5px;}
+.bcat .bar{display:flex;align-items:center;gap:8px;}
+.bcat .bar .tag{font-size:var(--fs-xs);color:var(--c-text-3);font-weight:700;width:28px;flex:0 0 auto;}
+.bcat .bar .track{flex:1;height:9px;background:var(--c-surface-2);border-radius:999px;overflow:hidden;}
+.bcat .bar .track > i{display:block;height:100%;border-radius:999px;}
+.bcat .bar.plan .track > i{background:var(--c-primary-200);}
+.bcat .bar.actual .track > i{background:var(--c-primary-500);}
+.bcat.is-over .bar.actual .track > i{background:var(--c-coral-500);}
+.bcat .bar .val{font-size:var(--fs-xs);font-weight:700;font-variant-numeric:tabular-nums;
+  color:var(--c-text-2);width:52px;text-align:right;flex:0 0 auto;}
+.bcat.is-over{background:linear-gradient(90deg,rgba(255,111,82,.05),transparent);
+  border-radius:12px;padding-left:8px;padding-right:8px;margin:0 -8px;}
+.bud-legend{display:flex;gap:16px;justify-content:center;padding:10px 0 2px;}
+.bud-legend .lg{display:flex;align-items:center;gap:6px;font-size:var(--fs-xs);color:var(--c-text-2);font-weight:700;}
+.bud-legend .lg .sw{width:14px;height:9px;border-radius:999px;}
+.bud-legend .lg .sw.plan{background:var(--c-primary-200);}
+.bud-legend .lg .sw.actual{background:var(--c-primary-500);}
+/* 分类明细列表（每笔费用） */
+.bexp{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--c-border);}
+.bexp:last-child{border-bottom:none;}
+.bexp .e{width:38px;height:38px;flex:0 0 auto;border-radius:12px;background:var(--c-surface-2);
+  display:flex;align-items:center;justify-content:center;font-size:18px;}
+.bexp .bx-body{flex:1;min-width:0;}
+.bexp .bx-body .n{font-size:var(--fs-body);font-weight:700;}
+.bexp .bx-body .c{font-size:var(--fs-xs);color:var(--c-text-3);font-weight:600;margin-top:2px;}
+.bexp .bx-amt{text-align:right;flex:0 0 auto;}
+.bexp .bx-amt .row{display:flex;gap:6px;align-items:baseline;justify-content:flex-end;font-variant-numeric:tabular-nums;}
+.bexp .bx-amt .plan{font-size:var(--fs-xs);color:var(--c-text-3);font-weight:700;}
+.bexp .bx-amt .act{font-size:var(--fs-body);font-weight:800;color:var(--c-text-1);}
+.bexp .bx-amt .df{font-size:var(--fs-xs);font-weight:800;margin-top:2px;color:var(--c-primary-700);}
+.bexp .bx-amt .df.over{color:var(--c-coral-600);}
+.btn-soft{background:var(--c-surface);color:var(--c-primary-700);border:1.5px solid var(--c-primary-200);
+  height:46px;width:100%;font-size:var(--fs-h3);border-radius:var(--r-btn);}
+.btn-soft:active{background:var(--c-primary-50);}
+/* ============ 行程单打印预览页 page-print ============ */
+#page-print{padding-bottom:24px;background:var(--c-surface-2);}
+.print-bar{position:sticky;top:0;z-index:70;display:flex;align-items:center;gap:10px;
+  padding:12px var(--sp-4);background:var(--c-bg);border-bottom:1px solid var(--c-border);}
+.print-bar .pb-back{width:36px;height:36px;flex:0 0 auto;border-radius:50%;border:1px solid var(--c-border);
+  background:var(--c-surface);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.print-bar .pb-title{flex:1;font-size:var(--fs-sm);font-weight:700;color:var(--c-text-2);}
+.print-bar .pb-print{height:36px;border:none;border-radius:var(--r-btn);background:var(--c-coral-500);color:#fff;
+  font-weight:700;font-size:var(--fs-sm);font-family:inherit;padding:0 14px;cursor:pointer;display:flex;
+  align-items:center;gap:6px;box-shadow:var(--sh-cta);}
+.print-bar .pb-print:active{transform:scale(.97);}
+.pdf-hint{font-size:var(--fs-xs);color:var(--c-text-3);text-align:center;padding:10px 20px 0;}
+/* A4 纸张 */
+.sheet-a4{background:#fff;margin:var(--sp-4);border-radius:6px;box-shadow:var(--sh-md);
+  padding:24px 22px;color:#1c1c1c;font-family:'Nunito','PingFang SC',sans-serif;}
+.sheet-a4 .doc-head{text-align:center;border-bottom:2px solid #1c1c1c;padding-bottom:14px;margin-bottom:16px;}
+.sheet-a4 .doc-head .kicker{font-size:11px;letter-spacing:3px;color:#666;font-weight:700;text-transform:uppercase;}
+.sheet-a4 .doc-head h1{font-size:21px;font-weight:800;margin:8px 0 6px;color:#1c1c1c;letter-spacing:.5px;}
+.sheet-a4 .doc-head .sub{font-size:12px;color:#555;font-weight:600;}
+.doc-sec{margin-bottom:18px;}
+.doc-sec > .st{font-size:12px;font-weight:800;letter-spacing:1px;color:#1c1c1c;text-transform:uppercase;
+  border-left:3px solid #1c1c1c;padding-left:8px;margin-bottom:10px;}
+/* 每日行程简表（表单感） */
+.doc-day{display:flex;gap:12px;padding:8px 0;border-bottom:1px solid #E4E4E4;}
+.doc-day:last-child{border-bottom:none;}
+.doc-day .dd{flex:0 0 74px;font-size:12px;font-weight:800;color:#1c1c1c;}
+.doc-day .dd .date{display:block;font-size:10px;color:#777;font-weight:600;margin-top:1px;}
+.doc-day .dc{flex:1;font-size:12.5px;color:#333;line-height:1.55;}
+.doc-day .dc b{color:#1c1c1c;}
+/* 信息表格 */
+.doc-tbl{width:100%;border-collapse:collapse;font-size:12px;}
+.doc-tbl td{padding:6px 4px;border-bottom:1px solid #E4E4E4;vertical-align:top;color:#333;}
+.doc-tbl td.k{font-weight:800;color:#1c1c1c;width:80px;white-space:nowrap;}
+.doc-note{font-size:12px;color:#333;line-height:1.6;background:#F7F7F5;border:1px solid #E4E4E4;
+  border-radius:5px;padding:10px 12px;}
+.doc-sign{display:flex;justify-content:space-between;align-items:flex-end;margin-top:22px;
+  padding-top:14px;border-top:1px dashed #bbb;}
+.doc-sign .sg{font-size:11px;color:#666;font-weight:600;}
+.doc-sign .sg b{display:block;font-size:13px;color:#1c1c1c;margin-top:4px;border-bottom:1px solid #1c1c1c;
+  padding-bottom:3px;min-width:96px;}
+.doc-foot{text-align:center;font-size:10px;color:#999;margin-top:16px;letter-spacing:.5px;}
+/* 打印样式：只保留行程单，隐藏手机外壳与操作栏 */
+@media print{
+  @page{size:A4;margin:14mm;}
+  body{background:#fff !important;padding:0 !important;display:block !important;}
+  .stage-title,.frame-label,.tabbar,.print-bar,.pdf-hint,.notch,.statusbar,.sheet-mask{display:none !important;}
+  .screens{display:block !important;gap:0 !important;}
+  .phone{width:auto !important;height:auto !important;box-shadow:none !important;border-radius:0 !important;
+    overflow:visible !important;background:#fff !important;}
+  .app,.viewport{position:static !important;overflow:visible !important;height:auto !important;display:block !important;}
+  .page{display:none !important;}
+  .page#page-print{display:block !important;padding:0 !important;background:#fff !important;animation:none !important;}
+  .sheet-a4{margin:0 !important;box-shadow:none !important;border-radius:0 !important;padding:0 !important;color:#000 !important;}
+  .sheet-a4 *{color:#000 !important;}
+  .doc-note{background:#fff !important;border:1px solid #999 !important;}
+}
+/* ============ 我的 个人中心页 page-mine ============ */
+#page-mine{padding-bottom:96px;}
+.mine-hero{background:var(--grad-ai);margin:0;padding:var(--sp-6) var(--sp-5) var(--sp-5);
+  border-bottom-left-radius:var(--r-card-lg);border-bottom-right-radius:var(--r-card-lg);}
+.mine-hero .mh-top{display:flex;align-items:center;gap:14px;}
+.mine-hero .mh-av{width:64px;height:64px;border-radius:var(--r-avatar);flex:0 0 auto;
+  background:linear-gradient(135deg,#F2C0A8,#FF8A65);display:flex;align-items:center;justify-content:center;
+  font-size:26px;font-weight:800;color:#fff;box-shadow:0 4px 12px rgba(255,111,82,.3);border:3px solid #fff;}
+.mine-hero .mh-info{flex:1;min-width:0;}
+.mine-hero .mh-name{font-size:var(--fs-h1);font-weight:800;display:flex;align-items:center;gap:8px;}
+.mine-hero .mh-sub{font-size:var(--fs-sm);color:var(--c-text-2);margin-top:4px;}
+.mine-hero .mh-edit{width:36px;height:36px;flex:0 0 auto;border-radius:50%;border:1px solid var(--c-border);
+  background:rgba(255,255,255,.7);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+/* 成就统计 4 宫格 */
+.mine-stats{display:flex;gap:8px;margin-top:var(--sp-5);}
+.mine-stats .ms{flex:1;background:rgba(255,255,255,.72);border-radius:16px;padding:12px 4px;text-align:center;}
+.mine-stats .ms .n{font-size:var(--fs-h1);font-weight:800;color:var(--c-primary-700);line-height:1.1;font-variant-numeric:tabular-nums;}
+.mine-stats .ms .l{font-size:var(--fs-xs);color:var(--c-text-2);margin-top:4px;font-weight:600;}
+/* 功能入口列表 */
+.mine-list{margin:var(--sp-4) var(--sp-5);background:var(--c-surface);border-radius:var(--r-card);
+  box-shadow:var(--sh-sm);overflow:hidden;}
+.mine-item{display:flex;align-items:center;gap:14px;padding:15px var(--sp-4);cursor:pointer;
+  border-bottom:1px solid var(--c-border);transition:background .15s;}
+.mine-item:last-child{border-bottom:none;}
+.mine-item:active{background:var(--c-surface-2);}
+.mine-item .mi-ico{width:38px;height:38px;flex:0 0 auto;border-radius:12px;background:var(--c-primary-50);
+  display:flex;align-items:center;justify-content:center;font-size:18px;}
+.mine-item .mi-body{flex:1;min-width:0;}
+.mine-item .mi-body .t{font-size:var(--fs-body);font-weight:700;}
+.mine-item .mi-body .d{font-size:var(--fs-xs);color:var(--c-text-3);margin-top:2px;font-weight:600;}
+.mine-item .mi-badge{font-size:var(--fs-xs);font-weight:800;color:var(--c-primary-700);
+  background:var(--c-primary-50);border-radius:var(--r-chip);padding:3px 9px;flex:0 0 auto;}
+.mine-item .mi-arrow{color:var(--c-text-3);font-size:18px;flex:0 0 auto;}
+.mine-sec-title{font-size:var(--fs-sm);font-weight:700;color:var(--c-text-3);margin:var(--sp-5) var(--sp-5) var(--sp-2);}
+/* 归档旅程 mini 卡 */
+.mini-trip{display:flex;align-items:center;gap:12px;padding:12px var(--sp-4);border-bottom:1px solid var(--c-border);cursor:pointer;}
+.mini-trip:last-child{border-bottom:none;}
+.mini-trip:active{background:var(--c-surface-2);}
+.mini-trip .mt-img{width:52px;height:52px;border-radius:12px;object-fit:cover;flex:0 0 auto;}
+.mini-trip .mt-body{flex:1;min-width:0;}
+.mini-trip .mt-body .n{font-size:var(--fs-body);font-weight:700;}
+.mini-trip .mt-body .m{font-size:var(--fs-xs);color:var(--c-text-3);margin-top:2px;font-weight:600;}
+.mine-signout{margin:var(--sp-5);text-align:center;font-size:var(--fs-sm);color:var(--c-text-3);font-weight:700;cursor:pointer;}
+/* 徒步类差异化元素 */
+.hike-stats{display:flex;gap:8px;}
+.hike-stats .hs{flex:1;background:var(--c-cat-hike-bg);border-radius:14px;padding:12px 6px;text-align:center;}
+.hike-stats .hs .n{font-size:var(--fs-h2);font-weight:800;color:var(--c-cat-hike);line-height:1.1;font-variant-numeric:tabular-nums;}
+.hike-stats .hs .l{font-size:var(--fs-xs);color:var(--c-text-2);margin-top:4px;font-weight:600;}
+.diff-badge{display:inline-flex;align-items:center;gap:5px;background:var(--c-cat-hike-bg);color:var(--c-cat-hike);
+  border-radius:var(--r-chip);padding:5px 12px;font-size:var(--fs-sm);font-weight:800;}
+.elev-track{height:70px;background:var(--c-cat-hike-bg);border-radius:14px;position:relative;overflow:hidden;margin-top:8px;}
+.gear{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--c-border);cursor:pointer;}
+.gear:last-child{border-bottom:none;}
+.gear .box{width:22px;height:22px;border-radius:7px;border:2px solid var(--c-border-strong);flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;transition:all .15s;}
+.gear.done .box{background:var(--c-cat-hike);border-color:var(--c-cat-hike);}
+.gear.done .lbl{color:var(--c-text-3);text-decoration:line-through;}
+.gear .lbl{font-size:var(--fs-body);flex:1;}
+.gear .qty{font-size:var(--fs-xs);color:var(--c-text-3);font-weight:700;}
+.supply{display:flex;align-items:center;gap:10px;font-size:var(--fs-sm);color:var(--c-text-2);
+  padding:8px 0 8px 8px;border-left:2px dashed var(--c-cat-hike);margin-left:12px;}
+/* 度假类差异化元素 */
+.resort-chip-row{display:flex;flex-wrap:wrap;gap:8px;}
+.resort-chip{display:inline-flex;align-items:center;gap:6px;background:var(--c-cat-resort-bg);color:var(--c-cat-resort);
+  border-radius:var(--r-chip);padding:7px 13px;font-size:var(--fs-sm);font-weight:700;}
+.relax{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--c-border);}
+.relax:last-child{border-bottom:none;}
+.relax .rx-time{width:56px;flex:0 0 auto;font-size:var(--fs-sm);font-weight:800;color:var(--c-cat-resort);}
+.relax .rx-body .n{font-size:var(--fs-body);font-weight:700;}
+.relax .rx-body .d{font-size:var(--fs-sm);color:var(--c-text-2);margin-top:2px;}
+.book-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--c-border);}
+.book-row:last-child{border-bottom:none;}
+.book-row .br-ico{width:40px;height:40px;flex:0 0 auto;border-radius:12px;background:var(--c-cat-resort-bg);
+  display:flex;align-items:center;justify-content:center;font-size:19px;}
+.book-row .br-body{flex:1;}
+.book-row .br-body .n{font-size:var(--fs-body);font-weight:700;}
+.book-row .br-body .d{font-size:var(--fs-xs);color:var(--c-text-3);margin-top:2px;font-weight:600;}
+.book-row .br-status{font-size:var(--fs-xs);font-weight:800;padding:4px 10px;border-radius:var(--r-chip);flex:0 0 auto;}
+.book-row .br-status.ok{background:#E6F6EE;color:var(--c-success);}
+.book-row .br-status.wait{background:var(--c-sun-100);color:var(--c-warning);}
+/* 新卡高亮动效 */
+@keyframes newcard{0%{transform:scale(.9);opacity:0;}60%{transform:scale(1.02);}100%{transform:scale(1);opacity:1;}}
+.pcard.just-created{animation:newcard .5s cubic-bezier(.2,.8,.2,1) both;box-shadow:0 0 0 2px var(--c-primary-300),var(--sh-md);}
+</style>
+</head>
+<body>
+
+<div class="stage-title">
+  <h1>兰途 · LanTu</h1>
+  <p>家庭 AI 兰途旅行 · 手机端高保真可点击原型（375×812）· 点击卡片 / 底部导航 / 分类切换均可交互</p>
+</div>
+
+<div class="screens">
+<div class="phone">
+  <div class="notch"></div>
+  <div class="app">
+    <div class="statusbar">
+      <span>9:41</span>
+      <span class="r">📶 &nbsp;🔋 100%</span>
+    </div>
+    <div class="viewport">
+
+    <!-- ============ 页面① 我的行程首页 ============ -->
+    <section class="page active" id="page-home">
+      <div class="page-head">
+        <div class="display">你好，小老妹 <span class="greet-emoji">🌿</span></div>
+        <div class="sub">正在筹备 2 段旅程 · 今天想去哪儿？</div>
+      </div>
+
+      <div class="sec-head">
+        <h2>进行中</h2><span class="count" id="progress-count">2 段旅程</span>
+      </div>
+      <div id="progress-list">
+      <!-- 徒步类 进行中卡：尼泊尔 ACT -->
+      <article class="pcard cat-hike" onclick="goHike()">
+        <div class="cover">
+          <img src="https://picsum.photos/seed/annapurna88/600/360" alt="安纳普尔纳环线">
+          <div class="veil"></div>
+          <span class="chip chip-hike" style="background:rgba(234,245,228,.92)">🥾 徒步</span>
+          <span class="chip chip-progress status" style="background:rgba(255,255,255,.9)">进行中</span>
+        </div>
+        <div class="ttl">安纳普尔纳环线 · 与雪山同行</div>
+        <div class="meta">📍 尼泊尔·ACT 大环线　|　🗓 10.05 – 10.16 · 12 天</div>
+        <div class="foot">
+          <div class="avatars">
+            <div class="av owner" style="background:#F2C0A8">明</div>
+            <div class="av" style="background:#9CDDD2">需</div>
+            <div class="invite">+</div>
+          </div>
+          <div class="pbar"><i style="width:45%"></i></div>
+          <div class="budget">45%</div>
+        </div>
+      </article>
+
+      <!-- 旅行类 进行中卡：土耳其看猫 -->
+      <article class="pcard cat-travel" onclick="goDetail()">
+        <div class="cover">
+          <img src="https://picsum.photos/seed/istanbulcat42/600/360" alt="伊斯坦布尔的猫">
+          <div class="veil"></div>
+          <span class="chip chip-travel" style="background:rgba(230,242,252,.92)">🧳 旅行</span>
+          <span class="chip chip-progress status" style="background:rgba(255,255,255,.9)">进行中</span>
+        </div>
+        <div class="ttl">伊斯坦布尔撸猫漫游 · 猫比人多</div>
+        <div class="meta">📍 土耳其·伊斯坦布尔　|　🗓 5.12 – 5.20 · 9 天</div>
+        <div class="foot">
+          <div class="avatars">
+            <div class="av owner" style="background:#9CDDD2">需</div>
+            <div class="av" style="background:#F2C0A8">明</div>
+          </div>
+          <div class="pbar"><i style="width:30%"></i></div>
+          <div class="budget">30%</div>
+        </div>
+      </article>
+      </div><!-- /progress-list -->
+
+      <div class="spacer"></div>
+    </section>
+
+    <!-- ============ 页面② Project 详情（旅行类枢纽：土耳其看猫） ============ -->
+    <section class="page" id="page-detail">
+      <div class="detail-hero">
+        <img src="https://picsum.photos/seed/istanbulcat42/750/520" alt="伊斯坦布尔的猫封面">
+        <div class="veil"></div>
+        <button class="back" onclick="goHome()">‹</button>
+        <div class="hinfo">
+          <span class="chip chip-travel" style="background:rgba(230,242,252,.92)">🧳 旅行</span>
+          <h1 style="margin-top:8px">伊斯坦布尔撸猫漫游</h1>
+          <div class="meta">📍 土耳其·伊斯坦布尔　·　🗓 5.12 – 5.20　·　9 天</div>
+          <div class="avatars">
+            <div class="av owner" style="background:#9CDDD2">需</div>
+            <div class="av" style="background:#F2C0A8">明</div>
+            <div class="invite">+</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI 概览卡 -->
+      <div class="ai-card">
+        <span class="ai-badge">✨ AI 旅行助手</span>
+        <div class="ai-row" id="ai-1">
+          <span class="ico">🐱</span>
+          <span class="txt">伊斯坦布尔是<b>「猫城」</b>，街猫亲人不怕生。<b>随身带点猫零食</b>，蓝色清真寺、加拉塔塔下都能撸到猫。</span>
+          <button class="btn btn-adopt" onclick="adopt('ai-1')">采纳</button>
+        </div>
+        <div class="ai-row" id="ai-2">
+          <span class="ico">⛴️</span>
+          <span class="txt">亚洲区的 <b>卡迪柯伊（Kadıköy）猫咪最多最松弛</b>，建议第 5 天坐渡轮过海峡，边喝茶边撸猫。</span>
+          <button class="btn btn-adopt" onclick="adopt('ai-2')">采纳</button>
+        </div>
+        <div class="ai-row" id="ai-3" style="display:none">
+          <span class="ico">📸</span>
+          <span class="txt">想拍出名的猫，可去找 <b>Tombili 雕像</b>（那只慵懒趴着的网红猫），当地人都知道。</span>
+          <button class="btn btn-adopt" onclick="adopt('ai-3')">采纳</button>
+        </div>
+        <button class="ai-more" id="ai-more" onclick="showMoreAI(this)">展开更多建议 ›</button>
+        <button class="ai-genbtn" onclick="genRoute(this)">✨ 一键生成九日撸猫路线</button>
+      </div>
+
+      <!-- 内容 Tab -->
+      <div class="tabs" id="detail-tabs">
+        <button class="tab active" onclick="switchTab(this,'tp-overview')">概览</button>
+        <button class="tab" onclick="switchTab(this,'tp-itin')">行程</button>
+        <button class="tab" onclick="switchTab(this,'tp-stay')">住宿</button>
+        <button class="tab" onclick="switchTab(this,'tp-budget')">预算</button>
+        <button class="tab" onclick="switchTab(this,'tp-check')">准备清单</button>
+      </div>
+
+      <!-- 概览 -->
+      <div class="tabpane active" id="tp-overview">
+        <div class="block">
+          <h3>🐱 这次旅行</h3>
+          <p class="body" style="color:var(--c-text-2)">在这座"猫比人多"的城市里慢慢逛。九天里横跨欧亚两岸，白天看清真寺、逛老城、坐博斯普鲁斯渡轮，一路上撸遍街头慵懒的猫；不赶景点，把节奏交给随时会蹭过来的毛孩子。</p>
+        </div>
+        <div class="block">
+          <h3>📊 一览</h3>
+          <div class="stat-row">
+            <div class="stat-cell"><div class="n mono">9</div><div class="l">天</div></div>
+            <div class="stat-cell"><div class="n mono">2</div><div class="l">大洲跨越</div></div>
+            <div class="stat-cell"><div class="n mono">2</div><div class="l">人同行</div></div>
+            <div class="stat-cell"><div class="n mono">🐱∞</div><div class="l">撸猫数</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 行程（日排 + 交通，旅行类差异化） -->
+      <div class="tabpane" id="tp-itin">
+        <div class="block">
+          <span class="dayhead">📅 Day 1 · 5.12</span>
+          <div class="spot"><div class="idx">✈</div><div class="sp-body"><div class="n">抵达伊斯坦布尔机场（IST）</div><div class="d">地铁 M11 + T1 电车 → 老城苏丹艾哈迈德</div></div></div>
+          <div class="trans">🚇 机场地铁 · 约 60 分钟 · ₺30</div>
+          <div class="spot"><div class="idx">🏨</div><div class="sp-body"><div class="n">入住老城民宿</div><div class="d">傍晚蓝色清真寺广场散步 · 先撸第一只猫 🐱</div></div></div>
+        </div>
+        <div class="block">
+          <span class="dayhead">📅 Day 2 · 5.13</span>
+          <div class="spot"><div class="idx">1</div><div class="sp-body"><div class="n">圣索菲亚大教堂</div><div class="d">上午 · 找传奇看门猫 Gli 的旧居</div></div></div>
+          <div class="trans">🚶 步行 5 分钟</div>
+          <div class="spot"><div class="idx">2</div><div class="sp-body"><div class="n">蓝色清真寺 + 地下水宫</div><div class="d">✨ AI 建议清晨人少 · 广场猫超多</div></div></div>
+        </div>
+        <div class="block">
+          <span class="dayhead">📅 Day 5 · 5.16</span>
+          <div class="spot"><div class="idx">⛴</div><div class="sp-body"><div class="n">渡轮过海峡 → 亚洲区卡迪柯伊</div><div class="d">✨ AI 推荐 · 猫咪最多最松弛的社区</div></div></div>
+          <div class="trans">⛴️ 博斯普鲁斯渡轮 · 20 分钟 · 甲板喂海鸥</div>
+        </div>
+        <div class="block">
+          <h3>📌 全部撸猫地标 <span class="sm" style="font-weight:400">· 旅行类专属</span></h3>
+          <div class="spot">
+            <div class="idx">1</div>
+            <div class="sp-body"><div class="n">圣索菲亚 · Gli 的故事</div><div class="d">已故名猫 Gli 曾镇守于此 · 门口仍常有猫</div></div>
+            <img class="sp-thumb" src="https://picsum.photos/seed/hagiacat/120/120" alt="圣索菲亚的猫">
+          </div>
+          <div class="spot">
+            <div class="idx">2</div>
+            <div class="sp-body"><div class="n">加拉塔塔街区</div><div class="d">石板巷弄 · 台阶上懒洋洋的猫最上镜</div></div>
+            <img class="sp-thumb" src="https://picsum.photos/seed/galatacat/120/120" alt="加拉塔塔的猫">
+          </div>
+          <div class="spot">
+            <div class="idx">3</div>
+            <div class="sp-body"><div class="n">Tombili 网红猫雕像</div><div class="d">卡迪柯伊 · 那只慵懒趴着的传奇街猫</div></div>
+            <img class="sp-thumb" src="https://picsum.photos/seed/tombili/120/120" alt="Tombili 猫雕像">
+          </div>
+          <div class="spot">
+            <div class="idx">4</div>
+            <div class="sp-body"><div class="n">卡迪柯伊猫咪社区</div><div class="d">亚洲区 · 咖啡馆猫 + 鱼市喂猫日常</div></div>
+            <img class="sp-thumb" src="https://picsum.photos/seed/kadikoycat/120/120" alt="卡迪柯伊的猫">
+          </div>
+        </div>
+      </div>
+
+      <!-- 住宿 -->
+      <div class="tabpane" id="tp-stay">
+        <div class="block">
+          <h3>🏨 住宿安排</h3>
+          <div class="spot"><img class="sp-thumb" src="https://picsum.photos/seed/oldcityhtl/120/120" alt="老城苏丹艾哈迈德民宿"><div class="sp-body"><div class="n">老城苏丹艾哈迈德民宿</div><div class="d">5.12 – 5.16 · 4 晚 · 步行到蓝色清真寺 · 有店猫</div></div></div>
+          <div class="spot"><img class="sp-thumb" src="https://picsum.photos/seed/kadikoyhtl/120/120" alt="卡迪柯伊亚洲区公寓"><div class="sp-body"><div class="n">卡迪柯伊亚洲区公寓</div><div class="d">5.16 – 5.20 · 4 晚 · 近渡轮 · 楼下就是猫咪街</div></div></div>
+        </div>
+      </div>
+
+      <!-- 预算（概要，城市漫游内嵌） -->
+      <div class="tabpane" id="tp-budget">
+        <div class="block">
+          <h3>💰 预算概览 <span class="sm" style="font-weight:400">· 两人 9 天</span></h3>
+          <div class="bud-row"><div class="l"><span class="e">✈️</span>往返机票</div><div class="v">¥ 7,600</div></div>
+          <div class="bud-row"><div class="l"><span class="e">🏨</span>住宿 8 晚</div><div class="v">¥ 4,800</div></div>
+          <div class="bud-row"><div class="l"><span class="e">🍢</span>餐饮（烤肉 / 土耳其茶）</div><div class="v">¥ 3,000</div></div>
+          <div class="bud-row"><div class="l"><span class="e">⛴️</span>门票 / 渡轮 / 交通</div><div class="v">¥ 1,600</div></div>
+          <div class="bud-row"><div class="l"><span class="e">🐟</span>猫零食 / 喂猫基金</div><div class="v">¥ 200</div></div>
+          <div class="bud-row"><div class="l"><b>预计合计（两人）</b></div><div class="v" style="color:var(--c-primary-600)">¥ 17,200</div></div>
+          <div style="margin-top:12px;display:flex;align-items:center;gap:10px">
+            <div class="pbar"><i style="width:30%"></i></div>
+            <span class="sm" style="font-weight:700">已支出 30% · 机票已订</span>
+          </div>
+        </div>
+        <div style="padding:0 0 4px">
+          <button class="btn btn-soft" onclick="goBudget()">📊 查看计划 vs 实际完整对比 ›</button>
+        </div>
+      </div>
+
+      <!-- 准备清单 -->
+      <div class="tabpane" id="tp-check">
+        <div class="block">
+          <h3>✅ 出行准备</h3>
+          <div class="check done" onclick="toggleCheck(this)"><div class="box">✓</div><div class="lbl">土耳其电子签证 e-Visa</div></div>
+          <div class="check done" onclick="toggleCheck(this)"><div class="box">✓</div><div class="lbl">订往返机票</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="box"></div><div class="lbl">换里拉 + 办 Istanbulkart 交通卡</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="box"></div><div class="lbl">备一小袋猫零食 🐟</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="box"></div><div class="lbl">下载离线地图 + 渡轮时刻表</div></div>
+        </div>
+      </div>
+
+      <!-- 底部操作 -->
+      <div class="action-row">
+        <button class="btn btn-secondary" onclick="goPrint()">🖨 生成行程单（打印备份）</button>
+        <button class="btn btn-secondary" style="flex:0 0 52px;padding:0" onclick="alert('已归档，可在「我的」中查看 📦')">📦</button>
+      </div>
+      <div class="spacer"></div>
+    </section>
+
+    <!-- ============ 页面⑤ 预算对比（计划 vs 实际） ============ -->
+    <section class="page" id="page-budget">
+      <div class="tabs" style="justify-content:flex-start">
+        <button class="tab" style="background:transparent;color:var(--c-text-2);padding-left:0" onclick="goDetail()">‹ 返回行程</button>
+      </div>
+      <div class="page-head" style="padding-top:4px">
+        <div class="display" style="font-size:22px">预算对比</div>
+        <div class="sub">伊斯坦布尔撸猫漫游 · 两人 · 计划 vs 实际花费</div>
+      </div>
+
+      <!-- 总览：计划 vs 实际 -->
+      <div class="bud-top">
+        <div class="bud-compare">
+          <div class="bc plan"><div class="lbl">计划预算</div><div class="amt mono">¥16,800</div></div>
+          <div class="vs">vs</div>
+          <div class="bc actual"><div class="lbl">实际花费</div><div class="amt mono">¥18,200</div></div>
+        </div>
+        <div class="bud-status over">
+          <span>⚠️ 超支</span><span class="n">¥1,400</span><span style="font-weight:600;font-size:var(--fs-sm)">（约 8.3%）</span>
+        </div>
+      </div>
+      <!-- 分类双条对比 -->
+      <div class="block">
+        <h3>📊 分类预算对比</h3>
+        <div class="bud-legend">
+          <span class="lg"><span class="sw plan"></span>计划</span>
+          <span class="lg"><span class="sw actual"></span>实际</span>
+        </div>
+
+        <div class="bcat is-over">
+          <div class="bc-head">
+            <span class="bc-name"><span class="e">✈️</span>机票</span>
+            <span class="bc-diff over">+¥800 超支</span>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:79%"></i></span><span class="val">¥6,800</span></div>
+            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:88%"></i></span><span class="val">¥7,600</span></div>
+          </div>
+        </div>
+
+        <div class="bcat">
+          <div class="bc-head">
+            <span class="bc-name"><span class="e">🏨</span>住宿</span>
+            <span class="bc-diff">-¥200 结余</span>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:58%"></i></span><span class="val">¥5,000</span></div>
+            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:56%"></i></span><span class="val">¥4,800</span></div>
+          </div>
+        </div>
+
+        <div class="bcat is-over">
+          <div class="bc-head">
+            <span class="bc-name"><span class="e">🍢</span>餐饮</span>
+            <span class="bc-diff over">+¥400 超支</span>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:30%"></i></span><span class="val">¥2,600</span></div>
+            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:35%"></i></span><span class="val">¥3,000</span></div>
+          </div>
+        </div>
+
+        <div class="bcat">
+          <div class="bc-head">
+            <span class="bc-name"><span class="e">⛴️</span>门票/渡轮</span>
+            <span class="bc-diff">-¥100 结余</span>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:20%"></i></span><span class="val">¥1,700</span></div>
+            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:19%"></i></span><span class="val">¥1,600</span></div>
+          </div>
+        </div>
+
+        <div class="bcat is-over">
+          <div class="bc-head">
+            <span class="bc-name"><span class="e">🛍️</span>购物</span>
+            <span class="bc-diff over">+¥400 超支</span>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:7%"></i></span><span class="val">¥600</span></div>
+            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:12%"></i></span><span class="val">¥1,000</span></div>
+          </div>
+        </div>
+
+        <div class="bcat is-over">
+          <div class="bc-head">
+            <span class="bc-name"><span class="e">🐟</span>猫零食</span>
+            <span class="bc-diff over">+¥100 超支</span>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:1%"></i></span><span class="val">¥100</span></div>
+            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:2%"></i></span><span class="val">¥200</span></div>
+          </div>
+        </div>
+      </div>
+      <!-- 分类明细列表 -->
+      <div class="block">
+        <h3>🧾 花费明细</h3>
+        <div class="bexp">
+          <div class="e">✈️</div>
+          <div class="bx-body"><div class="n">往返机票（含中转）</div><div class="c">交通 · 土耳其航空</div></div>
+          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥6,800</span><span class="act">¥7,600</span></div><div class="df over">+¥800</div></div>
+        </div>
+        <div class="bexp">
+          <div class="e">🚋</div>
+          <div class="bx-body"><div class="n">Istanbulkart 交通 + 渡轮</div><div class="c">门票/渡轮 · 电车地铁通用</div></div>
+          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥900</span><span class="act">¥850</span></div><div class="df">-¥50</div></div>
+        </div>
+        <div class="bexp">
+          <div class="e">🏛️</div>
+          <div class="bx-body"><div class="n">老城民宿 4 晚</div><div class="c">住宿 · 苏丹艾哈迈德</div></div>
+          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥2,600</span><span class="act">¥2,500</span></div><div class="df">-¥100</div></div>
+        </div>
+        <div class="bexp">
+          <div class="e">🏨</div>
+          <div class="bx-body"><div class="n">卡迪柯伊公寓 4 晚</div><div class="c">住宿 · 亚洲区近渡轮</div></div>
+          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥2,400</span><span class="act">¥2,300</span></div><div class="df">-¥100</div></div>
+        </div>
+        <div class="bexp">
+          <div class="e">🥙</div>
+          <div class="bx-body"><div class="n">土耳其烤肉 + 海鲜</div><div class="c">餐饮 · 街边 + 餐厅</div></div>
+          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥1,800</span><span class="act">¥2,100</span></div><div class="df over">+¥300</div></div>
+        </div>
+        <div class="bexp">
+          <div class="e">🫖</div>
+          <div class="bx-body"><div class="n">土耳其茶 + 甜点</div><div class="c">餐饮 · 咖啡馆撸猫</div></div>
+          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥800</span><span class="act">¥900</span></div><div class="df over">+¥100</div></div>
+        </div>
+        <div class="bexp">
+          <div class="e">🕌</div>
+          <div class="bx-body"><div class="n">托普卡帕宫 · 地下水宫门票</div><div class="c">门票 · 老城景点</div></div>
+          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥800</span><span class="act">¥750</span></div><div class="df">-¥50</div></div>
+        </div>
+        <div class="bexp">
+          <div class="e">🛍️</div>
+          <div class="bx-body"><div class="n">大巴扎手信 · 猫主题纪念品</div><div class="c">购物 · 计划外</div></div>
+          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥600</span><span class="act">¥1,000</span></div><div class="df over">+¥400</div></div>
+        </div>
+        <div class="bexp">
+          <div class="e">🐟</div>
+          <div class="bx-body"><div class="n">猫零食 · 喂猫基金</div><div class="c">其他 · 一路撒欢</div></div>
+          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥100</span><span class="act">¥200</span></div><div class="df over">+¥100</div></div>
+        </div>
+      </div>
+
+      <div style="padding:0 var(--sp-5) 4px">
+        <button class="btn btn-soft" onclick="alert('打开记账面板：选择类别 → 填金额 → 保存到明细 ✍️')">+ 记一笔</button>
+      </div>
+      <p class="hint">超支主要来自机票与计划外购物，下次可预留一点弹性 🌿</p>
+      <div class="spacer"></div>
+    </section>
+
+    <!-- ============ 页面⑥ 行程单打印预览 ============ -->
+    <section class="page" id="page-print">
+      <div class="print-bar">
+        <button class="pb-back" onclick="showPage(window.PRINT_FROM||'page-detail')">‹</button>
+        <span class="pb-title">行程单预览 · 打印备份</span>
+        <button class="pb-print" onclick="doPrint()">🖨️ 打印</button>
+      </div>
+      <p class="pdf-hint">在打印对话框中选择「另存为 PDF」即可导出 PDF 备份 · A4 纵向 · 黑白友好</p>
+
+      <div class="sheet-a4">
+        <div class="doc-head">
+          <div class="kicker">Trip Itinerary · 行程单</div>
+          <h1>伊斯坦布尔撸猫漫游</h1>
+          <div class="sub">2026.5.12 – 5.20 · 共 9 天 · 土耳其 伊斯坦布尔（欧洲区 / 亚洲区）· 同行 2 人</div>
+        </div>
+
+        <div class="doc-sec">
+          <div class="st">每日行程 · Daily Schedule</div>
+          <div class="doc-day">
+            <div class="dd">Day 1<span class="date">5.12 周二</span></div>
+            <div class="dc">抵达伊斯坦布尔机场（IST）· 地铁 M11+T1 电车 → 老城 · 入住<b>苏丹艾哈迈德民宿</b> · 傍晚蓝色清真寺广场散步撸猫</div>
+          </div>
+          <div class="doc-day">
+            <div class="dd">Day 2<span class="date">5.13 周三</span></div>
+            <div class="dc"><b>圣索菲亚大教堂</b>（寻名猫 Gli 旧居）· <b>蓝色清真寺</b> · 地下水宫 · 广场猫超多</div>
+          </div>
+          <div class="doc-day">
+            <div class="dd">Day 3<span class="date">5.14 周四</span></div>
+            <div class="dc">托普卡帕宫 · 大巴扎采购 · 傍晚<b>加拉塔塔</b>街区（石板巷弄的猫最上镜）</div>
+          </div>
+          <div class="doc-day">
+            <div class="dd">Day 4<span class="date">5.15 周五</span></div>
+            <div class="dc">博斯普鲁斯海峡游船 · 香料市场 · 独立大街 + 塔克西姆广场夜逛</div>
+          </div>
+          <div class="doc-day">
+            <div class="dd">Day 5<span class="date">5.16 周六</span></div>
+            <div class="dc"><b>渡轮过海峡 → 亚洲区卡迪柯伊</b>（转场入住）· 猫咪社区漫步 · 找 <b>Tombili 网红猫雕像</b></div>
+          </div>
+          <div class="doc-day">
+            <div class="dd">Day 6-8<span class="date">5.17 – 5.19</span></div>
+            <div class="dc">亚洲区慢生活 · Moda 海边喝茶撸猫 · 鱼市喂猫 · 咖啡馆猫日常 · 随心散步</div>
+          </div>
+          <div class="doc-day">
+            <div class="dd">Day 9<span class="date">5.20 周三</span></div>
+            <div class="dc">卡迪柯伊 → 机场 · 返程（跟猫告别 🐱）</div>
+          </div>
+        </div>
+        <div class="doc-sec">
+          <div class="st">住宿信息 · Accommodation</div>
+          <table class="doc-tbl">
+            <tr><td class="k">5.12–5.16</td><td>老城苏丹艾哈迈德民宿（4 晚 · 步行到蓝色清真寺 · 有店猫）<br>Sultanahmet, Fatih · Tel +90 212-xxx-xxxx</td></tr>
+            <tr><td class="k">5.16–5.20</td><td>卡迪柯伊亚洲区公寓（4 晚 · 近渡轮 · 楼下猫咪街）<br>Kadıköy, Moda · Tel +90 216-xxx-xxxx</td></tr>
+          </table>
+        </div>
+
+        <div class="doc-sec">
+          <div class="st">紧急联系 · Emergency</div>
+          <table class="doc-tbl">
+            <tr><td class="k">土耳其报警</td><td>155（警察）/ 112（急救）/ 110（消防）</td></tr>
+            <tr><td class="k">中国大使馆</td><td>驻伊斯坦布尔总领事馆 领保电话 +90 212-xxx-xxxx</td></tr>
+            <tr><td class="k">随行紧急</td><td>明需 +86 138-xxxx-xxxx（家庭联系人）</td></tr>
+            <tr><td class="k">保险</td><td>境外旅行险 保单号 TR-2026-0512 · 24h 救援热线 400-xxx-xxxx</td></tr>
+          </table>
+        </div>
+
+        <div class="doc-sec">
+          <div class="st">备注 · Notes</div>
+          <div class="doc-note">
+            · 伊斯坦布尔街猫亲人温顺，随身带点猫零食随时能撸；请勿追赶或强抱。<br>
+            · 办一张 Istanbulkart 交通卡，电车 / 地铁 / 渡轮通用，比单程票划算。<br>
+            · 亚洲区卡迪柯伊猫最多最松弛，建议留足时间慢逛。<br>
+            · 随身携带护照复印件与里拉现金；离线地图与渡轮时刻表已下载。
+          </div>
+        </div>
+
+        <div class="doc-sign">
+          <div class="sg">制定人<b>需</b></div>
+          <div class="sg">同行确认<b>&nbsp;</b></div>
+          <div class="sg">制定日期<b>2026.4.20</b></div>
+        </div>
+
+        <div class="doc-foot">由「兰途 LanTu」生成 · 家庭 AI 旅行计划 · 打印备份留存</div>
+      </div>
+      <div class="spacer"></div>
+    </section>
+
+    <!-- ============ 页面③ 新建 project + 分类选择 ============ -->
+    <section class="page" id="page-new">
+      <div class="page-head">
+        <div class="display">开启一段新旅程 ✨</div>
+        <div class="sub">先选个类型，剩下的交给我们一起慢慢填</div>
+      </div>
+
+      <div class="catcards" id="catcards">
+        <div class="catcard travel" data-cat="travel" onclick="pickCat(this)">
+          <div class="emo">🧳</div>
+          <div class="cc-body"><div class="n">旅行</div><div class="d">城市与景点，走走停停看世界</div></div>
+          <div class="tick">✓</div>
+        </div>
+        <div class="catcard hike" data-cat="hike" onclick="pickCat(this)">
+          <div class="emo">🥾</div>
+          <div class="cc-body"><div class="n">徒步</div><div class="d">山野与路线，用脚步丈量风景</div></div>
+          <div class="tick">✓</div>
+        </div>
+        <div class="catcard resort" data-cat="resort" onclick="pickCat(this)">
+          <div class="emo">🏖️</div>
+          <div class="cc-body"><div class="n">度假</div><div class="d">住得好玩得松，什么都不用赶</div></div>
+          <div class="tick">✓</div>
+        </div>
+      </div>
+
+      <!-- 动态字段预览 -->
+      <div class="fieldprev" id="fieldprev">
+        <div class="fp-head">👀 <span id="fp-title">选好后，这类旅程会帮你记录：</span></div>
+        <div id="fp-tags"></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="field">
+        <label>给这次旅程起个名字</label>
+        <input type="text" id="new-name" placeholder="例如：冲绳跳岛之旅">
+      </div>
+      <div class="field">
+        <label>出发 – 返回日期</label>
+        <div class="fakeinput" id="new-date" onclick="pickDate(this)">🗓 选择日期</div>
+      </div>
+      <div class="field">
+        <label>目的地</label>
+        <input type="text" id="new-dest" placeholder="📍 想去哪里">
+      </div>
+      <div class="field">
+        <label>封面照片</label>
+        <div class="coverpick"><span style="font-size:26px">🖼️</span><span>选一张让人心动的照片</span></div>
+      </div>
+      <div style="padding:8px var(--sp-5) 0">
+        <button class="btn btn-primary" onclick="createTrip()">创建这次旅程</button>
+      </div>
+      <p class="hint">选好类型后，我们会自动为你准备对应的记录模板</p>
+      <div class="spacer"></div>
+    </section>
+
+    <!-- ============ 页面④ 点亮地图 ============ -->
+    <section class="page" id="page-map">
+      <div class="page-head">
+        <div class="display">点亮地图 🗺️</div>
+        <div class="sub">每去过一处，就点亮一颗光点 —— 新旅程正在等你点亮</div>
+      </div>
+
+      <div class="map-toggle">
+        <button onclick="switchMap(this,'map-cn')">🇨🇳 国内省份</button>
+        <button class="active" onclick="switchMap(this,'map-world')">🌏 世界地图</button>
+      </div>
+
+      <div class="mapstage">
+        <!-- 国内视图 -->
+        <div class="mapview" id="map-cn">
+          <svg class="mapsvg" viewBox="0 0 300 200" id="cnsvg">
+            <!-- 抽象省份光点分布（示意，非真实地理） -->
+          </svg>
+        </div>
+        <!-- 世界视图 -->
+        <div class="mapview active" id="map-world">
+          <svg class="mapsvg" viewBox="0 0 300 170" id="worldsvg"></svg>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="num" id="stat-a" style="display:none">0</div><div class="lbl" style="display:none">去过的省份</div></div>
+        <div class="stat"><div class="num" id="stat-b">2</div><div class="lbl">计划中的国家</div></div>
+        <div class="stat"><div class="num mono">21</div><div class="lbl">计划总天数</div></div>
+      </div>
+      <p class="hint">点击任意光点，查看这段旅程的筹备详情 ✨</p>
+      
+      <!-- 足迹统计可视化 -->
+      <div class="block" style="margin-top:20px">
+        <h3>📊 足迹概览</h3>
+        <div style="display:flex;gap:12px;margin-top:14px">
+          <div class="mini-chart">
+            <div class="mc-head">旅程类型</div>
+            <div class="mc-pie">
+              <svg viewBox="0 0 100 100" style="width:80px;height:80px">
+                <circle cx="50" cy="50" r="40" fill="none" stroke="#5B9E3F" stroke-width="20" stroke-dasharray="126 126" transform="rotate(-90 50 50)" opacity=".9"/>
+                <circle cx="50" cy="50" r="40" fill="none" stroke="#2E8BD6" stroke-width="20" stroke-dasharray="126 126" stroke-dashoffset="-63" transform="rotate(-90 50 50)" opacity=".9"/>
+              </svg>
+            </div>
+            <div class="mc-legend">
+              <div><span class="sw" style="background:#5B9E3F"></span>徒步 50%</div>
+              <div><span class="sw" style="background:#2E8BD6"></span>旅行 50%</div>
+            </div>
+          </div>
+          <div class="mini-chart">
+            <div class="mc-head">足迹分布</div>
+            <div class="mc-bars">
+              <div class="mcb"><div class="mcb-lbl">亚洲</div><div class="mcb-bar"><i style="width:100%;background:#17A398"></i></div><div class="mcb-val">2</div></div>
+              <div class="mcb"><div class="mcb-lbl">欧洲</div><div class="mcb-bar"><i style="width:0%;background:#17A398"></i></div><div class="mcb-val">0</div></div>
+              <div class="mcb"><div class="mcb-lbl">美洲</div><div class="mcb-bar"><i style="width:0%;background:#17A398"></i></div><div class="mcb-val">0</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 光点详情浮层（点击光点时显示）-->
+      <div class="map-detail-overlay" id="map-overlay" style="display:none" onclick="closeMapOverlay()">
+        <div class="map-detail-card" onclick="event.stopPropagation()">
+          <button class="mdc-close" onclick="closeMapOverlay()">×</button>
+          <img class="mdc-img" id="mdc-img" src="" alt="">
+          <div class="mdc-body">
+            <div class="mdc-ttl" id="mdc-ttl"></div>
+            <div class="mdc-meta" id="mdc-meta"></div>
+            <div class="mdc-quote" id="mdc-quote"></div>
+            <div class="mdc-stats" id="mdc-stats"></div>
+            <button class="btn btn-soft" onclick="closeMapOverlay();goDetailFromMap()">查看完整行程 ›</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="spacer"></div>
+    </section>
+
+    <!-- ============ 页面⑦ 我的 个人中心 ============ -->
+    <section class="page" id="page-mine">
+      <div class="mine-hero">
+        <div class="mh-top">
+          <div class="mh-av">明</div>
+          <div class="mh-info">
+            <div class="mh-name">明需 <span style="font-size:14px">🌿</span></div>
+            <div class="mh-sub">和家人一起旅行 · 加入兰途 486 天</div>
+          </div>
+          <button class="mh-edit" onclick="alert('编辑资料：修改昵称 / 头像 / 个性签名 ✍️')">✎</button>
+        </div>
+        <div class="mine-stats">
+          <div class="ms"><div class="n mono">2</div><div class="l">段旅程</div></div>
+          <div class="ms"><div class="n mono">2</div><div class="l">个国家</div></div>
+          <div class="ms"><div class="n mono">21</div><div class="l">计划天数</div></div>
+          <div class="ms"><div class="n mono">🐱⛰️</div><div class="l">主题</div></div>
+        </div>
+      </div>
+
+      <div class="mine-sec-title">旅程管理</div>
+      <div class="mine-list">
+        <div class="mine-item" onclick="nav('map')">
+          <div class="mi-ico">🗺️</div>
+          <div class="mi-body"><div class="t">我的足迹地图</div><div class="d">尼泊尔 · 土耳其 待点亮</div></div>
+          <span class="mi-badge">去看看</span><span class="mi-arrow">›</span>
+        </div>
+        <div class="mine-item" onclick="alert('归档旅程：完成的旅程会收纳到这里 📦')">
+          <div class="mi-ico">📦</div>
+          <div class="mi-body"><div class="t">归档旅程</div><div class="d">完成后自动收纳</div></div>
+          <span class="mi-badge">0 段</span><span class="mi-arrow">›</span>
+        </div>
+        <div class="mine-item" onclick="goPrint()">
+          <div class="mi-ico">🖨️</div>
+          <div class="mi-body"><div class="t">打印记录</div><div class="d">生成过的行程单备份</div></div>
+          <span class="mi-badge">1 份</span><span class="mi-arrow">›</span>
+        </div>
+      </div>
+
+      <div class="mine-sec-title">正在筹备</div>
+      <div class="mine-list">
+        <div class="mini-trip" onclick="goHike()">
+          <img class="mt-img" src="https://picsum.photos/seed/annapurna88/120/120" alt="安纳普尔纳环线">
+          <div class="mt-body"><div class="n">安纳普尔纳环线 · 与雪山同行</div><div class="m">🥾 徒步 · 10 月 · 2 人同行 · 45%</div></div>
+          <span class="mi-arrow">›</span>
+        </div>
+        <div class="mini-trip" onclick="goDetail()">
+          <img class="mt-img" src="https://picsum.photos/seed/istanbulcat42/120/120" alt="伊斯坦布尔的猫">
+          <div class="mt-body"><div class="n">伊斯坦布尔撸猫漫游</div><div class="m">🧳 旅行 · 5 月 · 2 人同行 · 30%</div></div>
+          <span class="mi-arrow">›</span>
+        </div>
+      </div>
+
+      <div class="mine-sec-title">协作与设置</div>
+      <div class="mine-list">
+        <div class="mine-item" onclick="alert('邀请管理：查看家庭成员 / 生成邀请链接 / 权限设置 👨‍👩‍👧')">
+          <div class="mi-ico">👨‍👩‍👧</div>
+          <div class="mi-body"><div class="t">家庭成员</div><div class="d">明需、需，还可邀请更多人</div></div>
+          <span class="mi-badge">2 人</span><span class="mi-arrow">›</span>
+        </div>
+        <div class="mine-item" onclick="alert('通知设置：行程提醒 / AI 建议 / 成员动态 🔔')">
+          <div class="mi-ico">🔔</div>
+          <div class="mi-body"><div class="t">通知与提醒</div><div class="d">行程提醒、AI 建议推送</div></div>
+          <span class="mi-arrow">›</span>
+        </div>
+        <div class="mine-item" onclick="alert('设置：账号 / 隐私 / 关于兰途 ⚙️')">
+          <div class="mi-ico">⚙️</div>
+          <div class="mi-body"><div class="t">通用设置</div><div class="d">账号、隐私、关于兰途</div></div>
+          <span class="mi-arrow">›</span>
+        </div>
+      </div>
+
+      <div class="mine-signout" onclick="alert('退出登录？下次记得回来继续记录旅程哦 👋')">退出登录</div>
+      <div class="spacer"></div>
+    </section>
+
+    <!-- ============ 页面⑧ 徒步类详情（差异化） ============ -->
+    <section class="page" id="page-hike">
+      <div class="detail-hero">
+        <img src="https://picsum.photos/seed/annapurna88/750/520" alt="安纳普尔纳环线封面">
+        <div class="veil"></div>
+        <button class="back" onclick="goHome()">‹</button>
+        <div class="hinfo">
+          <span class="chip chip-hike" style="background:rgba(234,245,228,.92)">🥾 徒步</span>
+          <h1 style="margin-top:8px">安纳普尔纳环线 · 与雪山同行</h1>
+          <div class="meta">📍 尼泊尔·ACT 大环线　·　🗓 10.05 – 10.16　·　12 天</div>
+          <div class="avatars">
+            <div class="av owner" style="background:#F2C0A8">明</div>
+            <div class="av" style="background:#9CDDD2">需</div>
+            <div class="invite">+</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI 卡（徒步语气） -->
+      <div class="ai-card">
+        <span class="ai-badge">✨ AI 徒步助手</span>
+        <div class="ai-row" id="hai-1">
+          <span class="ico">⛰️</span>
+          <span class="txt">翻越 <b>Thorong La 垭口（5416m）</b>是全程最难的一天，务必在 Manang 停留 2 晚做<b>高原适应</b>，切忌赶路。</span>
+          <button class="btn btn-adopt" onclick="adopt('hai-1')">采纳</button>
+        </div>
+        <div class="ai-row" id="hai-2">
+          <span class="ico">🌅</span>
+          <span class="txt">垭口当天需<b>凌晨 4 点从 High Camp 出发</b>，避开午后大风，日出前登顶能看到道拉吉里全景。</span>
+          <button class="btn btn-adopt" onclick="adopt('hai-2')">采纳</button>
+        </div>
+      </div>
+
+      <!-- Tab -->
+      <div class="tabs" id="hike-tabs">
+        <button class="tab active" onclick="switchTabIn(this,'hp-overview','page-hike')">概览</button>
+        <button class="tab" onclick="switchTabIn(this,'hp-route','page-hike')">路线</button>
+        <button class="tab" onclick="switchTabIn(this,'hp-gear','page-hike')">装备清单</button>
+        <button class="tab" onclick="switchTabIn(this,'hp-supply','page-hike')">补给点</button>
+      </div>
+
+      <!-- 概览：海拔+难度（徒步专属） -->
+      <div class="tabpane active" id="hp-overview">
+        <div class="block">
+          <h3>🥾 这次徒步</h3>
+          <div style="margin-bottom:14px"><span class="diff-badge">⭐⭐⭐⭐⭐ 高难度 · 需极佳体能与高原适应</span></div>
+          <p class="body" style="color:var(--c-text-2);margin-bottom:14px">从 Besisahar 出发，沿马斯扬第河谷一路上行，穿过梯田村落、松林与荒漠高原，最后翻越世界最高垭口之一 Thorong La（5416m），下撤到圣地 Muktinath。12 天，从亚热带走到雪线之上。</p>
+          <div class="hike-stats">
+            <div class="hs"><div class="n mono">160</div><div class="l">总里程 km</div></div>
+            <div class="hs"><div class="n mono">5.4k</div><div class="l">累计爬升 m</div></div>
+            <div class="hs"><div class="n mono">5416</div><div class="l">最高海拔 m</div></div>
+          </div>
+        </div>
+        <div class="block">
+          <h3>📈 海拔剖面</h3>
+          <div class="elev-track">
+            <svg viewBox="0 0 300 70" style="width:100%;height:100%;display:block">
+              <defs><linearGradient id="elevg" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#5B9E3F" stop-opacity=".5"/>
+                <stop offset="1" stop-color="#5B9E3F" stop-opacity=".05"/></linearGradient></defs>
+              <path d="M0,62 L30,58 L70,48 L110,38 L150,28 L190,8 L210,30 L250,46 L300,50 L300,70 L0,70 Z" fill="url(#elevg)"/>
+              <path d="M0,62 L30,58 L70,48 L110,38 L150,28 L190,8 L210,30 L250,46 L300,50" fill="none" stroke="#5B9E3F" stroke-width="2"/>
+              <circle cx="190" cy="8" r="3.5" fill="#5B9E3F" stroke="#fff" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <p class="sm" style="margin-top:8px;text-align:center">最高点：Thorong La 垭口 5,416m ⛰️（第 8 天翻越）</p>
+        </div>
+      </div>
+
+      <!-- 路线（每日轨迹） -->
+      <div class="tabpane" id="hp-route">
+        <div class="block">
+          <span class="dayhead" style="background:var(--c-cat-hike-bg);color:var(--c-cat-hike)">📅 Day 1-2 · 河谷段</span>
+          <div class="spot"><div class="idx" style="background:var(--c-cat-hike-bg);color:var(--c-cat-hike)">起</div><div class="sp-body"><div class="n">Besisahar（760m）→ Chame</div><div class="d">吉普车 + 徒步 · 梯田村落与瀑布</div></div></div>
+          <div class="supply">🚙 前段可乘吉普接驳，省 1-2 天脚力</div>
+          <div class="spot"><div class="idx" style="background:var(--c-cat-hike-bg);color:var(--c-cat-hike)">宿</div><div class="sp-body"><div class="n">Chame 茶馆客栈（2670m）</div><div class="d">有热水 / WiFi · 松林环绕</div></div></div>
+        </div>
+        <div class="block">
+          <span class="dayhead" style="background:var(--c-cat-hike-bg);color:var(--c-cat-hike)">📅 Day 4-5 · Manang 适应</span>
+          <div class="spot"><div class="idx" style="background:var(--c-cat-hike-bg);color:var(--c-cat-hike)">停</div><div class="sp-body"><div class="n">Manang（3540m）停留 2 晚</div><div class="d">✨ AI 建议高原适应日 · 可徒步冰湖 Ice Lake</div></div></div>
+          <div class="supply">💊 村内有高山病诊所 HRA · 建议听适应讲座</div>
+        </div>
+        <div class="block">
+          <span class="dayhead" style="background:var(--c-cat-hike-bg);color:var(--c-cat-hike)">📅 Day 8 · 翻越垭口</span>
+          <div class="spot"><div class="idx" style="background:var(--c-cat-hike-bg);color:var(--c-cat-hike)">⛰</div><div class="sp-body"><div class="n">High Camp → Thorong La（5416m）→ Muktinath</div><div class="d">凌晨 4 点出发 · 约 8-9 小时 · 全程最难</div></div></div>
+          <div class="supply">🌡️ 垭口体感 -15℃ · 大风 · 备好保暖与手套</div>
+        </div>
+      </div>
+
+      <!-- 装备清单（勾选，徒步专属） -->
+      <div class="tabpane" id="hp-gear">
+        <div class="block">
+          <h3>🎒 装备清单 <span class="sm" style="font-weight:400">· 徒步类专属</span></h3>
+          <div class="gear done" onclick="toggleGear(this)"><div class="box">✓</div><div class="lbl">重装登山鞋（防水中高帮）</div><span class="qty">1 双</span></div>
+          <div class="gear done" onclick="toggleGear(this)"><div class="box">✓</div><div class="lbl">羽绒服 + 抓绒 + 冲锋衣三层</div><span class="qty">各 1</span></div>
+          <div class="gear done" onclick="toggleGear(this)"><div class="box">✓</div><div class="lbl">-10℃ 睡袋（茶馆夜里很冷）</div><span class="qty">1 个</span></div>
+          <div class="gear" onclick="toggleGear(this)"><div class="box"></div><div class="lbl">登山杖 · 头灯（垭口凌晨用）</div><span class="qty">1 套</span></div>
+          <div class="gear" onclick="toggleGear(this)"><div class="box"></div><div class="lbl">高反药（丹木斯）+ 血氧仪</div><span class="qty">1 套</span></div>
+          <div class="gear" onclick="toggleGear(this)"><div class="box"></div><div class="lbl">TIMS 许可证 + ACAP 门票</div><span class="qty">各 1</span></div>
+          <div class="gear" onclick="toggleGear(this)"><div class="box"></div><div class="lbl">防晒霜 · 雪镜 · 保温水壶</div><span class="qty">1 套</span></div>
+        </div>
+      </div>
+
+      <!-- 补给点 -->
+      <div class="tabpane" id="hp-supply">
+        <div class="block">
+          <h3>💧 沿途补给点（Teahouse 茶馆）</h3>
+          <div class="spot"><div class="idx" style="background:var(--c-cat-hike-bg);color:var(--c-cat-hike)">📍</div><div class="sp-body"><div class="n">Manang（3540m）</div><div class="d">最大补给镇 · 面包店 / 药店 / 充电 / 咖啡</div></div></div>
+          <div class="spot"><div class="idx" style="background:var(--c-cat-hike-bg);color:var(--c-cat-hike)">📍</div><div class="sp-body"><div class="n">Thorong High Camp（4880m）</div><div class="d">垭口前最后补给 · 热柠檬茶 / 泡面 · 早睡</div></div></div>
+          <div class="spot"><div class="idx" style="background:var(--c-cat-hike-bg);color:var(--c-cat-hike)">📍</div><div class="sp-body"><div class="n">Muktinath（3800m）</div><div class="d">下撤圣地 · 印度教朝圣地 · 有热水澡</div></div></div>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button class="btn btn-secondary" onclick="goPrint()">🖨 生成行程单（打印备份）</button>
+        <button class="btn btn-secondary" style="flex:0 0 52px;padding:0" onclick="alert('已归档，可在「我的」中查看 📦')">📦</button>
+      </div>
+      <div class="spacer"></div>
+    </section>
+
+    <!-- ============ 页面⑨ 度假类详情（差异化） ============ -->
+    <section class="page" id="page-resort">
+      <div class="detail-hero">
+        <img src="https://picsum.photos/seed/bali42/750/520" alt="巴厘岛封面">
+        <div class="veil"></div>
+        <button class="back" onclick="goHome()">‹</button>
+        <div class="hinfo">
+          <span class="chip chip-resort" style="background:rgba(253,239,224,.92)">🏖️ 度假</span>
+          <h1 style="margin-top:8px">巴厘岛慢生活五日</h1>
+          <div class="meta">📍 印尼·巴厘岛　·　🗓 5.15 – 5.19　·　5 天</div>
+          <div class="avatars">
+            <div class="av owner" style="background:#9CDDD2">需</div>
+            <div class="av" style="background:#F2C0A8">明</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI 卡（度假语气） -->
+      <div class="ai-card">
+        <span class="ai-badge">✨ AI 度假管家</span>
+        <div class="ai-row" id="rai-1">
+          <span class="ico">🌅</span>
+          <span class="txt">别把行程排太满，<b>每天留半天泡池 / 发呆</b>才是度假的意义，我帮你留白了下午时段。</span>
+          <button class="btn btn-adopt" onclick="adopt('rai-1')">采纳</button>
+        </div>
+        <div class="ai-row" id="rai-2">
+          <span class="ico">🍹</span>
+          <span class="txt">海边悬崖餐厅日落位很抢手，<b>建议提前 2 天预订</b> Rock Bar 的 18:00 场次。</span>
+          <button class="btn btn-adopt" onclick="adopt('rai-2')">采纳</button>
+        </div>
+      </div>
+
+      <!-- Tab -->
+      <div class="tabs" id="resort-tabs">
+        <button class="tab active" onclick="switchTabIn(this,'rp-overview','page-resort')">概览</button>
+        <button class="tab" onclick="switchTabIn(this,'rp-relax','page-resort')">放松安排</button>
+        <button class="tab" onclick="switchTabIn(this,'rp-book','page-resort')">餐厅预约</button>
+        <button class="tab" onclick="switchTabIn(this,'rp-stay','page-resort')">住宿体验</button>
+      </div>
+
+      <!-- 概览：慵懒时刻标签（度假专属） -->
+      <div class="tabpane active" id="rp-overview">
+        <div class="block">
+          <h3>🏖️ 这次度假</h3>
+          <p class="body" style="color:var(--c-text-2);margin-bottom:14px">五天都住在乌布的丛林泳池别墅，不赶景点，只做三件事：泡池、SPA、看日落。把"什么都不用做"过成一种奢侈。</p>
+          <div class="resort-chip-row">
+            <span class="resort-chip">🏊 无边泳池</span>
+            <span class="resort-chip">🧖 丛林 SPA</span>
+            <span class="resort-chip">🌅 悬崖日落</span>
+            <span class="resort-chip">🍹 特调鸡尾酒</span>
+            <span class="resort-chip">😴 睡到自然醒</span>
+          </div>
+        </div>
+        <div class="block">
+          <h3>📊 一览</h3>
+          <div class="stat-row">
+            <div class="stat-cell"><div class="n mono">5</div><div class="l">天</div></div>
+            <div class="stat-cell"><div class="n mono">1</div><div class="l">家别墅</div></div>
+            <div class="stat-cell"><div class="n mono">3</div><div class="l">次 SPA</div></div>
+            <div class="stat-cell"><div class="n mono">2</div><div class="l">人同行</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 放松安排（慵懒时间轴，度假专属） -->
+      <div class="tabpane" id="rp-relax">
+        <div class="block">
+          <h3>🌴 慵懒的一天 <span class="sm" style="font-weight:400">· 度假类专属</span></h3>
+          <div class="relax"><div class="rx-time">09:30</div><div class="rx-body"><div class="n">睡到自然醒 · 别墅内早餐</div><div class="d">管家送餐到泳池边</div></div></div>
+          <div class="relax"><div class="rx-time">11:00</div><div class="rx-body"><div class="n">无边泳池泡水 + 阅读</div><div class="d">✨ AI 建议留白时段</div></div></div>
+          <div class="relax"><div class="rx-time">14:00</div><div class="rx-body"><div class="n">丛林 SPA 90 分钟</div><div class="d">巴厘传统精油按摩</div></div></div>
+          <div class="relax"><div class="rx-time">17:30</div><div class="rx-body"><div class="n">悬崖餐厅看日落</div><div class="d">Rock Bar · 已预约</div></div></div>
+        </div>
+      </div>
+
+      <!-- 餐厅预约（度假专属，含状态） -->
+      <div class="tabpane" id="rp-book">
+        <div class="block">
+          <h3>🍽️ 餐厅 · 活动预约</h3>
+          <div class="book-row"><div class="br-ico">🍹</div><div class="br-body"><div class="n">Rock Bar 悬崖日落</div><div class="d">5.16 · 18:00 · 2 位</div></div><span class="br-status ok">✓ 已确认</span></div>
+          <div class="book-row"><div class="br-ico">🧖</div><div class="br-body"><div class="n">丛林 SPA 套餐</div><div class="d">5.17 · 14:00 · 双人</div></div><span class="br-status ok">✓ 已确认</span></div>
+          <div class="book-row"><div class="br-ico">🍤</div><div class="br-body"><div class="n">金巴兰海鲜烧烤</div><div class="d">5.18 · 19:00 · 待定人数</div></div><span class="br-status wait">待确认</span></div>
+        </div>
+      </div>
+
+      <!-- 住宿体验（度假重头戏） -->
+      <div class="tabpane" id="rp-stay">
+        <div class="block">
+          <h3>🏨 住宿体验</h3>
+          <div class="spot"><img class="sp-thumb" src="https://picsum.photos/seed/ubudvilla/120/120" alt="乌布丛林泳池别墅"><div class="sp-body"><div class="n">乌布丛林泳池别墅</div><div class="d">5.15 – 5.19 · 4 晚 · 私人泳池 + 管家</div></div></div>
+          <div class="resort-chip-row" style="margin-top:12px">
+            <span class="resort-chip">🏊 私人无边泳池</span>
+            <span class="resort-chip">🌿 丛林景观</span>
+            <span class="resort-chip">🛎️ 24h 管家</span>
+            <span class="resort-chip">🍳 别墅早餐</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button class="btn btn-secondary" onclick="goPrint()">🖨 生成行程单（打印备份）</button>
+        <button class="btn btn-secondary" style="flex:0 0 52px;padding:0" onclick="alert('已归档，可在「我的」中查看 📦')">📦</button>
+      </div>
+      <div class="spacer"></div>
+    </section>
+
+    </div><!-- /viewport -->
+
+    <!-- 底部弹层：地图高光卡 -->
+    <div class="sheet-mask" id="sheet-mask" onclick="closeSheet(event)">
+      <div class="sheet">
+        <div class="grab"></div>
+        <div class="hlcard">
+          <img class="hl-img" id="hl-img" src="https://picsum.photos/seed/annapurna88/600/300" alt="旅程精选照片">
+          <div class="hl-ttl" id="hl-ttl">安纳普尔纳环线</div>
+          <div class="hl-quote" id="hl-quote">“翻过 5416 的垭口那刻，风很大，心很静。”</div>
+          <div class="hl-stats">
+            <div class="hl-stat"><div class="n mono" id="hl-s1">12</div><div class="l">天</div></div>
+            <div class="hl-stat"><div class="n mono" id="hl-s2">160</div><div class="l">公里</div></div>
+            <div class="hl-stat"><div class="n mono" id="hl-s3">2</div><div class="l">同行</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ 底部 Tab 栏 ============ -->
+    <nav class="tabbar">
+      <button class="tb active" id="tab-home" onclick="nav('home')"><span class="ic">🏝️</span>行程</button>
+      <button class="tb" id="tab-map" onclick="nav('map')"><span class="ic">🗺️</span>地图</button>
+      <button class="tb tb-add" onclick="nav('new')"><span class="plus">+</span><span class="lbl">新建</span></button>
+      <button class="tb" id="tab-mine" onclick="nav('mine')"><span class="ic">👤</span>我的</button>
+    </nav>
+
+  </div><!-- /app -->
+</div><!-- /phone -->
+</div><!-- /screens -->
+
+<script>
+/* ---------- 页面切换 ---------- */
+var VP = null;
+function showPage(id){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  if(VP) VP.scrollTop = 0;
+}
+function setTab(name){
+  ['home','map','mine'].forEach(function(n){
+    var el = document.getElementById('tab-'+n);
+    if(el) el.classList.toggle('active', n===name);
+  });
+}
+function nav(name){
+  if(name==='home'){ showPage('page-home'); setTab('home'); }
+  else if(name==='map'){ showPage('page-map'); setTab('map'); }
+  else if(name==='new'){ showPage('page-new'); setTab(''); }
+  else if(name==='mine'){ showPage('page-mine'); setTab('mine'); }
+}
+function goDetail(){ showPage('page-detail'); setTab(''); }
+function goHike(){ showPage('page-hike'); setTab(''); }
+function goResort(){ showPage('page-resort'); setTab(''); }
+function goHome(){ showPage('page-home'); setTab('home'); }
+/* 从详情页预算Tab进入完整预算对比页 */
+function goBudget(){ showPage('page-budget'); setTab(''); }
+/* 从详情页底部进入行程单打印预览页 */
+function goPrint(){ window.PRINT_FROM=VP.querySelector('.page.active').id; showPage('page-print'); setTab(''); }
+/* 触发浏览器打印（配合 @media print 只输出行程单内容） */
+function doPrint(){ window.print(); }
+
+/* ---------- 详情：Tab 切换 ---------- */
+function switchTab(btn, paneId){
+  btn.parentNode.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  btn.classList.add('active');
+  document.querySelectorAll('#page-detail .tabpane').forEach(function(p){p.classList.remove('active');});
+  document.getElementById(paneId).classList.add('active');
+}
+/* 通用 Tab 切换（指定页面容器，供徒步/度假详情复用） */
+function switchTabIn(btn, paneId, pageId){
+  btn.parentNode.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  btn.classList.add('active');
+  document.querySelectorAll('#'+pageId+' .tabpane').forEach(function(p){p.classList.remove('active');});
+  document.getElementById(paneId).classList.add('active');
+}
+/* 装备清单勾选（徒步专属） */
+function toggleGear(el){
+  el.classList.toggle('done');
+  el.querySelector('.box').textContent = el.classList.contains('done') ? '✓' : '';
+}
+/* 日期选择占位 */
+function pickDate(el){ el.textContent = '🗓 5.15 – 5.19'; el.style.color = 'var(--c-text-1)'; }
+
+/* ---------- AI 采纳 ---------- */
+function adopt(id){
+  var row = document.getElementById(id);
+  if(row.classList.contains('adopted')) return;
+  row.classList.add('adopted');
+  var btn = row.querySelector('.btn-adopt');
+  btn.outerHTML = '<span class="done">✓ 已加入</span>';
+}
+function showMoreAI(btn){
+  document.getElementById('ai-3').style.display = 'flex';
+  btn.style.display = 'none';
+}
+function genRoute(btn){
+  btn.textContent = '✨ 正在为你规划…';
+  btn.style.opacity = '.75';
+  setTimeout(function(){
+    btn.textContent = '✓ 已生成九日路线';
+    btn.style.opacity = '1';
+    var itinTab = document.querySelectorAll('#detail-tabs .tab')[1];
+    if(itinTab){ switchTab(itinTab,'tp-itin'); }
+  }, 1100);
+}
+
+/* ---------- 准备清单勾选 ---------- */
+function toggleCheck(el){
+  el.classList.toggle('done');
+  el.querySelector('.box').textContent = el.classList.contains('done') ? '✓' : '';
+}
+
+/* ---------- 新建：分类选择 + 动态字段 ---------- */
+var CAT_FIELDS = {
+  travel: {t:'旅行类会帮你记录：', tags:['📌 景点清单','🚄 交通接驳','📅 每日行程','🍜 美食收藏','🏨 住宿安排']},
+  hike:   {t:'徒步类会帮你记录：', tags:['⛰️ 海拔爬升','🎯 难度等级','🎒 装备清单勾选','🧭 路线轨迹','💧 补给点']},
+  resort: {t:'度假类会帮你记录：', tags:['🏨 住宿体验','🧖 放松活动','🏖️ 海滩 / 泳池','🍹 餐厅预约','🌅 慵懒时刻']}
+};
+var SELECTED_CAT = null;
+function pickCat(el){
+  document.querySelectorAll('#catcards .catcard').forEach(function(c){c.classList.remove('sel');});
+  void el.offsetWidth;
+  el.classList.add('sel');
+  var cat = el.getAttribute('data-cat');
+  SELECTED_CAT = cat;
+  var data = CAT_FIELDS[cat];
+  document.getElementById('fp-title').textContent = data.t;
+  var box = document.getElementById('fp-tags');
+  box.innerHTML = data.tags.map(function(t){return '<span class="fp-tag">'+t+'</span>';}).join('');
+  var fp = document.getElementById('fieldprev');
+  fp.classList.remove('show'); void fp.offsetWidth; fp.classList.add('show');
+}
+
+/* ---------- 新建：真正生成一张旅程卡插入首页 ---------- */
+var CAT_META = {
+  travel:{label:'🧳 旅行', cls:'chip-travel', bg:'rgba(230,242,252,.92)', seed:'newtravel'},
+  hike:  {label:'🥾 徒步', cls:'chip-hike',   bg:'rgba(234,245,228,.92)', seed:'newhike'},
+  resort:{label:'🏖️ 度假', cls:'chip-resort', bg:'rgba(253,239,224,.92)', seed:'newresort'}
+};
+var newTripCount = 0;
+function createTrip(){
+  var name = (document.getElementById('new-name').value || '').trim();
+  var dest = (document.getElementById('new-dest').value || '').trim();
+  var date = document.getElementById('new-date').textContent.replace('🗓','').trim();
+  if(!SELECTED_CAT){ alert('先选一个旅程类型吧 🌿'); showPage('page-new'); return; }
+  if(!name){ alert('给这次旅程起个名字吧 ✏️'); document.getElementById('new-name').focus(); return; }
+  var meta = CAT_META[SELECTED_CAT];
+  newTripCount++;
+  var seed = meta.seed + newTripCount;
+  var metaLine = (dest ? '📍 '+dest : '📍 待定') + (date && date!=='选择日期' ? '　|　🗓 '+date : '');
+  var card = document.createElement('article');
+  card.className = 'pcard cat-'+SELECTED_CAT+' just-created';
+  card.setAttribute('onclick', "goDetailByCat('"+SELECTED_CAT+"')");
+  card.innerHTML =
+    '<div class="cover">'+
+      '<img src="https://picsum.photos/seed/'+seed+'/600/360" alt="'+name+'">'+
+      '<div class="veil"></div>'+
+      '<span class="chip '+meta.cls+'" style="background:'+meta.bg+';position:absolute;top:10px;left:10px">'+meta.label+'</span>'+
+      '<span class="chip chip-progress" style="background:rgba(255,255,255,.9);position:absolute;top:10px;right:10px">刚创建</span>'+
+    '</div>'+
+    '<div class="ttl">'+name+'</div>'+
+    '<div class="meta">'+metaLine+'</div>'+
+    '<div class="foot">'+
+      '<div class="avatars"><div class="av owner" style="background:#F2C0A8">明</div><div class="invite">+</div></div>'+
+      '<div class="pbar"><i style="width:0%"></i></div>'+
+      '<div class="budget">0%</div>'+
+    '</div>';
+  document.getElementById('progress-list').appendChild(card);
+  // 更新进行中计数
+  var listCount = document.getElementById('progress-list').querySelectorAll('.pcard').length;
+  document.getElementById('progress-count').textContent = listCount + ' 段旅程';
+  // 挂载图片降级
+  var img = card.querySelector('img');
+  img.addEventListener('error',function(){this.classList.add('img-fallback');this.removeAttribute('src');});
+  // 重置表单
+  document.getElementById('new-name').value='';
+  document.getElementById('new-dest').value='';
+  document.getElementById('new-date').textContent='🗓 选择日期';
+  document.getElementById('new-date').style.color='';
+  document.querySelectorAll('#catcards .catcard').forEach(function(c){c.classList.remove('sel');});
+  document.getElementById('fieldprev').classList.remove('show');
+  SELECTED_CAT=null;
+  // 回首页并滚动到新卡
+  showPage('page-home'); setTab('home');
+  setTimeout(function(){ card.scrollIntoView({behavior:'smooth',block:'center'}); }, 120);
+  setTimeout(function(){ card.classList.remove('just-created'); }, 2000);
+}
+/* 新建卡点击后按分类进入对应示例详情 */
+function goDetailByCat(cat){
+  if(cat==='hike'){ goHike(); }
+  else if(cat==='resort'){ goResort(); }
+  else{ goDetail(); }
+}
+
+/* ---------- 地图模式切换 ---------- */
+function switchMap(btn, viewId){
+  btn.parentNode.querySelectorAll('button').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  document.querySelectorAll('.mapview').forEach(function(v){v.classList.remove('active');});
+  document.getElementById(viewId).classList.add('active');
+  var showCn = (viewId==='map-cn');
+  var sa = document.getElementById('stat-a');
+  sa.style.display = showCn?'':'none';
+  if(sa.nextElementSibling) sa.nextElementSibling.style.display = showCn?'':'none';
+}
+
+/* ---------- 地图点位数据 ---------- */
+var CN_DOTS = [
+  {x:210,y:70,lit:false},{x:235,y:45,lit:false},{x:245,y:110,lit:false},
+  {x:190,y:100,lit:false},{x:170,y:60,lit:false},{x:150,y:130,lit:false},
+  {x:120,y:90,lit:false},{x:100,y:50,lit:false},{x:200,y:140,lit:false},
+  {x:225,y:150,lit:false},{x:80,y:120,lit:false},{x:130,y:40,lit:false}
+];
+var WORLD_DOTS = [
+  {x:205,y:78,lit:true, name:'尼泊尔·安纳普尔纳', date:'10.05 – 10.16', days:'12', img:'annapurna88', quote:'"翻过 5416 的垭口那刻，风很大，心很静。"', s:['160','5416','12'], sLabel:['总里程 km','最高海拔 m','行程天数'], goto:'goHike'},
+  {x:150,y:62,lit:true, name:'土耳其·伊斯坦布尔', date:'5.12 – 5.20', days:'9', img:'istanbulcat42', quote:'"在这座城市，猫比人多，也比人自在。"', s:['9','🐱','Tombili'], sLabel:['天数','主题','必打卡'], goto:'goDetail'},
+  {x:245,y:60,lit:false},{x:230,y:95,lit:false},{x:120,y:70,lit:false},
+  {x:60,y:90,lit:false},{x:40,y:120,lit:false},{x:160,y:110,lit:false},
+  {x:200,y:130,lit:false},{x:90,y:50,lit:false},{x:270,y:120,lit:false},{x:150,y:140,lit:false}
+];
+
+function buildMap(svgId, dots, land){
+  var svg = document.getElementById(svgId);
+  var ns='http://www.w3.org/2000/svg';
+  svg.innerHTML='';
+  // 大陆轮廓底 (抽象柔和形状)
+  var bg = document.createElementNS(ns,'path');
+  bg.setAttribute('d', land);
+  bg.setAttribute('fill','#DDEDE8');
+  bg.setAttribute('opacity','.85');
+  svg.appendChild(bg);
+  // 连线（青绿路径，连接已点亮点）
+  var litPts = dots.filter(function(d){return d.lit;});
+  for(var i=0;i<litPts.length-1;i++){
+    var ln=document.createElementNS(ns,'line');
+    ln.setAttribute('x1',litPts[i].x);ln.setAttribute('y1',litPts[i].y);
+    ln.setAttribute('x2',litPts[i+1].x);ln.setAttribute('y2',litPts[i+1].y);
+    ln.setAttribute('stroke','#17A398');ln.setAttribute('stroke-width','1.4');
+    ln.setAttribute('stroke-dasharray','3 3');ln.setAttribute('opacity','.5');
+    svg.appendChild(ln);
+  }
+  dots.forEach(function(d,i){
+    var g=document.createElementNS(ns,'g');
+    g.setAttribute('class','dot');
+    if(d.lit){
+      // 双层光晕
+      var glowB=document.createElementNS(ns,'circle');
+      glowB.setAttribute('cx',d.x);glowB.setAttribute('cy',d.y);glowB.setAttribute('r','11');
+      glowB.setAttribute('fill','#FFC65C');glowB.setAttribute('opacity','.28');
+      var glowA=document.createElementNS(ns,'circle');
+      glowA.setAttribute('cx',d.x);glowA.setAttribute('cy',d.y);glowA.setAttribute('r','7.5');
+      glowA.setAttribute('fill','#FF6F52');glowA.setAttribute('opacity','.22');
+      var core=document.createElementNS(ns,'circle');
+      core.setAttribute('cx',d.x);core.setAttribute('cy',d.y);core.setAttribute('r','4');
+      core.setAttribute('fill','#FF6F52');core.setAttribute('stroke','#fff');core.setAttribute('stroke-width','1.5');
+      g.appendChild(glowB);g.appendChild(glowA);g.appendChild(core);
+      g.style.cursor='pointer';
+      g.addEventListener('click',function(){openMapOverlay(dd);});
+      // 弹入微交互
+      g.style.transformOrigin=d.x+'px '+d.y+'px';
+      g.style.animation='popdot .5s '+(i*0.08)+'s both';
+    } else {
+      var dim=document.createElementNS(ns,'circle');
+      dim.setAttribute('cx',d.x);dim.setAttribute('cy',d.y);dim.setAttribute('r','3');
+      dim.setAttribute('fill','none');dim.setAttribute('stroke','#D7D0C6');dim.setAttribute('stroke-width','1.5');
+      g.appendChild(dim);
+    }
+    svg.appendChild(g);
+  });
+}
+
+/* popdot keyframes 注入 */
+var st=document.createElement('style');
+st.textContent='@keyframes popdot{0%{transform:scale(0);opacity:0}60%{transform:scale(1.25);opacity:1}100%{transform:scale(1)}}';
+document.head.appendChild(st);
+
+/* ---------- 地图光点详情浮层 ---------- */
+var LAST_MAP_DOT = null;
+function openMapOverlay(d){
+  LAST_MAP_DOT = d;
+  document.getElementById('mdc-img').src='https://picsum.photos/seed/'+d.img+'/600/360';
+  document.getElementById('mdc-ttl').textContent=d.name;
+  document.getElementById('mdc-meta').textContent=(d.date||'计划中')+'  ·  '+(d.days||'?')+' 天';
+  document.getElementById('mdc-quote').textContent=d.quote;
+  var statsHtml='';
+  if(d.s && d.s.length>=3){
+    statsHtml='<div><div class="n">'+d.s[0]+'</div><div class="l">'+d.sLabel[0]+'</div></div>'+
+      '<div><div class="n">'+d.s[1]+'</div><div class="l">'+d.sLabel[1]+'</div></div>'+
+      '<div><div class="n">'+d.s[2]+'</div><div class="l">'+d.sLabel[2]+'</div></div>';
+  }
+  document.getElementById('mdc-stats').innerHTML=statsHtml;
+  document.getElementById('map-overlay').style.display='flex';
+}
+function closeMapOverlay(){
+  document.getElementById('map-overlay').style.display='none';
+}
+function goDetailFromMap(){
+  if(LAST_MAP_DOT && LAST_MAP_DOT.goto){
+    window[LAST_MAP_DOT.goto]();
+  } else {
+    goDetail();
+  }
+}
+
+/* ---------- 旧高光弹层（保留兼容）---------- */
+function openSheet(d){
+  document.getElementById('hl-img').src='https://picsum.photos/seed/'+d.img+'/600/300';
+  document.getElementById('hl-ttl').textContent=d.name;
+  document.getElementById('hl-quote').textContent=d.quote;
+  document.getElementById('hl-s1').textContent=d.s[0];
+  document.getElementById('hl-s2').textContent=d.s[1];
+  document.getElementById('hl-s3').textContent=d.s[2];
+  document.getElementById('sheet-mask').classList.add('show');
+}
+function closeSheet(e){
+  if(e.target.id==='sheet-mask') document.getElementById('sheet-mask').classList.remove('show');
+}
+
+/* ---------- init ---------- */
+document.addEventListener('DOMContentLoaded',function(){
+  VP=document.querySelector('.viewport');
+  var cnLand='M70,55 C90,35 150,30 200,45 C245,50 265,80 255,120 C245,155 190,170 140,158 C95,148 60,120 62,90 C63,72 62,66 70,55 Z';
+  var wLand='M20,70 C60,45 110,50 140,70 C150,55 200,50 235,55 C270,60 285,90 270,120 C240,145 180,140 150,120 C120,140 60,140 35,115 C15,100 10,85 20,70 Z';
+  buildMap('cnsvg',CN_DOTS,cnLand);
+  buildMap('worldsvg',WORLD_DOTS,wLand);
+
+  /* 离线降级：为所有图片挂载加载失败回退，图片加载不出时以柔和色块占位 */
+  function attachFallback(img){
+    img.addEventListener('error',function(){
+      if(this.classList.contains('img-fallback')) return;
+      this.classList.add('img-fallback');
+      this.removeAttribute('src');
+    });
+  }
+  document.querySelectorAll('img').forEach(attachFallback);
+});
+</script>
+</body>
+</html>
