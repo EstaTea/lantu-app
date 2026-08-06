@@ -22,6 +22,8 @@
 <meta name="theme-color" content="#FBF9F6">
 <meta name="description" content="兰途 LanTu — 家庭 AI 兰途旅行手机端高保真可点击原型">
 <title>兰途 LanTu · 家庭 AI 旅行计划原型</title>
+<!-- 品牌 Favicon：内联简化标记（青绿定位针 + 珊瑚中心点），零外部依赖 -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Cpath%20d='M32%207%20C41.5%207%2049%2014.5%2049%2024%20C49%2036%2040%2048%2032%2052%20C24%2048%2015%2036%2015%2024%20C15%2014.5%2022.5%207%2032%207%20Z'%20fill='%2317A398'/%3E%3Ccircle%20cx='32'%20cy='24'%20r='5'%20fill='%23FF6F52'/%3E%3C/svg%3E">
 <style>
 :root{
   --c-primary-50:#EAF8F5; --c-primary-100:#CBEEE7; --c-primary-200:#9CDDD2;
@@ -491,7 +493,7 @@ img.img-fallback{
 @media print{
   @page{size:A4;margin:14mm;}
   body{background:#fff !important;padding:0 !important;display:block !important;}
-  .stage-title,.frame-label,.tabbar,.print-bar,.pdf-hint,.notch,.statusbar,.sheet-mask{display:none !important;}
+  .stage-title,.frame-label,.tabbar,.print-bar,.pdf-hint,.notch,.statusbar,.sheet-mask,.splash{display:none !important;}
   .screens{display:block !important;gap:0 !important;}
   .phone{width:auto !important;height:auto !important;box-shadow:none !important;border-radius:0 !important;
     overflow:visible !important;background:#fff !important;}
@@ -585,18 +587,80 @@ img.img-fallback{
 /* 新卡高亮动效 */
 @keyframes newcard{0%{transform:scale(.9);opacity:0;}60%{transform:scale(1.02);}100%{transform:scale(1);opacity:1;}}
 .pcard.just-created{animation:newcard .5s cubic-bezier(.2,.8,.2,1) both;box-shadow:0 0 0 2px var(--c-primary-300),var(--sh-md);}
+
+/* ============================================================================
+   品牌 Logo · 兰途 LanTu
+   ----------------------------------------------------------------------------
+   仅使用三色：青绿 #17A398(--c-primary-500) / 珊瑚 #FF6F52(--c-coral-500)
+             / 暖米白 #FBF9F6(--c-bg)
+   全部内联 SVG（symbol sprite + use 引用），不引用任何外部图片或字体。
+   纪律：不拉伸 Pin 比例、不给 Pin 加投影或描边外发光。
+   ============================================================================ */
+.lantu-logo{display:block;flex:0 0 auto;}
+
+/* ---- ⑤ 桌面舞台标题小 logo ---- */
+.stage-title h1{display:flex;align-items:center;justify-content:center;gap:10px;}
+.stage-logo{width:28px;height:28px;vertical-align:middle;}
+
+/* ---- ① 首页顶栏品牌字标行 ---- */
+.brand-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.brand-logo{width:24px;height:24px;}
+.brand-name{color:var(--c-primary-500);font-weight:var(--fw-bold);font-size:16px;
+  letter-spacing:0;line-height:1;}
+
+/* ---- ②③ 启动闪屏（闪屏 + 桌面图标合体）---- */
+.splash{position:absolute;inset:0;z-index:300;background:var(--c-bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;
+  animation:lantuSplash .55s ease 1.8s forwards;}
+.splash-tile{width:140px;height:140px;border-radius:22%;background:var(--c-bg);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 30px rgba(23,163,152,.12);}
+.splash-mark{width:96px;height:96px;}
+.splash-word{text-align:center;}
+.splash-word b{display:block;font-size:26px;font-weight:var(--fw-extrabold);
+  color:var(--c-primary-500);letter-spacing:-.01em;line-height:1.2;}
+.splash-word span{display:block;font-size:15px;font-weight:var(--fw-semibold);
+  color:var(--c-primary-500);letter-spacing:.02em;margin-top:3px;}
+@keyframes lantuSplash{to{opacity:0;visibility:hidden;}}
 </style>
 </head>
 <body>
 
+<!-- ============================================================================
+     品牌 Logo SVG Sprite（隐藏定义，供全站 <use href="#..."> 引用）
+     #lantu-mark        完整标记：青绿定位针 + 珊瑚 S 形路径 + 珊瑚终点圆
+     #lantu-mark-simple 简化标记：仅 Pin 轮廓 + 珊瑚中心点（favicon / 超小尺寸）
+     ============================================================================ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="lantu-mark" viewBox="0 0 64 64">
+    <!-- 定位针主体：圆头 r15@(32,24)，尾部收束为圆角软尖 (32,52)；右侧轮廓略作不对称，暗含兰叶柔感 -->
+    <path d="M32 7 C41.6 7 49 14.5 49 24 C49 36.4 40.2 48.2 32 52 C24 48 15 36 15 24 C15 14.5 22.4 7 32 7 Z" fill="#17A398"/>
+    <!-- 旅途路径：S 形盘旋于针体内，线宽 3.5、round 端点 -->
+    <path d="M26 40 C36 37 34 33 30 30 C26.8 27.6 24 25.5 33 22" fill="none" stroke="#FF6F52" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- 目的地终点 -->
+    <circle cx="33" cy="22" r="3.5" fill="#FF6F52"/>
+  </symbol>
+  <symbol id="lantu-mark-simple" viewBox="0 0 64 64">
+    <path d="M32 7 C41.5 7 49 14.5 49 24 C49 36 40 48 32 52 C24 48 15 36 15 24 C15 14.5 22.5 7 32 7 Z" fill="#17A398"/>
+    <circle cx="32" cy="24" r="5" fill="#FF6F52"/>
+  </symbol>
+</svg>
+
 <div class="stage-title">
-  <h1>兰途 · LanTu</h1>
+  <h1><svg class="lantu-logo stage-logo" role="img" aria-label="兰途 LanTu"><use href="#lantu-mark"/></svg>兰途 · LanTu</h1>
   <p>家庭 AI 兰途旅行 · 手机端高保真可点击原型（375×812）· 点击卡片 / 底部导航 / 分类切换均可交互</p>
 </div>
 
 <div class="screens">
 <div class="phone">
   <div class="notch"></div>
+  <!-- 启动闪屏：1.8s 后自动淡出（纯 CSS 动画），DOM 于 2.5s 由 JS 清理 -->
+  <div class="splash" id="splash">
+    <div class="splash-tile">
+      <svg class="lantu-logo splash-mark" role="img" aria-label="兰途 LanTu"><use href="#lantu-mark"/></svg>
+    </div>
+    <div class="splash-word"><b>兰途</b><span>LanTu</span></div>
+  </div>
   <div class="app">
     <div class="statusbar">
       <span>9:41</span>
@@ -607,6 +671,10 @@ img.img-fallback{
     <!-- ============ 页面① 我的行程首页 ============ -->
     <section class="page active" id="page-home">
       <div class="page-head">
+        <div class="brand-row">
+          <svg class="lantu-logo brand-logo" role="img" aria-label="兰途 LanTu"><use href="#lantu-mark"/></svg>
+          <span class="brand-name">兰途</span>
+        </div>
         <div class="display">你好，小老妹 <span class="greet-emoji">🌿</span></div>
         <div class="sub">正在筹备 2 段旅程 · 今天想去哪儿？</div>
       </div>
@@ -618,7 +686,7 @@ img.img-fallback{
       <!-- 徒步类 进行中卡：尼泊尔 ACT -->
       <article class="pcard cat-hike" onclick="goHike()">
         <div class="cover">
-          <img src="https://picsum.photos/seed/annapurna88/600/360" alt="安纳普尔纳环线">
+          <img src="nepal-act-snow-mountain.jpg" alt="安纳普尔纳环线">
           <div class="veil"></div>
           <span class="chip chip-hike" style="background:rgba(234,245,228,.92)">🥾 徒步</span>
           <span class="chip chip-progress status" style="background:rgba(255,255,255,.9)">进行中</span>
@@ -639,7 +707,7 @@ img.img-fallback{
       <!-- 旅行类 进行中卡：土耳其看猫 -->
       <article class="pcard cat-travel" onclick="goDetail()">
         <div class="cover">
-          <img src="https://picsum.photos/seed/istanbulcat42/600/360" alt="伊斯坦布尔的猫">
+          <img src="istanbul-street-cat.jpg" alt="伊斯坦布尔的猫">
           <div class="veil"></div>
           <span class="chip chip-travel" style="background:rgba(230,242,252,.92)">🧳 旅行</span>
           <span class="chip chip-progress status" style="background:rgba(255,255,255,.9)">进行中</span>
@@ -663,7 +731,7 @@ img.img-fallback{
     <!-- ============ 页面② Project 详情（旅行类枢纽：土耳其看猫） ============ -->
     <section class="page" id="page-detail">
       <div class="detail-hero">
-        <img src="https://picsum.photos/seed/istanbulcat42/750/520" alt="伊斯坦布尔的猫封面">
+        <img src="istanbul-street-cat.jpg" alt="伊斯坦布尔的猫封面">
         <div class="veil"></div>
         <button class="back" onclick="goHome()">‹</button>
         <div class="hinfo">
@@ -1232,12 +1300,12 @@ img.img-fallback{
       <div class="mine-sec-title">正在筹备</div>
       <div class="mine-list">
         <div class="mini-trip" onclick="goHike()">
-          <img class="mt-img" src="https://picsum.photos/seed/annapurna88/120/120" alt="安纳普尔纳环线">
+          <img class="mt-img" src="nepal-act-snow-mountain.jpg" alt="安纳普尔纳环线">
           <div class="mt-body"><div class="n">安纳普尔纳环线 · 与雪山同行</div><div class="m">🥾 徒步 · 10 月 · 2 人同行 · 45%</div></div>
           <span class="mi-arrow">›</span>
         </div>
         <div class="mini-trip" onclick="goDetail()">
-          <img class="mt-img" src="https://picsum.photos/seed/istanbulcat42/120/120" alt="伊斯坦布尔的猫">
+          <img class="mt-img" src="istanbul-street-cat.jpg" alt="伊斯坦布尔的猫">
           <div class="mt-body"><div class="n">伊斯坦布尔撸猫漫游</div><div class="m">🧳 旅行 · 5 月 · 2 人同行 · 30%</div></div>
           <span class="mi-arrow">›</span>
         </div>
@@ -1269,7 +1337,7 @@ img.img-fallback{
     <!-- ============ 页面⑧ 徒步类详情（差异化） ============ -->
     <section class="page" id="page-hike">
       <div class="detail-hero">
-        <img src="https://picsum.photos/seed/annapurna88/750/520" alt="安纳普尔纳环线封面">
+        <img src="nepal-act-snow-mountain.jpg" alt="安纳普尔纳环线封面">
         <div class="veil"></div>
         <button class="back" onclick="goHome()">‹</button>
         <div class="hinfo">
@@ -1499,7 +1567,7 @@ img.img-fallback{
       <div class="sheet">
         <div class="grab"></div>
         <div class="hlcard">
-          <img class="hl-img" id="hl-img" src="https://picsum.photos/seed/annapurna88/600/300" alt="旅程精选照片">
+          <img class="hl-img" id="hl-img" src="nepal-act-snow-mountain.jpg" alt="旅程精选照片">
           <div class="hl-ttl" id="hl-ttl">安纳普尔纳环线</div>
           <div class="hl-quote" id="hl-quote">“翻过 5416 的垭口那刻，风很大，心很静。”</div>
           <div class="hl-stats">
@@ -1828,6 +1896,10 @@ document.addEventListener('DOMContentLoaded',function(){
     });
   }
   document.querySelectorAll('img').forEach(attachFallback);
+
+  /* 启动闪屏：CSS 动画 1.8s 后淡出，2.5s 移除 DOM（不依赖任何外部库） */
+  var splash=document.getElementById('splash');
+  if(splash) setTimeout(function(){ if(splash.parentNode) splash.remove(); },2500);
 });
 </script>
 </body>
