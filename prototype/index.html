@@ -176,6 +176,12 @@ body{min-height:100vh;padding:32px 16px;display:flex;flex-direction:column;align
   background:var(--grad-ai-chip);color:#fff;font-weight:700;font-size:var(--fs-h3);font-family:inherit;
   margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .12s;}
 .ai-genbtn:active{transform:scale(.97);}
+.ai-refresh{width:32px;height:32px;border:none;background:rgba(139,92,246,.08);color:#8B5CF6;
+  border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:16px;transition:all .2s;flex:0 0 auto;}
+.ai-refresh:hover{background:rgba(139,92,246,.15);transform:rotate(180deg);}
+.ai-refresh:active{transform:scale(.9) rotate(180deg);}
+.ai-refresh:disabled{opacity:.5;cursor:not-allowed;}
 
 /* ============ Detail page ============ */
 .detail-hero{position:relative;height:260px;}
@@ -835,7 +841,10 @@ img.img-fallback{
 
       <!-- AI 概览卡 -->
       <div class="ai-card">
-        <span class="ai-badge">✨ AI 旅行助手</span>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <span class="ai-badge">✨ AI 旅行助手</span>
+          <button class="ai-refresh" onclick="clickRefreshAI(this,'detail')" title="换一批建议">🔄</button>
+        </div>
         <div class="ai-row" id="ai-1">
           <span class="ico">🐱</span>
           <span class="txt">伊斯坦布尔是<b>「猫城」</b>，街猫亲人不怕生。<b>随身带点猫零食</b>，蓝色清真寺、加拉塔塔下都能撸到猫。</span>
@@ -1404,7 +1413,10 @@ img.img-fallback{
 
       <!-- AI 卡（徒步语气） -->
       <div class="ai-card">
-        <span class="ai-badge">✨ AI 徒步助手</span>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <span class="ai-badge">✨ AI 徒步助手</span>
+          <button class="ai-refresh" onclick="clickRefreshAI(this,'hike')" title="换一批建议">🔄</button>
+        </div>
         <div class="ai-row" id="hai-1">
           <span class="ico">⛰️</span>
           <span class="txt">翻越 <b>Thorong La 垭口（5416m）</b>是全程最难的一天，务必在 Manang 停留 2 晚做<b>高原适应</b>，切忌赶路。</span>
@@ -1524,7 +1536,10 @@ img.img-fallback{
 
       <!-- AI 卡（度假语气） -->
       <div class="ai-card">
-        <span class="ai-badge">✨ AI 度假管家</span>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <span class="ai-badge">✨ AI 度假管家</span>
+          <button class="ai-refresh" onclick="clickRefreshAI(this,'resort')" title="换一批建议">🔄</button>
+        </div>
         <div class="ai-row" id="rai-1">
           <span class="ico">🌅</span>
           <span class="txt">别把行程排太满，<b>每天留半天泡池 / 发呆</b>才是度假的意义，我帮你留白了下午时段。</span>
@@ -1849,6 +1864,84 @@ function toggleGear(el){
 function pickDate(el){ el.textContent = '🗓 5.15 – 5.19'; el.style.color = 'var(--c-text-1)'; }
 
 /* ---------- AI 采纳 ---------- */
+var AI_POOL = {
+  detail: [ // 旅行类（土耳其撸猫）
+    {ico:'🐱',txt:'伊斯坦布尔是<b>「猫城」</b>，街猫亲人不怕生。<b>随身带点猫零食</b>，蓝色清真寺、加拉塔塔下都能撸到猫。'},
+    {ico:'⛴️',txt:'亚洲区的 <b>卡迪柯伊（Kadıköy）猫咪最多最松弛</b>，建议第 5 天坐渡轮过海峡，边喝茶边撸猫。'},
+    {ico:'📸',txt:'想拍出名的猫，可去找 <b>Tombili 雕像</b>（那只慵懒趴着的网红猫），当地人都知道。'},
+    {ico:'🍵',txt:'加拉塔桥下的鱼市旁有很多<b>撸猫圣地</b>，渔民会给猫分鱼，氛围特别松弛。'},
+    {ico:'🏛️',txt:'圣索菲亚大教堂曾有名猫 <b>Gli</b> 镇守，虽然它已去世，门口仍常有猫，可去致敬。'},
+    {ico:'🌅',txt:'<b>日落时分去加拉塔塔顶</b>看全城，塔下的石板巷弄里猫最上镜。'},
+    {ico:'🚇',txt:'办一张 <b>Istanbulkart 交通卡</b>，电车/地铁/渡轮通用，比单程票划算。'},
+    {ico:'📱',txt:'下载<b>离线地图 + 渡轮时刻表</b>，亚洲区信号弱，提前备好。'}
+  ],
+  hike: [ // 徒步类（尼泊尔 ACT）
+    {ico:'⛰️',txt:'翻越 <b>Thorong La 垭口（5416m）</b>是全程最难的一天，务必在 Manang 停留 2 晚做<b>高原适应</b>，切忌赶路。'},
+    {ico:'🌅',txt:'垭口当天需<b>凌晨 4 点从 High Camp 出发</b>，避开午后大风，日出前登顶能看到道拉吉里全景。'},
+    {ico:'💊',txt:'Manang 有 <b>HRA 高山病诊所</b>，建议听适应讲座，学会识别高反症状。'},
+    {ico:'🎒',txt:'<b>-10℃ 睡袋必备</b>，高海拔茶馆夜里很冷，别指望客栈被子。'},
+    {ico:'🥾',txt:'<b>登山杖 + 头灯</b>是垭口日必需品，凌晨天黑路滑，没头灯很危险。'},
+    {ico:'💧',txt:'<b>保温水壶</b>装热水，高海拔冷水喝多了容易胃不适，热柠檬茶最好。'},
+    {ico:'📜',txt:'提前办妥 <b>TIMS 许可证 + ACAP 门票</b>，检查站会查，没证无法通行。'},
+    {ico:'💰',txt:'<b>现金为主</b>，高海拔无 ATM，Manang 之后只能用尼泊尔卢比现金。'}
+  ],
+  resort: [ // 度假类（巴厘岛）
+    {ico:'🌅',txt:'别把行程排太满，<b>每天留半天泡池 / 发呆</b>才是度假的意义，我帮你留白了下午时段。'},
+    {ico:'🍹',txt:'海边悬崖餐厅日落位很抢手，<b>建议提前 2 天预订</b> Rock Bar 的 18:00 场次。'},
+    {ico:'🧖',txt:'<b>丛林 SPA</b> 是巴厘岛招牌，乌布的传统精油按摩比海边便宜且正宗。'},
+    {ico:'🏊',txt:'私人泳池别墅<b>早上 9 点前人最少</b>，管家送早餐到池边，这才是度假该有的样子。'},
+    {ico:'🌾',txt:'<b>德格拉朗梯田</b>日出最美，建议 6 点出发，人少光线好。'},
+    {ico:'🙏',txt:'进庙需<b>围纱笼</b>，尊重当地宗教习俗，门口一般有租借。'},
+    {ico:'☀️',txt:'<b>防晒 + 驱蚊</b>必备，热带气候紫外线强，傍晚蚊子多。'},
+    {ico:'💸',txt:'<b>印尼盾现金</b>为主，机场兑换汇率还行，小店刷卡不方便。'}
+  ]
+};
+function refreshAI(tripType){
+  var pool = AI_POOL[tripType] || AI_POOL.detail;
+  var pageId = tripType==='detail' ? 'page-detail' : tripType==='hike' ? 'page-hike' : 'page-resort';
+  var idPrefix = tripType==='detail' ? 'ai-' : tripType==='hike' ? 'hai-' : 'rai-';
+  var used = []; // 记录已显示的建议，避免重复
+  document.querySelectorAll('#'+pageId+' .ai-row').forEach(function(row){
+    if(row.id.indexOf('3')!==-1) return; // 跳过 ai-3
+    var txt=row.querySelector('.txt');
+    if(txt) used.push(txt.innerHTML);
+  });
+  // 从池中随机抽2条（排除已显示的）
+  var available = pool.filter(function(item){return used.indexOf(item.txt)===-1;});
+  if(available.length<2) available=pool; // 兜底：如果可选不足2条，放回全池
+  var picked = [];
+  while(picked.length<2 && available.length>0){
+    var idx = Math.floor(Math.random()*available.length);
+    picked.push(available.splice(idx,1)[0]);
+  }
+  // 替换前2个 ai-row
+  var rows = [document.getElementById(idPrefix+'1'), document.getElementById(idPrefix+'2')];
+  for(var i=0;i<2;i++){
+    if(!rows[i]) continue;
+    var item = picked[i] || pool[i]; // 兜底
+    rows[i].querySelector('.ico').textContent = item.ico;
+    rows[i].querySelector('.txt').innerHTML = item.txt;
+    // 重置采纳按钮
+    var btn = rows[i].querySelector('.btn-adopt');
+    if(btn){
+      rows[i].classList.remove('adopted');
+      btn.outerHTML = '<button class="btn btn-adopt" onclick="adopt(\''+rows[i].id+'\')">采纳</button>';
+    } else {
+      // 已采纳态：恢复按钮
+      var done = rows[i].querySelector('.done');
+      if(done) done.outerHTML = '<button class="btn btn-adopt" onclick="adopt(\''+rows[i].id+'\')">采纳</button>';
+    }
+  }
+}
+function clickRefreshAI(btn, tripType){
+  btn.textContent='…';
+  btn.disabled=true;
+  setTimeout(function(){
+    refreshAI(tripType);
+    btn.textContent='🔄';
+    btn.disabled=false;
+  }, 300);
+}
 function adopt(id){
   var row = document.getElementById(id);
   if(row.classList.contains('adopted')) return;
@@ -1938,7 +2031,7 @@ function createTrip(){
   document.getElementById('progress-count').textContent = listCount + ' 段旅程';
   // 挂载图片降级
   var img = card.querySelector('img');
-  img.addEventListener('error',function(){this.classList.add('img-fallback');this.removeAttribute('src');});
+  attachFallback(img);
   // 重置表单
   document.getElementById('new-name').value='';
   document.getElementById('new-dest').value='';
@@ -1969,12 +2062,18 @@ function switchMap(btn, viewId){
   var sa = document.getElementById('stat-a');
   sa.style.display = showCn?'':'none';
   if(sa.nextElementSibling) sa.nextElementSibling.style.display = showCn?'':'none';
+  // 更新统计数字
+  if(showCn){
+    var litCn = CN_DOTS.filter(function(d){return d.lit;}).length;
+    sa.textContent = litCn;
+  }
 }
 
 /* ---------- 地图点位数据 ---------- */
 var CN_DOTS = [
-  {x:210,y:70,lit:false},{x:235,y:45,lit:false},{x:245,y:110,lit:false},
-  {x:190,y:100,lit:false},{x:170,y:60,lit:false},{x:150,y:130,lit:false},
+  {x:210,y:70,lit:true, name:'云南·丽江古城', date:'3.10 – 3.15', days:'6', img:'lijiang88', quote:'"慢悠悠走在石板路上，时间好像停了。"', s:['6','古城','玉龙雪山'], sLabel:['天数','主题','必打卡'], goto:'goDetail'},
+  {x:235,y:45,lit:true, name:'新疆·喀纳斯', date:'9.12 – 9.20', days:'9', img:'kanas66', quote:'"秋天的喀纳斯，像上帝打翻的调色盘。"', s:['9','🍂','禾木村'], sLabel:['天数','主题','必打卡'], goto:'goHike'},
+  {x:245,y:110,lit:false},{x:190,y:100,lit:false},{x:170,y:60,lit:false},{x:150,y:130,lit:false},
   {x:120,y:90,lit:false},{x:100,y:50,lit:false},{x:200,y:140,lit:false},
   {x:225,y:150,lit:false},{x:80,y:120,lit:false},{x:130,y:40,lit:false}
 ];
@@ -2022,7 +2121,7 @@ function buildMap(svgId, dots, land){
       core.setAttribute('fill','#FF6F52');core.setAttribute('stroke','#fff');core.setAttribute('stroke-width','1.5');
       g.appendChild(glowB);g.appendChild(glowA);g.appendChild(core);
       g.style.cursor='pointer';
-      g.addEventListener('click',function(){openMapOverlay(dd);});
+      g.addEventListener('click',function(){openMapOverlay(d);});
       // 弹入微交互
       g.style.transformOrigin=d.x+'px '+d.y+'px';
       g.style.animation='popdot .5s '+(i*0.08)+'s both';
@@ -2084,6 +2183,14 @@ function closeSheet(e){
 }
 
 /* ---------- init ---------- */
+/* 离线降级：为所有图片挂载加载失败回退，图片加载不出时以柔和色块占位 */
+function attachFallback(img){
+  img.addEventListener('error',function(){
+    if(this.classList.contains('img-fallback')) return;
+    this.classList.add('img-fallback');
+    this.removeAttribute('src');
+  });
+}
 document.addEventListener('DOMContentLoaded',function(){
   VP=document.querySelector('.viewport');
   var cnLand='M70,55 C90,35 150,30 200,45 C245,50 265,80 255,120 C245,155 190,170 140,158 C95,148 60,120 62,90 C63,72 62,66 70,55 Z';
@@ -2091,14 +2198,6 @@ document.addEventListener('DOMContentLoaded',function(){
   buildMap('cnsvg',CN_DOTS,cnLand);
   buildMap('worldsvg',WORLD_DOTS,wLand);
 
-  /* 离线降级：为所有图片挂载加载失败回退，图片加载不出时以柔和色块占位 */
-  function attachFallback(img){
-    img.addEventListener('error',function(){
-      if(this.classList.contains('img-fallback')) return;
-      this.classList.add('img-fallback');
-      this.removeAttribute('src');
-    });
-  }
   document.querySelectorAll('img').forEach(attachFallback);
 
   /* 启动闪屏：CSS 动画 1.8s 后淡出，2.5s 移除 DOM（不依赖任何外部库） */
