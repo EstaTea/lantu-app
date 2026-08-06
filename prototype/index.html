@@ -294,6 +294,36 @@ body{min-height:100vh;padding:32px 16px;display:flex;flex-direction:column;align
 .stat .num{font-size:24px;font-weight:800;color:var(--c-coral-500);font-variant-numeric:tabular-nums;}
 .stat .lbl{font-size:var(--fs-xs);color:var(--c-text-2);margin-top:2px;font-weight:600;}
 
+/* ============ 地图页：统计图表 ============ */
+.mini-chart{flex:1;background:var(--c-surface);border-radius:var(--r-card);padding:12px;box-shadow:var(--sh-sm);}
+.mc-head{font-size:var(--fs-sm);font-weight:700;color:var(--c-text-1);margin-bottom:10px;}
+.mc-pie{display:flex;justify-content:center;margin:6px 0 10px;}
+.mc-legend{font-size:11px;display:flex;flex-direction:column;gap:4px;}
+.mc-legend>div{display:flex;align-items:center;gap:6px;color:var(--c-text-2);}
+.mc-legend .sw{width:12px;height:12px;border-radius:2px;display:inline-block;}
+.mc-bars{display:flex;flex-direction:column;gap:8px;margin-top:8px;}
+.mcb{display:flex;align-items:center;gap:8px;font-size:12px;}
+.mcb-lbl{width:40px;font-weight:600;color:var(--c-text-2);flex-shrink:0;}
+.mcb-bar{flex:1;height:18px;background:var(--c-surface-2);border-radius:4px;overflow:hidden;}
+.mcb-bar i{display:block;height:100%;transition:width .4s cubic-bezier(.2,.8,.2,1);}
+.mcb-val{width:20px;text-align:right;font-weight:700;color:var(--c-text-1);font-variant-numeric:tabular-nums;}
+
+/* ============ 地图页：光点详情浮层 ============ */
+.map-detail-overlay{position:absolute;inset:0;background:rgba(30,22,15,.5);z-index:400;display:flex;align-items:center;justify-content:center;padding:var(--sp-5);animation:fade .2s;}
+.map-detail-card{background:var(--c-surface);border-radius:var(--r-card-lg);overflow:hidden;box-shadow:var(--sh-xl);max-width:340px;width:100%;position:relative;animation:popIn .3s cubic-bezier(.2,.8,.2,1);}
+@keyframes popIn{from{transform:scale(.88);opacity:0;}to{transform:scale(1);opacity:1;}}
+.mdc-close{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.92);border:none;font-size:22px;line-height:1;color:var(--c-text-1);cursor:pointer;box-shadow:var(--sh-md);z-index:10;transition:transform .15s;}
+.mdc-close:active{transform:scale(.9);}
+.mdc-img{width:100%;height:180px;object-fit:cover;display:block;}
+.mdc-body{padding:var(--sp-5);}
+.mdc-ttl{font-size:18px;font-weight:800;color:var(--c-text-1);margin-bottom:6px;}
+.mdc-meta{font-size:var(--fs-sm);color:var(--c-text-2);margin-bottom:10px;}
+.mdc-quote{font-size:var(--fs-sm);color:var(--c-text-2);font-style:italic;line-height:1.5;padding:10px 14px;background:var(--c-ai-bg);border-radius:8px;margin-bottom:12px;}
+.mdc-stats{display:flex;gap:10px;margin-bottom:14px;}
+.mdc-stats>div{flex:1;text-align:center;}
+.mdc-stats .n{font-size:20px;font-weight:800;color:var(--c-primary-600);font-variant-numeric:tabular-nums;}
+.mdc-stats .l{font-size:10px;color:var(--c-text-2);margin-top:2px;font-weight:600;}
+
 /* ============ Bottom sheet ============ */
 .sheet-mask{position:absolute;inset:0;background:rgba(30,22,15,.42);z-index:300;display:none;
   align-items:flex-end;animation:fade .25s;}
@@ -325,7 +355,7 @@ body{min-height:100vh;padding:32px 16px;display:flex;flex-direction:column;align
   background:var(--c-coral-500);color:#fff;display:flex;align-items:center;justify-content:center;
   font-size:30px;box-shadow:var(--sh-cta);border:4px solid var(--c-surface);transition:transform .14s;}
 .tabbar .tb-add:active .plus{transform:scale(.94);}
-.tabbar .tb-add .lbl{position:absolute;bottom:0;font-size:10px;font-weight:700;color:var(--c-text-3);}
+.tabbar .tb-add .lbl{position:absolute;bottom:3px;left:0;right:0;text-align:center;font-size:10px;font-weight:700;color:var(--c-text-3);}
 
 /* misc */
 .divider{height:1px;background:var(--c-border);margin:var(--sp-4) var(--sp-5);}
@@ -472,6 +502,89 @@ img.img-fallback{
   .sheet-a4 *{color:#000 !important;}
   .doc-note{background:#fff !important;border:1px solid #999 !important;}
 }
+/* ============ 我的 个人中心页 page-mine ============ */
+#page-mine{padding-bottom:96px;}
+.mine-hero{background:var(--grad-ai);margin:0;padding:var(--sp-6) var(--sp-5) var(--sp-5);
+  border-bottom-left-radius:var(--r-card-lg);border-bottom-right-radius:var(--r-card-lg);}
+.mine-hero .mh-top{display:flex;align-items:center;gap:14px;}
+.mine-hero .mh-av{width:64px;height:64px;border-radius:var(--r-avatar);flex:0 0 auto;
+  background:linear-gradient(135deg,#F2C0A8,#FF8A65);display:flex;align-items:center;justify-content:center;
+  font-size:26px;font-weight:800;color:#fff;box-shadow:0 4px 12px rgba(255,111,82,.3);border:3px solid #fff;}
+.mine-hero .mh-info{flex:1;min-width:0;}
+.mine-hero .mh-name{font-size:var(--fs-h1);font-weight:800;display:flex;align-items:center;gap:8px;}
+.mine-hero .mh-sub{font-size:var(--fs-sm);color:var(--c-text-2);margin-top:4px;}
+.mine-hero .mh-edit{width:36px;height:36px;flex:0 0 auto;border-radius:50%;border:1px solid var(--c-border);
+  background:rgba(255,255,255,.7);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+/* 成就统计 4 宫格 */
+.mine-stats{display:flex;gap:8px;margin-top:var(--sp-5);}
+.mine-stats .ms{flex:1;background:rgba(255,255,255,.72);border-radius:16px;padding:12px 4px;text-align:center;}
+.mine-stats .ms .n{font-size:var(--fs-h1);font-weight:800;color:var(--c-primary-700);line-height:1.1;font-variant-numeric:tabular-nums;}
+.mine-stats .ms .l{font-size:var(--fs-xs);color:var(--c-text-2);margin-top:4px;font-weight:600;}
+/* 功能入口列表 */
+.mine-list{margin:var(--sp-4) var(--sp-5);background:var(--c-surface);border-radius:var(--r-card);
+  box-shadow:var(--sh-sm);overflow:hidden;}
+.mine-item{display:flex;align-items:center;gap:14px;padding:15px var(--sp-4);cursor:pointer;
+  border-bottom:1px solid var(--c-border);transition:background .15s;}
+.mine-item:last-child{border-bottom:none;}
+.mine-item:active{background:var(--c-surface-2);}
+.mine-item .mi-ico{width:38px;height:38px;flex:0 0 auto;border-radius:12px;background:var(--c-primary-50);
+  display:flex;align-items:center;justify-content:center;font-size:18px;}
+.mine-item .mi-body{flex:1;min-width:0;}
+.mine-item .mi-body .t{font-size:var(--fs-body);font-weight:700;}
+.mine-item .mi-body .d{font-size:var(--fs-xs);color:var(--c-text-3);margin-top:2px;font-weight:600;}
+.mine-item .mi-badge{font-size:var(--fs-xs);font-weight:800;color:var(--c-primary-700);
+  background:var(--c-primary-50);border-radius:var(--r-chip);padding:3px 9px;flex:0 0 auto;}
+.mine-item .mi-arrow{color:var(--c-text-3);font-size:18px;flex:0 0 auto;}
+.mine-sec-title{font-size:var(--fs-sm);font-weight:700;color:var(--c-text-3);margin:var(--sp-5) var(--sp-5) var(--sp-2);}
+/* 归档旅程 mini 卡 */
+.mini-trip{display:flex;align-items:center;gap:12px;padding:12px var(--sp-4);border-bottom:1px solid var(--c-border);cursor:pointer;}
+.mini-trip:last-child{border-bottom:none;}
+.mini-trip:active{background:var(--c-surface-2);}
+.mini-trip .mt-img{width:52px;height:52px;border-radius:12px;object-fit:cover;flex:0 0 auto;}
+.mini-trip .mt-body{flex:1;min-width:0;}
+.mini-trip .mt-body .n{font-size:var(--fs-body);font-weight:700;}
+.mini-trip .mt-body .m{font-size:var(--fs-xs);color:var(--c-text-3);margin-top:2px;font-weight:600;}
+.mine-signout{margin:var(--sp-5);text-align:center;font-size:var(--fs-sm);color:var(--c-text-3);font-weight:700;cursor:pointer;}
+/* 徒步类差异化元素 */
+.hike-stats{display:flex;gap:8px;}
+.hike-stats .hs{flex:1;background:var(--c-cat-hike-bg);border-radius:14px;padding:12px 6px;text-align:center;}
+.hike-stats .hs .n{font-size:var(--fs-h2);font-weight:800;color:var(--c-cat-hike);line-height:1.1;font-variant-numeric:tabular-nums;}
+.hike-stats .hs .l{font-size:var(--fs-xs);color:var(--c-text-2);margin-top:4px;font-weight:600;}
+.diff-badge{display:inline-flex;align-items:center;gap:5px;background:var(--c-cat-hike-bg);color:var(--c-cat-hike);
+  border-radius:var(--r-chip);padding:5px 12px;font-size:var(--fs-sm);font-weight:800;}
+.elev-track{height:70px;background:var(--c-cat-hike-bg);border-radius:14px;position:relative;overflow:hidden;margin-top:8px;}
+.gear{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--c-border);cursor:pointer;}
+.gear:last-child{border-bottom:none;}
+.gear .box{width:22px;height:22px;border-radius:7px;border:2px solid var(--c-border-strong);flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;transition:all .15s;}
+.gear.done .box{background:var(--c-cat-hike);border-color:var(--c-cat-hike);}
+.gear.done .lbl{color:var(--c-text-3);text-decoration:line-through;}
+.gear .lbl{font-size:var(--fs-body);flex:1;}
+.gear .qty{font-size:var(--fs-xs);color:var(--c-text-3);font-weight:700;}
+.supply{display:flex;align-items:center;gap:10px;font-size:var(--fs-sm);color:var(--c-text-2);
+  padding:8px 0 8px 8px;border-left:2px dashed var(--c-cat-hike);margin-left:12px;}
+/* 度假类差异化元素 */
+.resort-chip-row{display:flex;flex-wrap:wrap;gap:8px;}
+.resort-chip{display:inline-flex;align-items:center;gap:6px;background:var(--c-cat-resort-bg);color:var(--c-cat-resort);
+  border-radius:var(--r-chip);padding:7px 13px;font-size:var(--fs-sm);font-weight:700;}
+.relax{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--c-border);}
+.relax:last-child{border-bottom:none;}
+.relax .rx-time{width:56px;flex:0 0 auto;font-size:var(--fs-sm);font-weight:800;color:var(--c-cat-resort);}
+.relax .rx-body .n{font-size:var(--fs-body);font-weight:700;}
+.relax .rx-body .d{font-size:var(--fs-sm);color:var(--c-text-2);margin-top:2px;}
+.book-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--c-border);}
+.book-row:last-child{border-bottom:none;}
+.book-row .br-ico{width:40px;height:40px;flex:0 0 auto;border-radius:12px;background:var(--c-cat-resort-bg);
+  display:flex;align-items:center;justify-content:center;font-size:19px;}
+.book-row .br-body{flex:1;}
+.book-row .br-body .n{font-size:var(--fs-body);font-weight:700;}
+.book-row .br-body .d{font-size:var(--fs-xs);color:var(--c-text-3);margin-top:2px;font-weight:600;}
+.book-row .br-status{font-size:var(--fs-xs);font-weight:800;padding:4px 10px;border-radius:var(--r-chip);flex:0 0 auto;}
+.book-row .br-status.ok{background:#E6F6EE;color:var(--c-success);}
+.book-row .br-status.wait{background:var(--c-sun-100);color:var(--c-warning);}
+/* 新卡高亮动效 */
+@keyframes newcard{0%{transform:scale(.9);opacity:0;}60%{transform:scale(1.02);}100%{transform:scale(1);opacity:1;}}
+.pcard.just-created{animation:newcard .5s cubic-bezier(.2,.8,.2,1) both;box-shadow:0 0 0 2px var(--c-primary-300),var(--sh-md);}
 </style>
 </head>
 <body>
@@ -494,95 +607,72 @@ img.img-fallback{
     <!-- ============ 页面① 我的行程首页 ============ -->
     <section class="page active" id="page-home">
       <div class="page-head">
-        <div class="display">你好，明需 <span class="greet-emoji">🌿</span></div>
-        <div class="sub">已经和家人一起，记录了 5 段旅程 · 今天想去哪儿？</div>
+        <div class="display">你好，小老妹 <span class="greet-emoji">🌿</span></div>
+        <div class="sub">正在筹备 2 段旅程 · 今天想去哪儿？</div>
       </div>
 
       <div class="sec-head">
-        <h2>进行中</h2><span class="count">2 段旅程</span>
+        <h2>进行中</h2><span class="count" id="progress-count">2 段旅程</span>
       </div>
-
-      <!-- 旅行类 进行中卡 -->
-      <article class="pcard cat-travel" onclick="goDetail()">
+      <div id="progress-list">
+      <!-- 徒步类 进行中卡：尼泊尔 ACT -->
+      <article class="pcard cat-hike" onclick="goHike()">
         <div class="cover">
-          <img src="https://picsum.photos/seed/kyoto77/600/360" alt="京都">
+          <img src="https://picsum.photos/seed/annapurna88/600/360" alt="安纳普尔纳环线">
           <div class="veil"></div>
-          <span class="chip chip-travel" style="background:rgba(230,242,252,.92)">🧳 旅行</span>
+          <span class="chip chip-hike" style="background:rgba(234,245,228,.92)">🥾 徒步</span>
           <span class="chip chip-progress status" style="background:rgba(255,255,255,.9)">进行中</span>
         </div>
-        <div class="ttl">京都樱花季七日</div>
-        <div class="meta">📍 日本·京都 · 大阪　|　🗓 3.28 – 4.03</div>
+        <div class="ttl">安纳普尔纳环线 · 与雪山同行</div>
+        <div class="meta">📍 尼泊尔·ACT 大环线　|　🗓 10.05 – 10.16 · 12 天</div>
         <div class="foot">
           <div class="avatars">
             <div class="av owner" style="background:#F2C0A8">明</div>
             <div class="av" style="background:#9CDDD2">需</div>
             <div class="invite">+</div>
           </div>
-          <div class="pbar"><i style="width:62%"></i></div>
-          <div class="budget">62%</div>
+          <div class="pbar"><i style="width:45%"></i></div>
+          <div class="budget">45%</div>
         </div>
       </article>
 
-      <!-- 度假类 进行中卡 -->
-      <article class="pcard cat-resort" onclick="goDetail()">
+      <!-- 旅行类 进行中卡：土耳其看猫 -->
+      <article class="pcard cat-travel" onclick="goDetail()">
         <div class="cover">
-          <img src="https://picsum.photos/seed/bali42/600/360" alt="巴厘岛">
+          <img src="https://picsum.photos/seed/istanbulcat42/600/360" alt="伊斯坦布尔的猫">
           <div class="veil"></div>
-          <span class="chip chip-resort status" style="background:rgba(253,239,224,.92);top:10px;left:10px;right:auto">🏖️ 度假</span>
-          <span class="chip chip-progress" style="background:rgba(255,255,255,.9);position:absolute;top:10px;right:10px">进行中</span>
+          <span class="chip chip-travel" style="background:rgba(230,242,252,.92)">🧳 旅行</span>
+          <span class="chip chip-progress status" style="background:rgba(255,255,255,.9)">进行中</span>
         </div>
-        <div class="ttl">巴厘岛慢生活五日</div>
-        <div class="meta">📍 印尼·巴厘岛　|　🗓 5.15 – 5.19</div>
+        <div class="ttl">伊斯坦布尔撸猫漫游 · 猫比人多</div>
+        <div class="meta">📍 土耳其·伊斯坦布尔　|　🗓 5.12 – 5.20 · 9 天</div>
         <div class="foot">
           <div class="avatars">
             <div class="av owner" style="background:#9CDDD2">需</div>
             <div class="av" style="background:#F2C0A8">明</div>
           </div>
-          <div class="pbar"><i style="width:28%"></i></div>
-          <div class="budget">28%</div>
+          <div class="pbar"><i style="width:30%"></i></div>
+          <div class="budget">30%</div>
         </div>
       </article>
+      </div><!-- /progress-list -->
 
-      <div class="sec-head">
-        <h2>已完成</h2><span class="count">3 段旅程</span>
-      </div>
-
-      <!-- 徒步类 已完成卡 -->
-      <article class="pcard cat-hike" onclick="goDetail()">
-        <div class="cover">
-          <img src="https://picsum.photos/seed/hike19/600/360" alt="雨崩">
-          <div class="veil"></div>
-          <span class="chip chip-hike" style="background:rgba(234,245,228,.92)">🥾 徒步</span>
-          <span class="chip chip-done status" style="background:rgba(255,255,255,.9)">✓ 已完成</span>
-        </div>
-        <div class="ttl">雨崩神瀑徒步四日</div>
-        <div class="meta">📍 云南·梅里雪山　|　🗓 去年 10.02 – 10.05</div>
-        <div class="foot">
-          <div class="avatars">
-            <div class="av owner" style="background:#F2C0A8">明</div>
-            <div class="av" style="background:#9CDDD2">需</div>
-            <div class="av" style="background:#FFC65C">朋</div>
-          </div>
-          <div class="pbar"><i style="width:100%"></i></div>
-          <div class="budget">✨ 100%</div>
-        </div>
-      </article>
       <div class="spacer"></div>
     </section>
 
-    <!-- ============ 页面② Project 详情（旅行类枢纽） ============ -->
+    <!-- ============ 页面② Project 详情（旅行类枢纽：土耳其看猫） ============ -->
     <section class="page" id="page-detail">
       <div class="detail-hero">
-        <img src="https://picsum.photos/seed/kyoto77/750/520" alt="京都封面">
+        <img src="https://picsum.photos/seed/istanbulcat42/750/520" alt="伊斯坦布尔的猫封面">
         <div class="veil"></div>
         <button class="back" onclick="goHome()">‹</button>
         <div class="hinfo">
           <span class="chip chip-travel" style="background:rgba(230,242,252,.92)">🧳 旅行</span>
-          <h1 style="margin-top:8px">京都樱花季七日</h1>
-          <div class="meta">📍 日本·京都 · 大阪　·　🗓 3.28 – 4.03　·　7 天</div>
+          <h1 style="margin-top:8px">伊斯坦布尔撸猫漫游</h1>
+          <div class="meta">📍 土耳其·伊斯坦布尔　·　🗓 5.12 – 5.20　·　9 天</div>
           <div class="avatars">
-            <div class="av owner" style="background:#F2C0A8">明</div>
-            <div class="av" style="background:#9CDDD2">需</div>
+            <div class="av owner" style="background:#9CDDD2">需</div>
+            <div class="av" style="background:#F2C0A8">明</div>
             <div class="invite">+</div>
           </div>
         </div>
@@ -592,22 +682,22 @@ img.img-fallback{
       <div class="ai-card">
         <span class="ai-badge">✨ AI 旅行助手</span>
         <div class="ai-row" id="ai-1">
-          <span class="ico">🌸</span>
-          <span class="txt">樱花季住宿紧俏，<b>建议提前 3 天预订</b>祇园一带的町屋，价格会更友好。</span>
+          <span class="ico">🐱</span>
+          <span class="txt">伊斯坦布尔是<b>「猫城」</b>，街猫亲人不怕生。<b>随身带点猫零食</b>，蓝色清真寺、加拉塔塔下都能撸到猫。</span>
           <button class="btn btn-adopt" onclick="adopt('ai-1')">采纳</button>
         </div>
         <div class="ai-row" id="ai-2">
-          <span class="ico">📍</span>
-          <span class="txt">哲学之道 3.30 前后为盛花期，<b>建议安排在第 3 天上午</b>，人少光线好。</span>
+          <span class="ico">⛴️</span>
+          <span class="txt">亚洲区的 <b>卡迪柯伊（Kadıköy）猫咪最多最松弛</b>，建议第 5 天坐渡轮过海峡，边喝茶边撸猫。</span>
           <button class="btn btn-adopt" onclick="adopt('ai-2')">采纳</button>
         </div>
         <div class="ai-row" id="ai-3" style="display:none">
-          <span class="ico">🍜</span>
-          <span class="txt">锦市场周边午餐高峰拥挤，<b>建议 11:30 前到达</b>，避开旅行团。</span>
+          <span class="ico">📸</span>
+          <span class="txt">想拍出名的猫，可去找 <b>Tombili 雕像</b>（那只慵懒趴着的网红猫），当地人都知道。</span>
           <button class="btn btn-adopt" onclick="adopt('ai-3')">采纳</button>
         </div>
         <button class="ai-more" id="ai-more" onclick="showMoreAI(this)">展开更多建议 ›</button>
-        <button class="ai-genbtn" onclick="genRoute(this)">✨ 一键生成七日路线</button>
+        <button class="ai-genbtn" onclick="genRoute(this)">✨ 一键生成九日撸猫路线</button>
       </div>
 
       <!-- 内容 Tab -->
@@ -622,16 +712,16 @@ img.img-fallback{
       <!-- 概览 -->
       <div class="tabpane active" id="tp-overview">
         <div class="block">
-          <h3>🗺️ 这次旅行</h3>
-          <p class="body" style="color:var(--c-text-2)">春天的京都，跟着花期慢慢走。七天里安排了赏樱、老街、寺院和一顿念念不忘的怀石料理，中间也留白给你们随心的散步。不赶路，把节奏交给花期。</p>
+          <h3>🐱 这次旅行</h3>
+          <p class="body" style="color:var(--c-text-2)">在这座"猫比人多"的城市里慢慢逛。九天里横跨欧亚两岸，白天看清真寺、逛老城、坐博斯普鲁斯渡轮，一路上撸遍街头慵懒的猫；不赶景点，把节奏交给随时会蹭过来的毛孩子。</p>
         </div>
         <div class="block">
           <h3>📊 一览</h3>
           <div class="stat-row">
-            <div class="stat-cell"><div class="n mono">7</div><div class="l">天</div></div>
-            <div class="stat-cell"><div class="n mono">5</div><div class="l">个景点</div></div>
+            <div class="stat-cell"><div class="n mono">9</div><div class="l">天</div></div>
+            <div class="stat-cell"><div class="n mono">2</div><div class="l">大洲跨越</div></div>
             <div class="stat-cell"><div class="n mono">2</div><div class="l">人同行</div></div>
-            <div class="stat-cell"><div class="n mono">¥1.2<span style="font-size:12px">万</span></div><div class="l">预算</div></div>
+            <div class="stat-cell"><div class="n mono">🐱∞</div><div class="l">撸猫数</div></div>
           </div>
         </div>
       </div>
@@ -639,33 +729,43 @@ img.img-fallback{
       <!-- 行程（日排 + 交通，旅行类差异化） -->
       <div class="tabpane" id="tp-itin">
         <div class="block">
-          <span class="dayhead">📅 Day 1 · 3.28</span>
-          <div class="spot"><div class="idx">✈</div><div class="sp-body"><div class="n">抵达关西机场 → 京都</div><div class="d">JR HARUKA 特急 · 约 75 分钟</div></div></div>
-          <div class="trans">🚌 机场巴士 / JR 二选一 · ¥2,900 起</div>
-          <div class="spot"><div class="idx">🏨</div><div class="sp-body"><div class="n">入住祇园町屋</div><div class="d">傍晚花见小路散步 + 晚餐</div></div></div>
+          <span class="dayhead">📅 Day 1 · 5.12</span>
+          <div class="spot"><div class="idx">✈</div><div class="sp-body"><div class="n">抵达伊斯坦布尔机场（IST）</div><div class="d">地铁 M11 + T1 电车 → 老城苏丹艾哈迈德</div></div></div>
+          <div class="trans">🚇 机场地铁 · 约 60 分钟 · ₺30</div>
+          <div class="spot"><div class="idx">🏨</div><div class="sp-body"><div class="n">入住老城民宿</div><div class="d">傍晚蓝色清真寺广场散步 · 先撸第一只猫 🐱</div></div></div>
         </div>
         <div class="block">
-          <span class="dayhead">📅 Day 2 · 3.29</span>
-          <div class="spot"><div class="idx">1</div><div class="sp-body"><div class="n">清水寺 · 二年坂三年坂</div><div class="d">上午 · 和服体验可选</div></div></div>
-          <div class="trans">🚶 步行 12 分钟</div>
-          <div class="spot"><div class="idx">2</div><div class="sp-body"><div class="n">锦市场午餐</div><div class="d">✨ AI 建议 11:30 前到达</div></div></div>
+          <span class="dayhead">📅 Day 2 · 5.13</span>
+          <div class="spot"><div class="idx">1</div><div class="sp-body"><div class="n">圣索菲亚大教堂</div><div class="d">上午 · 找传奇看门猫 Gli 的旧居</div></div></div>
+          <div class="trans">🚶 步行 5 分钟</div>
+          <div class="spot"><div class="idx">2</div><div class="sp-body"><div class="n">蓝色清真寺 + 地下水宫</div><div class="d">✨ AI 建议清晨人少 · 广场猫超多</div></div></div>
         </div>
         <div class="block">
-          <h3>📌 全部景点 <span class="sm" style="font-weight:400">· 旅行类专属</span></h3>
+          <span class="dayhead">📅 Day 5 · 5.16</span>
+          <div class="spot"><div class="idx">⛴</div><div class="sp-body"><div class="n">渡轮过海峡 → 亚洲区卡迪柯伊</div><div class="d">✨ AI 推荐 · 猫咪最多最松弛的社区</div></div></div>
+          <div class="trans">⛴️ 博斯普鲁斯渡轮 · 20 分钟 · 甲板喂海鸥</div>
+        </div>
+        <div class="block">
+          <h3>📌 全部撸猫地标 <span class="sm" style="font-weight:400">· 旅行类专属</span></h3>
           <div class="spot">
             <div class="idx">1</div>
-            <div class="sp-body"><div class="n">清水寺 · 二年坂</div><div class="d">世界遗产 · 建议 2 小时 · 早去避人潮</div></div>
-            <img class="sp-thumb" src="https://picsum.photos/seed/kiyomizu/120/120" alt="清水寺">
+            <div class="sp-body"><div class="n">圣索菲亚 · Gli 的故事</div><div class="d">已故名猫 Gli 曾镇守于此 · 门口仍常有猫</div></div>
+            <img class="sp-thumb" src="https://picsum.photos/seed/hagiacat/120/120" alt="圣索菲亚的猫">
           </div>
           <div class="spot">
             <div class="idx">2</div>
-            <div class="sp-body"><div class="n">哲学之道</div><div class="d">樱花步道 · 建议 1.5 小时 · 3.30 盛花期</div></div>
-            <img class="sp-thumb" src="https://picsum.photos/seed/philopath/120/120" alt="哲学之道樱花步道">
+            <div class="sp-body"><div class="n">加拉塔塔街区</div><div class="d">石板巷弄 · 台阶上懒洋洋的猫最上镜</div></div>
+            <img class="sp-thumb" src="https://picsum.photos/seed/galatacat/120/120" alt="加拉塔塔的猫">
           </div>
           <div class="spot">
             <div class="idx">3</div>
-            <div class="sp-body"><div class="n">岚山竹林 · 渡月桥</div><div class="d">半日游 · 建议搭配小火车</div></div>
-            <img class="sp-thumb" src="https://picsum.photos/seed/arashiyama/120/120" alt="岚山竹林渡月桥">
+            <div class="sp-body"><div class="n">Tombili 网红猫雕像</div><div class="d">卡迪柯伊 · 那只慵懒趴着的传奇街猫</div></div>
+            <img class="sp-thumb" src="https://picsum.photos/seed/tombili/120/120" alt="Tombili 猫雕像">
+          </div>
+          <div class="spot">
+            <div class="idx">4</div>
+            <div class="sp-body"><div class="n">卡迪柯伊猫咪社区</div><div class="d">亚洲区 · 咖啡馆猫 + 鱼市喂猫日常</div></div>
+            <img class="sp-thumb" src="https://picsum.photos/seed/kadikoycat/120/120" alt="卡迪柯伊的猫">
           </div>
         </div>
       </div>
@@ -674,23 +774,24 @@ img.img-fallback{
       <div class="tabpane" id="tp-stay">
         <div class="block">
           <h3>🏨 住宿安排</h3>
-          <div class="spot"><img class="sp-thumb" src="https://picsum.photos/seed/machiya/120/120" alt="祇园传统町屋"><div class="sp-body"><div class="n">祇园传统町屋</div><div class="d">3.28 – 3.31 · 3 晚 · 含早</div></div></div>
-          <div class="spot"><img class="sp-thumb" src="https://picsum.photos/seed/osakahtl/120/120" alt="大阪难波酒店"><div class="sp-body"><div class="n">大阪难波酒店</div><div class="d">4.01 – 4.03 · 2 晚 · 近地铁</div></div></div>
+          <div class="spot"><img class="sp-thumb" src="https://picsum.photos/seed/oldcityhtl/120/120" alt="老城苏丹艾哈迈德民宿"><div class="sp-body"><div class="n">老城苏丹艾哈迈德民宿</div><div class="d">5.12 – 5.16 · 4 晚 · 步行到蓝色清真寺 · 有店猫</div></div></div>
+          <div class="spot"><img class="sp-thumb" src="https://picsum.photos/seed/kadikoyhtl/120/120" alt="卡迪柯伊亚洲区公寓"><div class="sp-body"><div class="n">卡迪柯伊亚洲区公寓</div><div class="d">5.16 – 5.20 · 4 晚 · 近渡轮 · 楼下就是猫咪街</div></div></div>
         </div>
       </div>
 
-      <!-- 预算（概要 + 进入完整对比页入口） -->
+      <!-- 预算（概要，城市漫游内嵌） -->
       <div class="tabpane" id="tp-budget">
         <div class="block">
-          <h3>💰 预算概览</h3>
-          <div class="bud-row"><div class="l"><span class="e">✈️</span>往返机票</div><div class="v">¥ 6,800</div></div>
-          <div class="bud-row"><div class="l"><span class="e">🏨</span>住宿 5 晚</div><div class="v">¥ 5,400</div></div>
-          <div class="bud-row"><div class="l"><span class="e">🍱</span>餐饮</div><div class="v">¥ 3,300</div></div>
-          <div class="bud-row"><div class="l"><span class="e">🎫</span>门票交通</div><div class="v">¥ 1,700</div></div>
-          <div class="bud-row"><div class="l"><b>已花（两人）</b></div><div class="v" style="color:var(--c-coral-500)">¥ 13,200</div></div>
+          <h3>💰 预算概览 <span class="sm" style="font-weight:400">· 两人 9 天</span></h3>
+          <div class="bud-row"><div class="l"><span class="e">✈️</span>往返机票</div><div class="v">¥ 7,600</div></div>
+          <div class="bud-row"><div class="l"><span class="e">🏨</span>住宿 8 晚</div><div class="v">¥ 4,800</div></div>
+          <div class="bud-row"><div class="l"><span class="e">🍢</span>餐饮（烤肉 / 土耳其茶）</div><div class="v">¥ 3,000</div></div>
+          <div class="bud-row"><div class="l"><span class="e">⛴️</span>门票 / 渡轮 / 交通</div><div class="v">¥ 1,600</div></div>
+          <div class="bud-row"><div class="l"><span class="e">🐟</span>猫零食 / 喂猫基金</div><div class="v">¥ 200</div></div>
+          <div class="bud-row"><div class="l"><b>预计合计（两人）</b></div><div class="v" style="color:var(--c-primary-600)">¥ 17,200</div></div>
           <div style="margin-top:12px;display:flex;align-items:center;gap:10px">
-            <div class="pbar coral"><i style="width:100%"></i></div>
-            <span class="sm" style="font-weight:700">超支 10%</span>
+            <div class="pbar"><i style="width:30%"></i></div>
+            <span class="sm" style="font-weight:700">已支出 30% · 机票已订</span>
           </div>
         </div>
         <div style="padding:0 0 4px">
@@ -702,11 +803,11 @@ img.img-fallback{
       <div class="tabpane" id="tp-check">
         <div class="block">
           <h3>✅ 出行准备</h3>
-          <div class="check done" onclick="toggleCheck(this)"><div class="box">✓</div><div class="lbl">办理日本签证</div></div>
-          <div class="check done" onclick="toggleCheck(this)"><div class="box">✓</div><div class="lbl">兑换日元现金</div></div>
-          <div class="check" onclick="toggleCheck(this)"><div class="box"></div><div class="lbl">购买境外流量卡</div></div>
-          <div class="check" onclick="toggleCheck(this)"><div class="box"></div><div class="lbl">预约怀石料理餐厅</div></div>
-          <div class="check" onclick="toggleCheck(this)"><div class="box"></div><div class="lbl">下载离线地图</div></div>
+          <div class="check done" onclick="toggleCheck(this)"><div class="box">✓</div><div class="lbl">土耳其电子签证 e-Visa</div></div>
+          <div class="check done" onclick="toggleCheck(this)"><div class="box">✓</div><div class="lbl">订往返机票</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="box"></div><div class="lbl">换里拉 + 办 Istanbulkart 交通卡</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="box"></div><div class="lbl">备一小袋猫零食 🐟</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="box"></div><div class="lbl">下载离线地图 + 渡轮时刻表</div></div>
         </div>
       </div>
 
@@ -725,18 +826,18 @@ img.img-fallback{
       </div>
       <div class="page-head" style="padding-top:4px">
         <div class="display" style="font-size:22px">预算对比</div>
-        <div class="sub">京都樱花季七日 · 两人 · 计划 vs 实际花费</div>
+        <div class="sub">伊斯坦布尔撸猫漫游 · 两人 · 计划 vs 实际花费</div>
       </div>
 
       <!-- 总览：计划 vs 实际 -->
       <div class="bud-top">
         <div class="bud-compare">
-          <div class="bc plan"><div class="lbl">计划预算</div><div class="amt mono">¥12,000</div></div>
+          <div class="bc plan"><div class="lbl">计划预算</div><div class="amt mono">¥16,800</div></div>
           <div class="vs">vs</div>
-          <div class="bc actual"><div class="lbl">实际花费</div><div class="amt mono">¥13,200</div></div>
+          <div class="bc actual"><div class="lbl">实际花费</div><div class="amt mono">¥18,200</div></div>
         </div>
         <div class="bud-status over">
-          <span>⚠️ 超支</span><span class="n">¥1,200</span><span style="font-weight:600;font-size:var(--fs-sm)">（约 10%）</span>
+          <span>⚠️ 超支</span><span class="n">¥1,400</span><span style="font-weight:600;font-size:var(--fs-sm)">（约 8.3%）</span>
         </div>
       </div>
       <!-- 分类双条对比 -->
@@ -749,12 +850,12 @@ img.img-fallback{
 
         <div class="bcat is-over">
           <div class="bc-head">
-            <span class="bc-name"><span class="e">🚄</span>交通</span>
-            <span class="bc-diff over">+¥400 超支</span>
+            <span class="bc-name"><span class="e">✈️</span>机票</span>
+            <span class="bc-diff over">+¥800 超支</span>
           </div>
           <div class="bar-wrap">
-            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:41%"></i></span><span class="val">¥2,200</span></div>
-            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:48%"></i></span><span class="val">¥2,600</span></div>
+            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:79%"></i></span><span class="val">¥6,800</span></div>
+            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:88%"></i></span><span class="val">¥7,600</span></div>
           </div>
         </div>
 
@@ -764,52 +865,52 @@ img.img-fallback{
             <span class="bc-diff">-¥200 结余</span>
           </div>
           <div class="bar-wrap">
-            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:100%"></i></span><span class="val">¥5,400</span></div>
-            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:96%"></i></span><span class="val">¥5,200</span></div>
+            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:58%"></i></span><span class="val">¥5,000</span></div>
+            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:56%"></i></span><span class="val">¥4,800</span></div>
           </div>
         </div>
 
         <div class="bcat is-over">
           <div class="bc-head">
-            <span class="bc-name"><span class="e">🍱</span>餐饮</span>
-            <span class="bc-diff over">+¥700 超支</span>
+            <span class="bc-name"><span class="e">🍢</span>餐饮</span>
+            <span class="bc-diff over">+¥400 超支</span>
           </div>
           <div class="bar-wrap">
-            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:48%"></i></span><span class="val">¥2,600</span></div>
-            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:61%"></i></span><span class="val">¥3,300</span></div>
+            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:30%"></i></span><span class="val">¥2,600</span></div>
+            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:35%"></i></span><span class="val">¥3,000</span></div>
           </div>
         </div>
 
         <div class="bcat">
           <div class="bc-head">
-            <span class="bc-name"><span class="e">🎫</span>门票</span>
+            <span class="bc-name"><span class="e">⛴️</span>门票/渡轮</span>
             <span class="bc-diff">-¥100 结余</span>
           </div>
           <div class="bar-wrap">
-            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:22%"></i></span><span class="val">¥1,200</span></div>
-            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:20%"></i></span><span class="val">¥1,100</span></div>
+            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:20%"></i></span><span class="val">¥1,700</span></div>
+            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:19%"></i></span><span class="val">¥1,600</span></div>
           </div>
         </div>
 
         <div class="bcat is-over">
           <div class="bc-head">
             <span class="bc-name"><span class="e">🛍️</span>购物</span>
-            <span class="bc-diff over">+¥500 超支</span>
+            <span class="bc-diff over">+¥400 超支</span>
           </div>
           <div class="bar-wrap">
-            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:7%"></i></span><span class="val">¥400</span></div>
-            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:17%"></i></span><span class="val">¥900</span></div>
+            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:7%"></i></span><span class="val">¥600</span></div>
+            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:12%"></i></span><span class="val">¥1,000</span></div>
           </div>
         </div>
 
-        <div class="bcat">
+        <div class="bcat is-over">
           <div class="bc-head">
-            <span class="bc-name"><span class="e">🧾</span>其他</span>
-            <span class="bc-diff">-¥100 结余</span>
+            <span class="bc-name"><span class="e">🐟</span>猫零食</span>
+            <span class="bc-diff over">+¥100 超支</span>
           </div>
           <div class="bar-wrap">
-            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:4%"></i></span><span class="val">¥200</span></div>
-            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:2%"></i></span><span class="val">¥100</span></div>
+            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:1%"></i></span><span class="val">¥100</span></div>
+            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:2%"></i></span><span class="val">¥200</span></div>
           </div>
         </div>
       </div>
@@ -818,62 +919,62 @@ img.img-fallback{
         <h3>🧾 花费明细</h3>
         <div class="bexp">
           <div class="e">✈️</div>
-          <div class="bx-body"><div class="n">往返机票</div><div class="c">交通 · 春秋 CA</div></div>
-          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥1,800</span><span class="act">¥2,000</span></div><div class="df over">+¥200</div></div>
+          <div class="bx-body"><div class="n">往返机票（含中转）</div><div class="c">交通 · 土耳其航空</div></div>
+          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥6,800</span><span class="act">¥7,600</span></div><div class="df over">+¥800</div></div>
         </div>
         <div class="bexp">
-          <div class="e">🚄</div>
-          <div class="bx-body"><div class="n">JR 特急 + 市内交通</div><div class="c">交通 · ICOCA 卡</div></div>
-          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥400</span><span class="act">¥600</span></div><div class="df over">+¥200</div></div>
+          <div class="e">🚋</div>
+          <div class="bx-body"><div class="n">Istanbulkart 交通 + 渡轮</div><div class="c">门票/渡轮 · 电车地铁通用</div></div>
+          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥900</span><span class="act">¥850</span></div><div class="df">-¥50</div></div>
         </div>
         <div class="bexp">
-          <div class="e">🏯</div>
-          <div class="bx-body"><div class="n">祇园町屋 3 晚</div><div class="c">住宿 · 含早</div></div>
-          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥3,300</span><span class="act">¥3,200</span></div><div class="df">-¥100</div></div>
+          <div class="e">🏛️</div>
+          <div class="bx-body"><div class="n">老城民宿 4 晚</div><div class="c">住宿 · 苏丹艾哈迈德</div></div>
+          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥2,600</span><span class="act">¥2,500</span></div><div class="df">-¥100</div></div>
         </div>
         <div class="bexp">
           <div class="e">🏨</div>
-          <div class="bx-body"><div class="n">大阪难波酒店 2 晚</div><div class="c">住宿 · 近地铁</div></div>
-          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥2,100</span><span class="act">¥2,000</span></div><div class="df">-¥100</div></div>
+          <div class="bx-body"><div class="n">卡迪柯伊公寓 4 晚</div><div class="c">住宿 · 亚洲区近渡轮</div></div>
+          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥2,400</span><span class="act">¥2,300</span></div><div class="df">-¥100</div></div>
         </div>
         <div class="bexp">
-          <div class="e">🍣</div>
-          <div class="bx-body"><div class="n">怀石料理（一晚）</div><div class="c">餐饮 · 祇园</div></div>
-          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥1,000</span><span class="act">¥1,400</span></div><div class="df over">+¥400</div></div>
+          <div class="e">🥙</div>
+          <div class="bx-body"><div class="n">土耳其烤肉 + 海鲜</div><div class="c">餐饮 · 街边 + 餐厅</div></div>
+          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥1,800</span><span class="act">¥2,100</span></div><div class="df over">+¥300</div></div>
         </div>
         <div class="bexp">
-          <div class="e">🍜</div>
-          <div class="bx-body"><div class="n">日常餐饮 6 天</div><div class="c">餐饮 · 锦市场等</div></div>
-          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥1,600</span><span class="act">¥1,900</span></div><div class="df over">+¥300</div></div>
+          <div class="e">🫖</div>
+          <div class="bx-body"><div class="n">土耳其茶 + 甜点</div><div class="c">餐饮 · 咖啡馆撸猫</div></div>
+          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥800</span><span class="act">¥900</span></div><div class="df over">+¥100</div></div>
         </div>
         <div class="bexp">
-          <div class="e">🎫</div>
-          <div class="bx-body"><div class="n">寺院 · 景点门票</div><div class="c">门票 · 清水寺等</div></div>
-          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥1,200</span><span class="act">¥1,100</span></div><div class="df">-¥100</div></div>
+          <div class="e">🕌</div>
+          <div class="bx-body"><div class="n">托普卡帕宫 · 地下水宫门票</div><div class="c">门票 · 老城景点</div></div>
+          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥800</span><span class="act">¥750</span></div><div class="df">-¥50</div></div>
         </div>
         <div class="bexp">
           <div class="e">🛍️</div>
-          <div class="bx-body"><div class="n">手信 · 抹茶伴手礼</div><div class="c">购物 · 计划外</div></div>
-          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥400</span><span class="act">¥900</span></div><div class="df over">+¥500</div></div>
+          <div class="bx-body"><div class="n">大巴扎手信 · 猫主题纪念品</div><div class="c">购物 · 计划外</div></div>
+          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥600</span><span class="act">¥1,000</span></div><div class="df over">+¥400</div></div>
         </div>
         <div class="bexp">
-          <div class="e">🧾</div>
-          <div class="bx-body"><div class="n">境外流量卡 · 杂项</div><div class="c">其他</div></div>
-          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥200</span><span class="act">¥100</span></div><div class="df">-¥100</div></div>
+          <div class="e">🐟</div>
+          <div class="bx-body"><div class="n">猫零食 · 喂猫基金</div><div class="c">其他 · 一路撒欢</div></div>
+          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥100</span><span class="act">¥200</span></div><div class="df over">+¥100</div></div>
         </div>
       </div>
 
       <div style="padding:0 var(--sp-5) 4px">
         <button class="btn btn-soft" onclick="alert('打开记账面板：选择类别 → 填金额 → 保存到明细 ✍️')">+ 记一笔</button>
       </div>
-      <p class="hint">超支主要来自餐饮与计划外购物，下次可预留一点弹性 🌿</p>
+      <p class="hint">超支主要来自机票与计划外购物，下次可预留一点弹性 🌿</p>
       <div class="spacer"></div>
     </section>
 
     <!-- ============ 页面⑥ 行程单打印预览 ============ -->
     <section class="page" id="page-print">
       <div class="print-bar">
-        <button class="pb-back" onclick="goDetail()">‹</button>
+        <button class="pb-back" onclick="showPage(window.PRINT_FROM||'page-detail')">‹</button>
         <span class="pb-title">行程单预览 · 打印备份</span>
         <button class="pb-print" onclick="doPrint()">🖨️ 打印</button>
       </div>
@@ -882,73 +983,73 @@ img.img-fallback{
       <div class="sheet-a4">
         <div class="doc-head">
           <div class="kicker">Trip Itinerary · 行程单</div>
-          <h1>京都樱花季七日</h1>
-          <div class="sub">2026.3.28 – 4.03 · 共 7 天 · 日本 京都 / 大阪 · 同行 2 人</div>
+          <h1>伊斯坦布尔撸猫漫游</h1>
+          <div class="sub">2026.5.12 – 5.20 · 共 9 天 · 土耳其 伊斯坦布尔（欧洲区 / 亚洲区）· 同行 2 人</div>
         </div>
 
         <div class="doc-sec">
           <div class="st">每日行程 · Daily Schedule</div>
           <div class="doc-day">
-            <div class="dd">Day 1<span class="date">3.28 周六</span></div>
-            <div class="dc">关西机场 → 京都（JR HARUKA 约 75 分钟）· 入住<b>祇园町屋</b> · 傍晚花见小路散步 + 晚餐</div>
+            <div class="dd">Day 1<span class="date">5.12 周二</span></div>
+            <div class="dc">抵达伊斯坦布尔机场（IST）· 地铁 M11+T1 电车 → 老城 · 入住<b>苏丹艾哈迈德民宿</b> · 傍晚蓝色清真寺广场散步撸猫</div>
           </div>
           <div class="doc-day">
-            <div class="dd">Day 2<span class="date">3.29 周日</span></div>
-            <div class="dc"><b>清水寺 · 二年坂三年坂</b>（上午，可和服体验）· 锦市场午餐（建议 11:30 前）· 下午八坂神社</div>
+            <div class="dd">Day 2<span class="date">5.13 周三</span></div>
+            <div class="dc"><b>圣索菲亚大教堂</b>（寻名猫 Gli 旧居）· <b>蓝色清真寺</b> · 地下水宫 · 广场猫超多</div>
           </div>
           <div class="doc-day">
-            <div class="dd">Day 3<span class="date">3.30 周一</span></div>
-            <div class="dc"><b>哲学之道赏樱</b>（盛花期，上午光线好）· 银阁寺 · 南禅寺水路阁</div>
+            <div class="dd">Day 3<span class="date">5.14 周四</span></div>
+            <div class="dc">托普卡帕宫 · 大巴扎采购 · 傍晚<b>加拉塔塔</b>街区（石板巷弄的猫最上镜）</div>
           </div>
           <div class="doc-day">
-            <div class="dd">Day 4<span class="date">3.31 周二</span></div>
-            <div class="dc"><b>岚山竹林 · 渡月桥</b> · 嵯峨野小火车 · 天龙寺 · 晚上退房，转场大阪</div>
+            <div class="dd">Day 4<span class="date">5.15 周五</span></div>
+            <div class="dc">博斯普鲁斯海峡游船 · 香料市场 · 独立大街 + 塔克西姆广场夜逛</div>
           </div>
           <div class="doc-day">
-            <div class="dd">Day 5<span class="date">4.01 周三</span></div>
-            <div class="dc">京都 → 大阪（入住难波酒店）· 大阪城公园 · 道顿堀晚餐</div>
+            <div class="dd">Day 5<span class="date">5.16 周六</span></div>
+            <div class="dc"><b>渡轮过海峡 → 亚洲区卡迪柯伊</b>（转场入住）· 猫咪社区漫步 · 找 <b>Tombili 网红猫雕像</b></div>
           </div>
           <div class="doc-day">
-            <div class="dd">Day 6<span class="date">4.02 周四</span></div>
-            <div class="dc">环球影城 或 海游馆（家庭自选）· 心斋桥采购手信</div>
+            <div class="dd">Day 6-8<span class="date">5.17 – 5.19</span></div>
+            <div class="dc">亚洲区慢生活 · Moda 海边喝茶撸猫 · 鱼市喂猫 · 咖啡馆猫日常 · 随心散步</div>
           </div>
           <div class="doc-day">
-            <div class="dd">Day 7<span class="date">4.03 周五</span></div>
-            <div class="dc">难波 → 关西机场（南海电铁）· 返程</div>
+            <div class="dd">Day 9<span class="date">5.20 周三</span></div>
+            <div class="dc">卡迪柯伊 → 机场 · 返程（跟猫告别 🐱）</div>
           </div>
         </div>
         <div class="doc-sec">
           <div class="st">住宿信息 · Accommodation</div>
           <table class="doc-tbl">
-            <tr><td class="k">3.28–3.31</td><td>祇园传统町屋（3 晚 · 含早）<br>京都市东山区祇园町 · Tel +81 75-xxx-xxxx</td></tr>
-            <tr><td class="k">4.01–4.03</td><td>大阪难波酒店（2 晚 · 近地铁）<br>大阪市中央区难波 · Tel +81 6-xxxx-xxxx</td></tr>
+            <tr><td class="k">5.12–5.16</td><td>老城苏丹艾哈迈德民宿（4 晚 · 步行到蓝色清真寺 · 有店猫）<br>Sultanahmet, Fatih · Tel +90 212-xxx-xxxx</td></tr>
+            <tr><td class="k">5.16–5.20</td><td>卡迪柯伊亚洲区公寓（4 晚 · 近渡轮 · 楼下猫咪街）<br>Kadıköy, Moda · Tel +90 216-xxx-xxxx</td></tr>
           </table>
         </div>
 
         <div class="doc-sec">
           <div class="st">紧急联系 · Emergency</div>
           <table class="doc-tbl">
-            <tr><td class="k">日本报警</td><td>110（警察）/ 119（急救 · 消防）</td></tr>
-            <tr><td class="k">中国大使馆</td><td>驻大阪总领事馆 领保电话 +81 6-xxxx-xxxx</td></tr>
+            <tr><td class="k">土耳其报警</td><td>155（警察）/ 112（急救）/ 110（消防）</td></tr>
+            <tr><td class="k">中国大使馆</td><td>驻伊斯坦布尔总领事馆 领保电话 +90 212-xxx-xxxx</td></tr>
             <tr><td class="k">随行紧急</td><td>明需 +86 138-xxxx-xxxx（家庭联系人）</td></tr>
-            <tr><td class="k">保险</td><td>境外旅行险 保单号 JP-2026-0328 · 24h 救援热线 400-xxx-xxxx</td></tr>
+            <tr><td class="k">保险</td><td>境外旅行险 保单号 TR-2026-0512 · 24h 救援热线 400-xxx-xxxx</td></tr>
           </table>
         </div>
 
         <div class="doc-sec">
           <div class="st">备注 · Notes</div>
           <div class="doc-note">
-            · 樱花盛花期集中在 3.30 前后，哲学之道建议上午前往，人少光线好。<br>
-            · 锦市场午餐高峰拥挤，尽量 11:30 前到达。<br>
-            · 随身携带 ICOCA 交通卡与护照复印件；离线地图已下载备用。<br>
-            · 怀石料理已预约，请提前 15 分钟到店。
+            · 伊斯坦布尔街猫亲人温顺，随身带点猫零食随时能撸；请勿追赶或强抱。<br>
+            · 办一张 Istanbulkart 交通卡，电车 / 地铁 / 渡轮通用，比单程票划算。<br>
+            · 亚洲区卡迪柯伊猫最多最松弛，建议留足时间慢逛。<br>
+            · 随身携带护照复印件与里拉现金；离线地图与渡轮时刻表已下载。
           </div>
         </div>
 
         <div class="doc-sign">
-          <div class="sg">制定人<b>明需</b></div>
+          <div class="sg">制定人<b>需</b></div>
           <div class="sg">同行确认<b>&nbsp;</b></div>
-          <div class="sg">制定日期<b>2026.3.10</b></div>
+          <div class="sg">制定日期<b>2026.4.20</b></div>
         </div>
 
         <div class="doc-foot">由「兰途 LanTu」生成 · 家庭 AI 旅行计划 · 打印备份留存</div>
@@ -991,22 +1092,22 @@ img.img-fallback{
 
       <div class="field">
         <label>给这次旅程起个名字</label>
-        <input type="text" placeholder="例如：冲绳跳岛之旅">
+        <input type="text" id="new-name" placeholder="例如：冲绳跳岛之旅">
       </div>
       <div class="field">
         <label>出发 – 返回日期</label>
-        <div class="fakeinput">🗓 选择日期</div>
+        <div class="fakeinput" id="new-date" onclick="pickDate(this)">🗓 选择日期</div>
       </div>
       <div class="field">
         <label>目的地</label>
-        <div class="fakeinput">📍 想去哪里</div>
+        <input type="text" id="new-dest" placeholder="📍 想去哪里">
       </div>
       <div class="field">
         <label>封面照片</label>
         <div class="coverpick"><span style="font-size:26px">🖼️</span><span>选一张让人心动的照片</span></div>
       </div>
       <div style="padding:8px var(--sp-5) 0">
-        <button class="btn btn-primary" onclick="alert('已创建旅程，快去邀请家人一起完善吧 🎉')">创建这次旅程</button>
+        <button class="btn btn-primary" onclick="createTrip()">创建这次旅程</button>
       </div>
       <p class="hint">选好类型后，我们会自动为你准备对应的记录模板</p>
       <div class="spacer"></div>
@@ -1016,33 +1117,378 @@ img.img-fallback{
     <section class="page" id="page-map">
       <div class="page-head">
         <div class="display">点亮地图 🗺️</div>
-        <div class="sub">每去过一处，就点亮一颗光点 —— 你们已经走过好多地方</div>
+        <div class="sub">每去过一处，就点亮一颗光点 —— 新旅程正在等你点亮</div>
       </div>
 
       <div class="map-toggle">
-        <button class="active" onclick="switchMap(this,'map-cn')">🇨🇳 国内省份</button>
-        <button onclick="switchMap(this,'map-world')">🌏 世界地图</button>
+        <button onclick="switchMap(this,'map-cn')">🇨🇳 国内省份</button>
+        <button class="active" onclick="switchMap(this,'map-world')">🌏 世界地图</button>
       </div>
 
       <div class="mapstage">
         <!-- 国内视图 -->
-        <div class="mapview active" id="map-cn">
+        <div class="mapview" id="map-cn">
           <svg class="mapsvg" viewBox="0 0 300 200" id="cnsvg">
             <!-- 抽象省份光点分布（示意，非真实地理） -->
           </svg>
         </div>
         <!-- 世界视图 -->
-        <div class="mapview" id="map-world">
+        <div class="mapview active" id="map-world">
           <svg class="mapsvg" viewBox="0 0 300 170" id="worldsvg"></svg>
         </div>
       </div>
 
       <div class="stats">
-        <div class="stat"><div class="num" id="stat-a">8</div><div class="lbl">去过的省份</div></div>
-        <div class="stat"><div class="num" id="stat-b">4</div><div class="lbl">到过的国家</div></div>
-        <div class="stat"><div class="num mono">1.2<span style="font-size:13px">万</span></div><div class="lbl">累计公里</div></div>
+        <div class="stat"><div class="num" id="stat-a" style="display:none">0</div><div class="lbl" style="display:none">去过的省份</div></div>
+        <div class="stat"><div class="num" id="stat-b">2</div><div class="lbl">计划中的国家</div></div>
+        <div class="stat"><div class="num mono">21</div><div class="lbl">计划总天数</div></div>
       </div>
-      <p class="hint">点击任意已点亮的光点，回看那段旅程 ✨</p>
+      <p class="hint">点击任意光点，查看这段旅程的筹备详情 ✨</p>
+      
+      <!-- 足迹统计可视化 -->
+      <div class="block" style="margin-top:20px">
+        <h3>📊 足迹概览</h3>
+        <div style="display:flex;gap:12px;margin-top:14px">
+          <div class="mini-chart">
+            <div class="mc-head">旅程类型</div>
+            <div class="mc-pie">
+              <svg viewBox="0 0 100 100" style="width:80px;height:80px">
+                <circle cx="50" cy="50" r="40" fill="none" stroke="#5B9E3F" stroke-width="20" stroke-dasharray="126 126" transform="rotate(-90 50 50)" opacity=".9"/>
+                <circle cx="50" cy="50" r="40" fill="none" stroke="#2E8BD6" stroke-width="20" stroke-dasharray="126 126" stroke-dashoffset="-63" transform="rotate(-90 50 50)" opacity=".9"/>
+              </svg>
+            </div>
+            <div class="mc-legend">
+              <div><span class="sw" style="background:#5B9E3F"></span>徒步 50%</div>
+              <div><span class="sw" style="background:#2E8BD6"></span>旅行 50%</div>
+            </div>
+          </div>
+          <div class="mini-chart">
+            <div class="mc-head">足迹分布</div>
+            <div class="mc-bars">
+              <div class="mcb"><div class="mcb-lbl">亚洲</div><div class="mcb-bar"><i style="width:100%;background:#17A398"></i></div><div class="mcb-val">2</div></div>
+              <div class="mcb"><div class="mcb-lbl">欧洲</div><div class="mcb-bar"><i style="width:0%;background:#17A398"></i></div><div class="mcb-val">0</div></div>
+              <div class="mcb"><div class="mcb-lbl">美洲</div><div class="mcb-bar"><i style="width:0%;background:#17A398"></i></div><div class="mcb-val">0</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 光点详情浮层（点击光点时显示）-->
+      <div class="map-detail-overlay" id="map-overlay" style="display:none" onclick="closeMapOverlay()">
+        <div class="map-detail-card" onclick="event.stopPropagation()">
+          <button class="mdc-close" onclick="closeMapOverlay()">×</button>
+          <img class="mdc-img" id="mdc-img" src="" alt="">
+          <div class="mdc-body">
+            <div class="mdc-ttl" id="mdc-ttl"></div>
+            <div class="mdc-meta" id="mdc-meta"></div>
+            <div class="mdc-quote" id="mdc-quote"></div>
+            <div class="mdc-stats" id="mdc-stats"></div>
+            <button class="btn btn-soft" onclick="closeMapOverlay();goDetailFromMap()">查看完整行程 ›</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="spacer"></div>
+    </section>
+
+    <!-- ============ 页面⑦ 我的 个人中心 ============ -->
+    <section class="page" id="page-mine">
+      <div class="mine-hero">
+        <div class="mh-top">
+          <div class="mh-av">明</div>
+          <div class="mh-info">
+            <div class="mh-name">明需 <span style="font-size:14px">🌿</span></div>
+            <div class="mh-sub">和家人一起旅行 · 加入兰途 486 天</div>
+          </div>
+          <button class="mh-edit" onclick="alert('编辑资料：修改昵称 / 头像 / 个性签名 ✍️')">✎</button>
+        </div>
+        <div class="mine-stats">
+          <div class="ms"><div class="n mono">2</div><div class="l">段旅程</div></div>
+          <div class="ms"><div class="n mono">2</div><div class="l">个国家</div></div>
+          <div class="ms"><div class="n mono">21</div><div class="l">计划天数</div></div>
+          <div class="ms"><div class="n mono">🐱⛰️</div><div class="l">主题</div></div>
+        </div>
+      </div>
+
+      <div class="mine-sec-title">旅程管理</div>
+      <div class="mine-list">
+        <div class="mine-item" onclick="nav('map')">
+          <div class="mi-ico">🗺️</div>
+          <div class="mi-body"><div class="t">我的足迹地图</div><div class="d">尼泊尔 · 土耳其 待点亮</div></div>
+          <span class="mi-badge">去看看</span><span class="mi-arrow">›</span>
+        </div>
+        <div class="mine-item" onclick="alert('归档旅程：完成的旅程会收纳到这里 📦')">
+          <div class="mi-ico">📦</div>
+          <div class="mi-body"><div class="t">归档旅程</div><div class="d">完成后自动收纳</div></div>
+          <span class="mi-badge">0 段</span><span class="mi-arrow">›</span>
+        </div>
+        <div class="mine-item" onclick="goPrint()">
+          <div class="mi-ico">🖨️</div>
+          <div class="mi-body"><div class="t">打印记录</div><div class="d">生成过的行程单备份</div></div>
+          <span class="mi-badge">1 份</span><span class="mi-arrow">›</span>
+        </div>
+      </div>
+
+      <div class="mine-sec-title">正在筹备</div>
+      <div class="mine-list">
+        <div class="mini-trip" onclick="goHike()">
+          <img class="mt-img" src="https://picsum.photos/seed/annapurna88/120/120" alt="安纳普尔纳环线">
+          <div class="mt-body"><div class="n">安纳普尔纳环线 · 与雪山同行</div><div class="m">🥾 徒步 · 10 月 · 2 人同行 · 45%</div></div>
+          <span class="mi-arrow">›</span>
+        </div>
+        <div class="mini-trip" onclick="goDetail()">
+          <img class="mt-img" src="https://picsum.photos/seed/istanbulcat42/120/120" alt="伊斯坦布尔的猫">
+          <div class="mt-body"><div class="n">伊斯坦布尔撸猫漫游</div><div class="m">🧳 旅行 · 5 月 · 2 人同行 · 30%</div></div>
+          <span class="mi-arrow">›</span>
+        </div>
+      </div>
+
+      <div class="mine-sec-title">协作与设置</div>
+      <div class="mine-list">
+        <div class="mine-item" onclick="alert('邀请管理：查看家庭成员 / 生成邀请链接 / 权限设置 👨‍👩‍👧')">
+          <div class="mi-ico">👨‍👩‍👧</div>
+          <div class="mi-body"><div class="t">家庭成员</div><div class="d">明需、需，还可邀请更多人</div></div>
+          <span class="mi-badge">2 人</span><span class="mi-arrow">›</span>
+        </div>
+        <div class="mine-item" onclick="alert('通知设置：行程提醒 / AI 建议 / 成员动态 🔔')">
+          <div class="mi-ico">🔔</div>
+          <div class="mi-body"><div class="t">通知与提醒</div><div class="d">行程提醒、AI 建议推送</div></div>
+          <span class="mi-arrow">›</span>
+        </div>
+        <div class="mine-item" onclick="alert('设置：账号 / 隐私 / 关于兰途 ⚙️')">
+          <div class="mi-ico">⚙️</div>
+          <div class="mi-body"><div class="t">通用设置</div><div class="d">账号、隐私、关于兰途</div></div>
+          <span class="mi-arrow">›</span>
+        </div>
+      </div>
+
+      <div class="mine-signout" onclick="alert('退出登录？下次记得回来继续记录旅程哦 👋')">退出登录</div>
+      <div class="spacer"></div>
+    </section>
+
+    <!-- ============ 页面⑧ 徒步类详情（差异化） ============ -->
+    <section class="page" id="page-hike">
+      <div class="detail-hero">
+        <img src="https://picsum.photos/seed/annapurna88/750/520" alt="安纳普尔纳环线封面">
+        <div class="veil"></div>
+        <button class="back" onclick="goHome()">‹</button>
+        <div class="hinfo">
+          <span class="chip chip-hike" style="background:rgba(234,245,228,.92)">🥾 徒步</span>
+          <h1 style="margin-top:8px">安纳普尔纳环线 · 与雪山同行</h1>
+          <div class="meta">📍 尼泊尔·ACT 大环线　·　🗓 10.05 – 10.16　·　12 天</div>
+          <div class="avatars">
+            <div class="av owner" style="background:#F2C0A8">明</div>
+            <div class="av" style="background:#9CDDD2">需</div>
+            <div class="invite">+</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI 卡（徒步语气） -->
+      <div class="ai-card">
+        <span class="ai-badge">✨ AI 徒步助手</span>
+        <div class="ai-row" id="hai-1">
+          <span class="ico">⛰️</span>
+          <span class="txt">翻越 <b>Thorong La 垭口（5416m）</b>是全程最难的一天，务必在 Manang 停留 2 晚做<b>高原适应</b>，切忌赶路。</span>
+          <button class="btn btn-adopt" onclick="adopt('hai-1')">采纳</button>
+        </div>
+        <div class="ai-row" id="hai-2">
+          <span class="ico">🌅</span>
+          <span class="txt">垭口当天需<b>凌晨 4 点从 High Camp 出发</b>，避开午后大风，日出前登顶能看到道拉吉里全景。</span>
+          <button class="btn btn-adopt" onclick="adopt('hai-2')">采纳</button>
+        </div>
+      </div>
+
+      <!-- Tab -->
+      <div class="tabs" id="hike-tabs">
+        <button class="tab active" onclick="switchTabIn(this,'hp-overview','page-hike')">概览</button>
+        <button class="tab" onclick="switchTabIn(this,'hp-route','page-hike')">路线</button>
+        <button class="tab" onclick="switchTabIn(this,'hp-gear','page-hike')">装备清单</button>
+        <button class="tab" onclick="switchTabIn(this,'hp-supply','page-hike')">补给点</button>
+      </div>
+
+      <!-- 概览：海拔+难度（徒步专属） -->
+      <div class="tabpane active" id="hp-overview">
+        <div class="block">
+          <h3>🥾 这次徒步</h3>
+          <div style="margin-bottom:14px"><span class="diff-badge">⭐⭐⭐⭐⭐ 高难度 · 需极佳体能与高原适应</span></div>
+          <p class="body" style="color:var(--c-text-2);margin-bottom:14px">从 Besisahar 出发，沿马斯扬第河谷一路上行，穿过梯田村落、松林与荒漠高原，最后翻越世界最高垭口之一 Thorong La（5416m），下撤到圣地 Muktinath。12 天，从亚热带走到雪线之上。</p>
+          <div class="hike-stats">
+            <div class="hs"><div class="n mono">160</div><div class="l">总里程 km</div></div>
+            <div class="hs"><div class="n mono">5.4k</div><div class="l">累计爬升 m</div></div>
+            <div class="hs"><div class="n mono">5416</div><div class="l">最高海拔 m</div></div>
+          </div>
+        </div>
+        <div class="block">
+          <h3>📈 海拔剖面</h3>
+          <div class="elev-track">
+            <svg viewBox="0 0 300 70" style="width:100%;height:100%;display:block">
+              <defs><linearGradient id="elevg" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#5B9E3F" stop-opacity=".5"/>
+                <stop offset="1" stop-color="#5B9E3F" stop-opacity=".05"/></linearGradient></defs>
+              <path d="M0,62 L30,58 L70,48 L110,38 L150,28 L190,8 L210,30 L250,46 L300,50 L300,70 L0,70 Z" fill="url(#elevg)"/>
+              <path d="M0,62 L30,58 L70,48 L110,38 L150,28 L190,8 L210,30 L250,46 L300,50" fill="none" stroke="#5B9E3F" stroke-width="2"/>
+              <circle cx="190" cy="8" r="3.5" fill="#5B9E3F" stroke="#fff" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <p class="sm" style="margin-top:8px;text-align:center">最高点：Thorong La 垭口 5,416m ⛰️（第 8 天翻越）</p>
+        </div>
+      </div>
+
+      <!-- 路线（每日轨迹） -->
+      <div class="tabpane" id="hp-route">
+        <div class="block">
+          <span class="dayhead" style="background:var(--c-cat-hike-bg);color:var(--c-cat-hike)">📅 Day 1-2 · 河谷段</span>
+          <div class="spot"><div class="idx" style="background:var(--c-cat-hike-bg);color:var(--c-cat-hike)">起</div><div class="sp-body"><div class="n">Besisahar（760m）→ Chame</div><div class="d">吉普车 + 徒步 · 梯田村落与瀑布</div></div></div>
+          <div class="supply">🚙 前段可乘吉普接驳，省 1-2 天脚力</div>
+          <div class="spot"><div class="idx" style="background:var(--c-cat-hike-bg);color:var(--c-cat-hike)">宿</div><div class="sp-body"><div class="n">Chame 茶馆客栈（2670m）</div><div class="d">有热水 / WiFi · 松林环绕</div></div></div>
+        </div>
+        <div class="block">
+          <span class="dayhead" style="background:var(--c-cat-hike-bg);color:var(--c-cat-hike)">📅 Day 4-5 · Manang 适应</span>
+          <div class="spot"><div class="idx" style="background:var(--c-cat-hike-bg);color:var(--c-cat-hike)">停</div><div class="sp-body"><div class="n">Manang（3540m）停留 2 晚</div><div class="d">✨ AI 建议高原适应日 · 可徒步冰湖 Ice Lake</div></div></div>
+          <div class="supply">💊 村内有高山病诊所 HRA · 建议听适应讲座</div>
+        </div>
+        <div class="block">
+          <span class="dayhead" style="background:var(--c-cat-hike-bg);color:var(--c-cat-hike)">📅 Day 8 · 翻越垭口</span>
+          <div class="spot"><div class="idx" style="background:var(--c-cat-hike-bg);color:var(--c-cat-hike)">⛰</div><div class="sp-body"><div class="n">High Camp → Thorong La（5416m）→ Muktinath</div><div class="d">凌晨 4 点出发 · 约 8-9 小时 · 全程最难</div></div></div>
+          <div class="supply">🌡️ 垭口体感 -15℃ · 大风 · 备好保暖与手套</div>
+        </div>
+      </div>
+
+      <!-- 装备清单（勾选，徒步专属） -->
+      <div class="tabpane" id="hp-gear">
+        <div class="block">
+          <h3>🎒 装备清单 <span class="sm" style="font-weight:400">· 徒步类专属</span></h3>
+          <div class="gear done" onclick="toggleGear(this)"><div class="box">✓</div><div class="lbl">重装登山鞋（防水中高帮）</div><span class="qty">1 双</span></div>
+          <div class="gear done" onclick="toggleGear(this)"><div class="box">✓</div><div class="lbl">羽绒服 + 抓绒 + 冲锋衣三层</div><span class="qty">各 1</span></div>
+          <div class="gear done" onclick="toggleGear(this)"><div class="box">✓</div><div class="lbl">-10℃ 睡袋（茶馆夜里很冷）</div><span class="qty">1 个</span></div>
+          <div class="gear" onclick="toggleGear(this)"><div class="box"></div><div class="lbl">登山杖 · 头灯（垭口凌晨用）</div><span class="qty">1 套</span></div>
+          <div class="gear" onclick="toggleGear(this)"><div class="box"></div><div class="lbl">高反药（丹木斯）+ 血氧仪</div><span class="qty">1 套</span></div>
+          <div class="gear" onclick="toggleGear(this)"><div class="box"></div><div class="lbl">TIMS 许可证 + ACAP 门票</div><span class="qty">各 1</span></div>
+          <div class="gear" onclick="toggleGear(this)"><div class="box"></div><div class="lbl">防晒霜 · 雪镜 · 保温水壶</div><span class="qty">1 套</span></div>
+        </div>
+      </div>
+
+      <!-- 补给点 -->
+      <div class="tabpane" id="hp-supply">
+        <div class="block">
+          <h3>💧 沿途补给点（Teahouse 茶馆）</h3>
+          <div class="spot"><div class="idx" style="background:var(--c-cat-hike-bg);color:var(--c-cat-hike)">📍</div><div class="sp-body"><div class="n">Manang（3540m）</div><div class="d">最大补给镇 · 面包店 / 药店 / 充电 / 咖啡</div></div></div>
+          <div class="spot"><div class="idx" style="background:var(--c-cat-hike-bg);color:var(--c-cat-hike)">📍</div><div class="sp-body"><div class="n">Thorong High Camp（4880m）</div><div class="d">垭口前最后补给 · 热柠檬茶 / 泡面 · 早睡</div></div></div>
+          <div class="spot"><div class="idx" style="background:var(--c-cat-hike-bg);color:var(--c-cat-hike)">📍</div><div class="sp-body"><div class="n">Muktinath（3800m）</div><div class="d">下撤圣地 · 印度教朝圣地 · 有热水澡</div></div></div>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button class="btn btn-secondary" onclick="goPrint()">🖨 生成行程单（打印备份）</button>
+        <button class="btn btn-secondary" style="flex:0 0 52px;padding:0" onclick="alert('已归档，可在「我的」中查看 📦')">📦</button>
+      </div>
+      <div class="spacer"></div>
+    </section>
+
+    <!-- ============ 页面⑨ 度假类详情（差异化） ============ -->
+    <section class="page" id="page-resort">
+      <div class="detail-hero">
+        <img src="https://picsum.photos/seed/bali42/750/520" alt="巴厘岛封面">
+        <div class="veil"></div>
+        <button class="back" onclick="goHome()">‹</button>
+        <div class="hinfo">
+          <span class="chip chip-resort" style="background:rgba(253,239,224,.92)">🏖️ 度假</span>
+          <h1 style="margin-top:8px">巴厘岛慢生活五日</h1>
+          <div class="meta">📍 印尼·巴厘岛　·　🗓 5.15 – 5.19　·　5 天</div>
+          <div class="avatars">
+            <div class="av owner" style="background:#9CDDD2">需</div>
+            <div class="av" style="background:#F2C0A8">明</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI 卡（度假语气） -->
+      <div class="ai-card">
+        <span class="ai-badge">✨ AI 度假管家</span>
+        <div class="ai-row" id="rai-1">
+          <span class="ico">🌅</span>
+          <span class="txt">别把行程排太满，<b>每天留半天泡池 / 发呆</b>才是度假的意义，我帮你留白了下午时段。</span>
+          <button class="btn btn-adopt" onclick="adopt('rai-1')">采纳</button>
+        </div>
+        <div class="ai-row" id="rai-2">
+          <span class="ico">🍹</span>
+          <span class="txt">海边悬崖餐厅日落位很抢手，<b>建议提前 2 天预订</b> Rock Bar 的 18:00 场次。</span>
+          <button class="btn btn-adopt" onclick="adopt('rai-2')">采纳</button>
+        </div>
+      </div>
+
+      <!-- Tab -->
+      <div class="tabs" id="resort-tabs">
+        <button class="tab active" onclick="switchTabIn(this,'rp-overview','page-resort')">概览</button>
+        <button class="tab" onclick="switchTabIn(this,'rp-relax','page-resort')">放松安排</button>
+        <button class="tab" onclick="switchTabIn(this,'rp-book','page-resort')">餐厅预约</button>
+        <button class="tab" onclick="switchTabIn(this,'rp-stay','page-resort')">住宿体验</button>
+      </div>
+
+      <!-- 概览：慵懒时刻标签（度假专属） -->
+      <div class="tabpane active" id="rp-overview">
+        <div class="block">
+          <h3>🏖️ 这次度假</h3>
+          <p class="body" style="color:var(--c-text-2);margin-bottom:14px">五天都住在乌布的丛林泳池别墅，不赶景点，只做三件事：泡池、SPA、看日落。把"什么都不用做"过成一种奢侈。</p>
+          <div class="resort-chip-row">
+            <span class="resort-chip">🏊 无边泳池</span>
+            <span class="resort-chip">🧖 丛林 SPA</span>
+            <span class="resort-chip">🌅 悬崖日落</span>
+            <span class="resort-chip">🍹 特调鸡尾酒</span>
+            <span class="resort-chip">😴 睡到自然醒</span>
+          </div>
+        </div>
+        <div class="block">
+          <h3>📊 一览</h3>
+          <div class="stat-row">
+            <div class="stat-cell"><div class="n mono">5</div><div class="l">天</div></div>
+            <div class="stat-cell"><div class="n mono">1</div><div class="l">家别墅</div></div>
+            <div class="stat-cell"><div class="n mono">3</div><div class="l">次 SPA</div></div>
+            <div class="stat-cell"><div class="n mono">2</div><div class="l">人同行</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 放松安排（慵懒时间轴，度假专属） -->
+      <div class="tabpane" id="rp-relax">
+        <div class="block">
+          <h3>🌴 慵懒的一天 <span class="sm" style="font-weight:400">· 度假类专属</span></h3>
+          <div class="relax"><div class="rx-time">09:30</div><div class="rx-body"><div class="n">睡到自然醒 · 别墅内早餐</div><div class="d">管家送餐到泳池边</div></div></div>
+          <div class="relax"><div class="rx-time">11:00</div><div class="rx-body"><div class="n">无边泳池泡水 + 阅读</div><div class="d">✨ AI 建议留白时段</div></div></div>
+          <div class="relax"><div class="rx-time">14:00</div><div class="rx-body"><div class="n">丛林 SPA 90 分钟</div><div class="d">巴厘传统精油按摩</div></div></div>
+          <div class="relax"><div class="rx-time">17:30</div><div class="rx-body"><div class="n">悬崖餐厅看日落</div><div class="d">Rock Bar · 已预约</div></div></div>
+        </div>
+      </div>
+
+      <!-- 餐厅预约（度假专属，含状态） -->
+      <div class="tabpane" id="rp-book">
+        <div class="block">
+          <h3>🍽️ 餐厅 · 活动预约</h3>
+          <div class="book-row"><div class="br-ico">🍹</div><div class="br-body"><div class="n">Rock Bar 悬崖日落</div><div class="d">5.16 · 18:00 · 2 位</div></div><span class="br-status ok">✓ 已确认</span></div>
+          <div class="book-row"><div class="br-ico">🧖</div><div class="br-body"><div class="n">丛林 SPA 套餐</div><div class="d">5.17 · 14:00 · 双人</div></div><span class="br-status ok">✓ 已确认</span></div>
+          <div class="book-row"><div class="br-ico">🍤</div><div class="br-body"><div class="n">金巴兰海鲜烧烤</div><div class="d">5.18 · 19:00 · 待定人数</div></div><span class="br-status wait">待确认</span></div>
+        </div>
+      </div>
+
+      <!-- 住宿体验（度假重头戏） -->
+      <div class="tabpane" id="rp-stay">
+        <div class="block">
+          <h3>🏨 住宿体验</h3>
+          <div class="spot"><img class="sp-thumb" src="https://picsum.photos/seed/ubudvilla/120/120" alt="乌布丛林泳池别墅"><div class="sp-body"><div class="n">乌布丛林泳池别墅</div><div class="d">5.15 – 5.19 · 4 晚 · 私人泳池 + 管家</div></div></div>
+          <div class="resort-chip-row" style="margin-top:12px">
+            <span class="resort-chip">🏊 私人无边泳池</span>
+            <span class="resort-chip">🌿 丛林景观</span>
+            <span class="resort-chip">🛎️ 24h 管家</span>
+            <span class="resort-chip">🍳 别墅早餐</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button class="btn btn-secondary" onclick="goPrint()">🖨 生成行程单（打印备份）</button>
+        <button class="btn btn-secondary" style="flex:0 0 52px;padding:0" onclick="alert('已归档，可在「我的」中查看 📦')">📦</button>
+      </div>
       <div class="spacer"></div>
     </section>
 
@@ -1053,13 +1499,13 @@ img.img-fallback{
       <div class="sheet">
         <div class="grab"></div>
         <div class="hlcard">
-          <img class="hl-img" id="hl-img" src="https://picsum.photos/seed/hike19/600/300" alt="旅程精选照片">
-          <div class="hl-ttl" id="hl-ttl">雨崩神瀑徒步</div>
-          <div class="hl-quote" id="hl-quote">“走到神瀑那天下了小雨，但我们都说，值了。”</div>
+          <img class="hl-img" id="hl-img" src="https://picsum.photos/seed/annapurna88/600/300" alt="旅程精选照片">
+          <div class="hl-ttl" id="hl-ttl">安纳普尔纳环线</div>
+          <div class="hl-quote" id="hl-quote">“翻过 5416 的垭口那刻，风很大，心很静。”</div>
           <div class="hl-stats">
-            <div class="hl-stat"><div class="n mono" id="hl-s1">4</div><div class="l">天</div></div>
-            <div class="hl-stat"><div class="n mono" id="hl-s2">38</div><div class="l">公里</div></div>
-            <div class="hl-stat"><div class="n mono" id="hl-s3">3</div><div class="l">同行</div></div>
+            <div class="hl-stat"><div class="n mono" id="hl-s1">12</div><div class="l">天</div></div>
+            <div class="hl-stat"><div class="n mono" id="hl-s2">160</div><div class="l">公里</div></div>
+            <div class="hl-stat"><div class="n mono" id="hl-s3">2</div><div class="l">同行</div></div>
           </div>
         </div>
       </div>
@@ -1095,15 +1541,16 @@ function nav(name){
   if(name==='home'){ showPage('page-home'); setTab('home'); }
   else if(name==='map'){ showPage('page-map'); setTab('map'); }
   else if(name==='new'){ showPage('page-new'); setTab(''); }
-  else if(name==='mine'){ showPage('page-home'); setTab('mine');
-    setTimeout(function(){alert('「我的」页示意：个人资料 / 归档旅程 / 打印记录 / 邀请管理');},80);}
+  else if(name==='mine'){ showPage('page-mine'); setTab('mine'); }
 }
 function goDetail(){ showPage('page-detail'); setTab(''); }
+function goHike(){ showPage('page-hike'); setTab(''); }
+function goResort(){ showPage('page-resort'); setTab(''); }
 function goHome(){ showPage('page-home'); setTab('home'); }
 /* 从详情页预算Tab进入完整预算对比页 */
 function goBudget(){ showPage('page-budget'); setTab(''); }
 /* 从详情页底部进入行程单打印预览页 */
-function goPrint(){ showPage('page-print'); setTab(''); }
+function goPrint(){ window.PRINT_FROM=VP.querySelector('.page.active').id; showPage('page-print'); setTab(''); }
 /* 触发浏览器打印（配合 @media print 只输出行程单内容） */
 function doPrint(){ window.print(); }
 
@@ -1114,6 +1561,20 @@ function switchTab(btn, paneId){
   document.querySelectorAll('#page-detail .tabpane').forEach(function(p){p.classList.remove('active');});
   document.getElementById(paneId).classList.add('active');
 }
+/* 通用 Tab 切换（指定页面容器，供徒步/度假详情复用） */
+function switchTabIn(btn, paneId, pageId){
+  btn.parentNode.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  btn.classList.add('active');
+  document.querySelectorAll('#'+pageId+' .tabpane').forEach(function(p){p.classList.remove('active');});
+  document.getElementById(paneId).classList.add('active');
+}
+/* 装备清单勾选（徒步专属） */
+function toggleGear(el){
+  el.classList.toggle('done');
+  el.querySelector('.box').textContent = el.classList.contains('done') ? '✓' : '';
+}
+/* 日期选择占位 */
+function pickDate(el){ el.textContent = '🗓 5.15 – 5.19'; el.style.color = 'var(--c-text-1)'; }
 
 /* ---------- AI 采纳 ---------- */
 function adopt(id){
@@ -1131,7 +1592,7 @@ function genRoute(btn){
   btn.textContent = '✨ 正在为你规划…';
   btn.style.opacity = '.75';
   setTimeout(function(){
-    btn.textContent = '✓ 已生成七日路线';
+    btn.textContent = '✓ 已生成九日路线';
     btn.style.opacity = '1';
     var itinTab = document.querySelectorAll('#detail-tabs .tab')[1];
     if(itinTab){ switchTab(itinTab,'tp-itin'); }
@@ -1150,11 +1611,13 @@ var CAT_FIELDS = {
   hike:   {t:'徒步类会帮你记录：', tags:['⛰️ 海拔爬升','🎯 难度等级','🎒 装备清单勾选','🧭 路线轨迹','💧 补给点']},
   resort: {t:'度假类会帮你记录：', tags:['🏨 住宿体验','🧖 放松活动','🏖️ 海滩 / 泳池','🍹 餐厅预约','🌅 慵懒时刻']}
 };
+var SELECTED_CAT = null;
 function pickCat(el){
   document.querySelectorAll('#catcards .catcard').forEach(function(c){c.classList.remove('sel');});
   void el.offsetWidth;
   el.classList.add('sel');
   var cat = el.getAttribute('data-cat');
+  SELECTED_CAT = cat;
   var data = CAT_FIELDS[cat];
   document.getElementById('fp-title').textContent = data.t;
   var box = document.getElementById('fp-tags');
@@ -1163,31 +1626,92 @@ function pickCat(el){
   fp.classList.remove('show'); void fp.offsetWidth; fp.classList.add('show');
 }
 
+/* ---------- 新建：真正生成一张旅程卡插入首页 ---------- */
+var CAT_META = {
+  travel:{label:'🧳 旅行', cls:'chip-travel', bg:'rgba(230,242,252,.92)', seed:'newtravel'},
+  hike:  {label:'🥾 徒步', cls:'chip-hike',   bg:'rgba(234,245,228,.92)', seed:'newhike'},
+  resort:{label:'🏖️ 度假', cls:'chip-resort', bg:'rgba(253,239,224,.92)', seed:'newresort'}
+};
+var newTripCount = 0;
+function createTrip(){
+  var name = (document.getElementById('new-name').value || '').trim();
+  var dest = (document.getElementById('new-dest').value || '').trim();
+  var date = document.getElementById('new-date').textContent.replace('🗓','').trim();
+  if(!SELECTED_CAT){ alert('先选一个旅程类型吧 🌿'); showPage('page-new'); return; }
+  if(!name){ alert('给这次旅程起个名字吧 ✏️'); document.getElementById('new-name').focus(); return; }
+  var meta = CAT_META[SELECTED_CAT];
+  newTripCount++;
+  var seed = meta.seed + newTripCount;
+  var metaLine = (dest ? '📍 '+dest : '📍 待定') + (date && date!=='选择日期' ? '　|　🗓 '+date : '');
+  var card = document.createElement('article');
+  card.className = 'pcard cat-'+SELECTED_CAT+' just-created';
+  card.setAttribute('onclick', "goDetailByCat('"+SELECTED_CAT+"')");
+  card.innerHTML =
+    '<div class="cover">'+
+      '<img src="https://picsum.photos/seed/'+seed+'/600/360" alt="'+name+'">'+
+      '<div class="veil"></div>'+
+      '<span class="chip '+meta.cls+'" style="background:'+meta.bg+';position:absolute;top:10px;left:10px">'+meta.label+'</span>'+
+      '<span class="chip chip-progress" style="background:rgba(255,255,255,.9);position:absolute;top:10px;right:10px">刚创建</span>'+
+    '</div>'+
+    '<div class="ttl">'+name+'</div>'+
+    '<div class="meta">'+metaLine+'</div>'+
+    '<div class="foot">'+
+      '<div class="avatars"><div class="av owner" style="background:#F2C0A8">明</div><div class="invite">+</div></div>'+
+      '<div class="pbar"><i style="width:0%"></i></div>'+
+      '<div class="budget">0%</div>'+
+    '</div>';
+  document.getElementById('progress-list').appendChild(card);
+  // 更新进行中计数
+  var listCount = document.getElementById('progress-list').querySelectorAll('.pcard').length;
+  document.getElementById('progress-count').textContent = listCount + ' 段旅程';
+  // 挂载图片降级
+  var img = card.querySelector('img');
+  img.addEventListener('error',function(){this.classList.add('img-fallback');this.removeAttribute('src');});
+  // 重置表单
+  document.getElementById('new-name').value='';
+  document.getElementById('new-dest').value='';
+  document.getElementById('new-date').textContent='🗓 选择日期';
+  document.getElementById('new-date').style.color='';
+  document.querySelectorAll('#catcards .catcard').forEach(function(c){c.classList.remove('sel');});
+  document.getElementById('fieldprev').classList.remove('show');
+  SELECTED_CAT=null;
+  // 回首页并滚动到新卡
+  showPage('page-home'); setTab('home');
+  setTimeout(function(){ card.scrollIntoView({behavior:'smooth',block:'center'}); }, 120);
+  setTimeout(function(){ card.classList.remove('just-created'); }, 2000);
+}
+/* 新建卡点击后按分类进入对应示例详情 */
+function goDetailByCat(cat){
+  if(cat==='hike'){ goHike(); }
+  else if(cat==='resort'){ goResort(); }
+  else{ goDetail(); }
+}
+
 /* ---------- 地图模式切换 ---------- */
 function switchMap(btn, viewId){
   btn.parentNode.querySelectorAll('button').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
   document.querySelectorAll('.mapview').forEach(function(v){v.classList.remove('active');});
   document.getElementById(viewId).classList.add('active');
-  document.getElementById('stat-a').style.display = (viewId==='map-cn')?'':'none';
+  var showCn = (viewId==='map-cn');
+  var sa = document.getElementById('stat-a');
+  sa.style.display = showCn?'':'none';
+  if(sa.nextElementSibling) sa.nextElementSibling.style.display = showCn?'':'none';
 }
 
 /* ---------- 地图点位数据 ---------- */
 var CN_DOTS = [
-  {x:210,y:70,lit:true, name:'云南·雨崩', img:'hike19', quote:'“走到神瀑那天下了小雨，但我们都说，值了。”', s:['4','38','3']},
-  {x:235,y:45,lit:true, name:'四川·稻城', img:'daocheng', quote:'“蓝色星球上的最后一片净土，名不虚传。”', s:['6','52','2']},
-  {x:245,y:110,lit:true,name:'广西·桂林', img:'guilin', quote:'“漓江竹筏漂下来，像走进一幅水墨画。”', s:['3','—','2']},
+  {x:210,y:70,lit:false},{x:235,y:45,lit:false},{x:245,y:110,lit:false},
   {x:190,y:100,lit:false},{x:170,y:60,lit:false},{x:150,y:130,lit:false},
   {x:120,y:90,lit:false},{x:100,y:50,lit:false},{x:200,y:140,lit:false},
   {x:225,y:150,lit:false},{x:80,y:120,lit:false},{x:130,y:40,lit:false}
 ];
 var WORLD_DOTS = [
-  {x:245,y:60,lit:true, name:'日本·京都', img:'kyoto77', quote:'“樱花落进抹茶里，那一刻只想留在春天。”', s:['7','—','2']},
-  {x:230,y:95,lit:true, name:'印尼·巴厘岛', img:'bali42', quote:'“海浪声里睡到自然醒，度假就该这样。”', s:['5','—','2']},
-  {x:120,y:70,lit:true, name:'法国·巴黎', img:'paris88', quote:'“塞纳河边走了一整晚，谁也没想回酒店。”', s:['8','—','2']},
-  {x:60,y:90,lit:true, name:'冰岛·雷克雅未克', img:'iceland', quote:'“凌晨三点被极光叫醒，值了。”', s:['9','—','4']},
-  {x:40,y:120,lit:false},{x:160,y:110,lit:false},{x:200,y:130,lit:false},
-  {x:90,y:50,lit:false},{x:270,y:120,lit:false},{x:150,y:140,lit:false}
+  {x:205,y:78,lit:true, name:'尼泊尔·安纳普尔纳', date:'10.05 – 10.16', days:'12', img:'annapurna88', quote:'"翻过 5416 的垭口那刻，风很大，心很静。"', s:['160','5416','12'], sLabel:['总里程 km','最高海拔 m','行程天数'], goto:'goHike'},
+  {x:150,y:62,lit:true, name:'土耳其·伊斯坦布尔', date:'5.12 – 5.20', days:'9', img:'istanbulcat42', quote:'"在这座城市，猫比人多，也比人自在。"', s:['9','🐱','Tombili'], sLabel:['天数','主题','必打卡'], goto:'goDetail'},
+  {x:245,y:60,lit:false},{x:230,y:95,lit:false},{x:120,y:70,lit:false},
+  {x:60,y:90,lit:false},{x:40,y:120,lit:false},{x:160,y:110,lit:false},
+  {x:200,y:130,lit:false},{x:90,y:50,lit:false},{x:270,y:120,lit:false},{x:150,y:140,lit:false}
 ];
 
 function buildMap(svgId, dots, land){
@@ -1226,7 +1750,7 @@ function buildMap(svgId, dots, land){
       core.setAttribute('fill','#FF6F52');core.setAttribute('stroke','#fff');core.setAttribute('stroke-width','1.5');
       g.appendChild(glowB);g.appendChild(glowA);g.appendChild(core);
       g.style.cursor='pointer';
-      (function(dd){ g.addEventListener('click',function(){openSheet(dd);}); })(d);
+      g.addEventListener('click',function(){openMapOverlay(dd);});
       // 弹入微交互
       g.style.transformOrigin=d.x+'px '+d.y+'px';
       g.style.animation='popdot .5s '+(i*0.08)+'s both';
@@ -1245,7 +1769,35 @@ var st=document.createElement('style');
 st.textContent='@keyframes popdot{0%{transform:scale(0);opacity:0}60%{transform:scale(1.25);opacity:1}100%{transform:scale(1)}}';
 document.head.appendChild(st);
 
-/* ---------- 高光弹层 ---------- */
+/* ---------- 地图光点详情浮层 ---------- */
+var LAST_MAP_DOT = null;
+function openMapOverlay(d){
+  LAST_MAP_DOT = d;
+  document.getElementById('mdc-img').src='https://picsum.photos/seed/'+d.img+'/600/360';
+  document.getElementById('mdc-ttl').textContent=d.name;
+  document.getElementById('mdc-meta').textContent=(d.date||'计划中')+'  ·  '+(d.days||'?')+' 天';
+  document.getElementById('mdc-quote').textContent=d.quote;
+  var statsHtml='';
+  if(d.s && d.s.length>=3){
+    statsHtml='<div><div class="n">'+d.s[0]+'</div><div class="l">'+d.sLabel[0]+'</div></div>'+
+      '<div><div class="n">'+d.s[1]+'</div><div class="l">'+d.sLabel[1]+'</div></div>'+
+      '<div><div class="n">'+d.s[2]+'</div><div class="l">'+d.sLabel[2]+'</div></div>';
+  }
+  document.getElementById('mdc-stats').innerHTML=statsHtml;
+  document.getElementById('map-overlay').style.display='flex';
+}
+function closeMapOverlay(){
+  document.getElementById('map-overlay').style.display='none';
+}
+function goDetailFromMap(){
+  if(LAST_MAP_DOT && LAST_MAP_DOT.goto){
+    window[LAST_MAP_DOT.goto]();
+  } else {
+    goDetail();
+  }
+}
+
+/* ---------- 旧高光弹层（保留兼容）---------- */
 function openSheet(d){
   document.getElementById('hl-img').src='https://picsum.photos/seed/'+d.img+'/600/300';
   document.getElementById('hl-ttl').textContent=d.name;
