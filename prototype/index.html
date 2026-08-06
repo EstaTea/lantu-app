@@ -624,7 +624,7 @@ img.img-fallback{
 @keyframes lantuSplash{to{opacity:0;visibility:hidden;}}
 
 /* ===== 协作人邀请面板 ===== */
-.invite-sheet { position:fixed; inset:0; z-index:400; display:flex; align-items:flex-end; justify-content:center; }
+.invite-sheet { position:absolute; inset:0; z-index:400; display:flex; align-items:flex-end; justify-content:center; }
 .is-backdrop { position:absolute; inset:0; background:rgba(0,0,0,.35); backdrop-filter:blur(4px); }
 .is-panel { position:relative; width:100%; max-width:375px; background:#FBF9F6; border-radius:20px 20px 0 0; padding:24px 20px 34px; animation:isUp .3s ease; }
 @keyframes isUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
@@ -1703,6 +1703,39 @@ img.img-fallback{
       </div>
     </div>
 
+    <!-- 协作人邀请面板（置于手机容器内，与 sheet-mask / map-detail-overlay 同层，可被手机框裁切） -->
+    <div class="invite-sheet" id="invite-sheet" style="display:none">
+      <div class="is-backdrop" onclick="closeInviteSheet()"></div>
+      <div class="is-panel">
+        <div class="is-head">
+          <h3>👥 邀请协作人</h3>
+          <button class="is-close" onclick="closeInviteSheet()">×</button>
+        </div>
+        <div class="is-body">
+          <label>对方昵称</label>
+          <input type="text" id="inv-name" placeholder="比如：兰菁" maxlength="20"/>
+          <label>WorkBuddy 账号 / 微信号</label>
+          <input type="text" id="inv-account" placeholder="对方的账号或微信号" />
+          <label>权限</label>
+          <div class="is-perms">
+            <label class="is-perm"><input type="radio" name="inv-role" value="view" checked/><span>👁 仅查看</span></label>
+            <label class="is-perm"><input type="radio" name="inv-role" value="edit"/><span>✏ 可编辑</span></label>
+          </div>
+        </div>
+        <div class="is-foot">
+          <button class="btn btn-secondary" onclick="closeInviteSheet()">取消</button>
+          <button class="btn btn-primary" id="btn-inv-send" onclick="sendInvite()">发送邀请</button>
+        </div>
+        <!-- 成功态（默认隐藏） -->
+        <div class="is-success" id="inv-success" style="display:none">
+          <div class="is-ok">✅</div>
+          <p>已向 <b id="inv-sent-name">—</b> 发送邀请！</p>
+          <p class="sm">对方接受后即可一起编辑这段旅程 🎉</p>
+          <button class="btn" onclick="closeInviteSheet()">好的</button>
+        </div>
+      </div>
+    </div>
+
     <!-- ============ 底部 Tab 栏 ============ -->
     <nav class="tabbar">
       <button class="tb active" id="tab-home" onclick="nav('home')"><span class="ic">🏝️</span>行程</button>
@@ -2108,38 +2141,6 @@ function toggleArchive(){
   if(arrow) arrow.textContent=showing?'›':'⌄';
 }
 </script>
-<!-- 协作人邀请面板 -->
-<div class="invite-sheet" id="invite-sheet" style="display:none">
-  <div class="is-backdrop" onclick="closeInviteSheet()"></div>
-  <div class="is-panel">
-    <div class="is-head">
-      <h3>👥 邀请协作人</h3>
-      <button class="is-close" onclick="closeInviteSheet()">×</button>
-    </div>
-    <div class="is-body">
-      <label>对方昵称</label>
-      <input type="text" id="inv-name" placeholder="比如：兰菁" maxlength="20"/>
-      <label>WorkBuddy 账号 / 微信号</label>
-      <input type="text" id="inv-account" placeholder="对方的账号或微信号" />
-      <label>权限</label>
-      <div class="is-perms">
-        <label class="is-perm"><input type="radio" name="inv-role" value="view" checked/><span>👁 仅查看</span></label>
-        <label class="is-perm"><input type="radio" name="inv-role" value="edit"/><span>✏ 可编辑</span></label>
-      </div>
-    </div>
-    <div class="is-foot">
-      <button class="btn btn-secondary" onclick="closeInviteSheet()">取消</button>
-      <button class="btn btn-primary" id="btn-inv-send" onclick="sendInvite()">发送邀请</button>
-    </div>
-    <!-- 成功态（默认隐藏） -->
-    <div class="is-success" id="inv-success" style="display:none">
-      <div class="is-ok">✅</div>
-      <p>已向 <b id="inv-sent-name">—</b> 发送邀请！</p>
-      <p class="sm">对方接受后即可一起编辑这段旅程 🎉</p>
-      <button class="btn" onclick="closeInviteSheet()">好的</button>
-    </div>
-  </div>
-</div>
 
 </body>
 </html>
