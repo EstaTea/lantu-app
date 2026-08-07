@@ -2246,29 +2246,38 @@ function switchMap(btn, viewId){
   document.getElementById(viewId).classList.add('active');
   var showCn = (viewId==='map-cn');
   var sa = document.getElementById('stat-a');
-  sa.style.display = showCn?'':'none';
-  if(sa.nextElementSibling) sa.nextElementSibling.style.display = showCn?'':'none';
-  // 更新统计数字
+  var saParent = sa.parentElement;
+  var saLabel = saParent.querySelector('.lbl');
+  sa.parentElement.style.display = showCn?'':'none';
+  // 更新统计数字和标签文字
   if(showCn){
     var litCn = CN_DOTS.filter(function(d){return d.lit;}).length;
     sa.textContent = litCn;
+    saLabel.textContent = '去过的省份';
+  } else {
+    // 世界地图时第二个stat卡显示"去过的国家"
+    var sb = document.getElementById('stat-b');
+    var sbLabel = sb.parentElement.querySelector('.lbl');
+    var litWorld = WORLD_DOTS.filter(function(d){return d.lit;}).length;
+    sb.textContent = litWorld;
+    sbLabel.textContent = '去过的国家';
   }
 }
 
 /* ---------- 地图点位数据 ---------- */
 var CN_DOTS = [
-  {x:210,y:70,lit:true, name:'云南·丽江古城', date:'3.10 – 3.15', days:'6', img:'lijiang88', quote:'"慢悠悠走在石板路上，时间好像停了。"', s:['6','古城','玉龙雪山'], sLabel:['天数','主题','必打卡'], goto:'goDetail'},
-  {x:235,y:45,lit:true, name:'新疆·喀纳斯', date:'9.12 – 9.20', days:'9', img:'kanas66', quote:'"秋天的喀纳斯，像上帝打翻的调色盘。"', s:['9','🍂','禾木村'], sLabel:['天数','主题','必打卡'], goto:'goHike'},
-  {x:245,y:110,lit:false},{x:190,y:100,lit:false},{x:170,y:60,lit:false},{x:150,y:130,lit:false},
-  {x:120,y:90,lit:false},{x:100,y:50,lit:false},{x:200,y:140,lit:false},
-  {x:225,y:150,lit:false},{x:80,y:120,lit:false},{x:130,y:40,lit:false}
+  {x:128,y:125,lit:true, name:'云南·丽江古城', date:'3.10 – 3.15', days:'6', img:'lijiang88', quote:'"慢悠悠走在石板路上，时间好像停了。"', s:['6','古城','玉龙雪山'], sLabel:['天数','主题','必打卡'], goto:'goDetail'},
+  {x:100,y:48,lit:true, name:'新疆·喀纳斯', date:'9.12 – 9.20', days:'9', img:'kanas66', quote:'"秋天的喀纳斯，像上帝打翻的调色盘。"', s:['9','🍂','禾木村'], sLabel:['天数','主题','必打卡'], goto:'goHike'},
+  {x:230,y:85,lit:false},{x:195,y:75,lit:false},{x:165,y:60,lit:false},{x:145,y:105,lit:false},
+  {x:118,y:85,lit:false},{x:88,y:65,lit:false},{x:200,y:120,lit:false},
+  {x:220,y:135,lit:false},{x:75,y:115,lit:false},{x:135,y:45,lit:false}
 ];
 var WORLD_DOTS = [
-  {x:205,y:78,lit:true, name:'尼泊尔·安纳普尔纳', date:'10.05 – 10.16', days:'12', img:'annapurna88', quote:'"翻过 5416 的垭口那刻，风很大，心很静。"', s:['160','5416','12'], sLabel:['总里程 km','最高海拔 m','行程天数'], goto:'goHike'},
-  {x:150,y:62,lit:true, name:'土耳其·伊斯坦布尔', date:'5.12 – 5.20', days:'9', img:'istanbulcat42', quote:'"在这座城市，猫比人多，也比人自在。"', s:['9','🐱','Tombili'], sLabel:['天数','主题','必打卡'], goto:'goDetail'},
-  {x:245,y:60,lit:false},{x:230,y:95,lit:false},{x:120,y:70,lit:false},
-  {x:60,y:90,lit:false},{x:40,y:120,lit:false},{x:160,y:110,lit:false},
-  {x:200,y:130,lit:false},{x:90,y:50,lit:false},{x:270,y:120,lit:false},{x:150,y:140,lit:false}
+  {x:152,y:105,lit:true, name:'尼泊尔·安纳普尔纳', date:'10.05 – 10.16', days:'12', img:'annapurna88', quote:'"翻过 5416 的垭口那刻，风很大，心很静。"', s:['160','5416','12'], sLabel:['总里程 km','最高海拔 m','行程天数'], goto:'goHike'},
+  {x:135,y:95,lit:true, name:'土耳其·伊斯坦布尔', date:'5.12 – 5.20', days:'9', img:'istanbulcat42', quote:'"在这座城市，猫比人多，也比人自在。"', s:['9','🐱','Tombili'], sLabel:['天数','主题','必打卡'], goto:'goDetail'},
+  {x:210,y:75,lit:false},{x:195,y:108,lit:false},{x:108,y:85,lit:false},
+  {x:45,y:105,lit:false},{x:25,y:125,lit:false},{x:165,y:120,lit:false},
+  {x:185,y:130,lit:false},{x:80,y:70,lit:false},{x:245,y:125,lit:false},{x:155,y:138,lit:false}
 ];
 
 function buildMap(svgId, dots, land){
@@ -2411,8 +2420,10 @@ function attachFallback(img){
 }
 document.addEventListener('DOMContentLoaded',function(){
   VP=document.querySelector('.viewport');
-  var cnLand='M70,55 C90,35 150,30 200,45 C245,50 265,80 255,120 C245,155 190,170 140,158 C95,148 60,120 62,90 C63,72 62,66 70,55 Z';
-  var wLand='M20,70 C60,45 110,50 140,70 C150,55 200,50 235,55 C270,60 285,90 270,120 C240,145 180,140 150,120 C120,140 60,140 35,115 C15,100 10,85 20,70 Z';
+  // 更真实的中国地图轮廓(简化版,保留关键特征:公鸡形状)
+  var cnLand='M245,40 L260,45 L268,50 L272,58 L270,70 L265,80 L258,88 L255,100 L258,115 L260,128 L255,140 L245,148 L230,152 L215,150 L205,155 L195,158 L180,157 L165,152 L150,145 L135,138 L122,130 L110,122 L98,115 L88,108 L78,100 L70,90 L65,78 L63,65 L65,52 L70,42 L78,35 L90,30 L105,28 L122,30 L138,33 L155,35 L172,37 L190,38 L208,38 L225,39 Z M85,135 L75,145 L68,152 L65,158 L68,165 L75,170 L85,172 L95,170 L102,165 L105,158 L102,150 L95,142 L85,135 Z';
+  // 更真实的世界地图轮廓(简化版,保留主要大陆形状)
+  var wLand='M15,95 L25,90 L35,88 L48,90 L58,95 L68,98 L75,95 L82,90 L88,88 L95,90 L102,93 L110,95 L120,93 L128,88 L135,85 L145,85 L155,88 L165,92 L175,95 L185,93 L195,88 L205,85 L215,85 L225,88 L235,93 L245,98 L255,102 L262,108 L268,115 L270,125 L268,135 L262,142 L252,145 L240,145 L228,142 L215,138 L202,135 L190,135 L178,138 L168,142 L158,145 L148,145 L138,142 L128,138 L118,135 L108,135 L98,138 L88,142 L78,145 L68,145 L58,142 L48,138 L38,133 L28,128 L20,120 L15,110 L13,100 Z M245,65 L255,60 L265,58 L272,62 L275,70 L272,78 L265,82 L255,80 L245,75 Z M8,115 L5,125 L8,135 L15,138 L22,135 L25,125 L22,118 L15,115 Z';
   buildMap('cnsvg',CN_DOTS,cnLand);
   buildMap('worldsvg',WORLD_DOTS,wLand);
 
