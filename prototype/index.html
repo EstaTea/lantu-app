@@ -1714,10 +1714,26 @@ img.img-fallback{
 /* ---------- 页面切换 ---------- */
 var VP = null;
 function showPage(id){
-  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
-  document.getElementById(id).classList.add('active');
-  if(VP) VP.scrollTop = 0;
-  if(id==='page-mine') animateMineStats();
+  var pages = document.querySelectorAll('.page');
+  pages.forEach(function(p){
+    if(p.classList.contains('active') && p.id !== id){
+      p.style.opacity = '0';
+      p.style.transition = 'opacity .2s ease';
+      setTimeout(function(){ p.classList.remove('active'); p.style.opacity = ''; }, 200);
+    }
+  });
+  var target = document.getElementById(id);
+  setTimeout(function(){
+    target.style.opacity = '0';
+    target.classList.add('active');
+    if(VP) VP.scrollTop = 0;
+    setTimeout(function(){
+      target.style.transition = 'opacity .3s ease';
+      target.style.opacity = '1';
+      setTimeout(function(){ target.style.opacity = ''; target.style.transition = ''; }, 300);
+    }, 10);
+  }, pages[0].classList.contains('active') ? 200 : 0);
+  if(id==='page-mine') setTimeout(animateMineStats, 250);
 }
 function setTab(name){
   ['home','map','mine'].forEach(function(n){
@@ -2129,6 +2145,20 @@ function adopt(id){
   row.classList.add('adopted');
   var btn = row.querySelector('.btn-adopt');
   btn.outerHTML = '<span class="done">✓ 已加入</span>';
+  // 保存到 localStorage（模拟加入行程）
+  try{
+    var adoptedKey = 'lantu_adopted_suggestions';
+    var adopted = JSON.parse(localStorage.getItem(adoptedKey) || '[]');
+    var suggestionData = {
+      id: id,
+      timestamp: new Date().toISOString(),
+      text: row.textContent.trim().replace('✓ 已加入', '').replace('采纳', '').trim()
+    };
+    adopted.push(suggestionData);
+    localStorage.setItem(adoptedKey, JSON.stringify(adopted));
+    // 显示轻量提示
+    showToast('已加入行程 ✨');
+  }catch(e){ console.error('保存建议失败', e); }
 }
 function showMoreAI(btn){
   document.getElementById('ai-3').style.display = 'flex';
@@ -2172,6 +2202,18 @@ function pickCat(el){
   fp.classList.remove('show'); void fp.offsetWidth; fp.classList.add('show');
 }
 
+/* 日期选择器（简化版：演示日期选择交互） */
+function pickDate(el){
+  var today = new Date();
+  var startDate = prompt('请输入出发日期（格式：YYYY-MM-DD）\n例如：' + today.toISOString().split('T')[0]);
+  if(!startDate) return;
+  var endDate = prompt('请输入返回日期（格式：YYYY-MM-DD）\n例如：' + new Date(Date.now() + 7*24*60*60*1000).toISOString().split('T')[0]);
+  if(!endDate) return;
+  el.textContent = '🗓 ' + startDate + ' – ' + endDate;
+  el.style.color = 'var(--c-text-1)';
+  showToast('日期已选择 ✨');
+}
+
 /* ---------- 新建：真正生成一张旅程卡插入首页 ---------- */
 var CAT_META = {
   travel:{label:'🧳 旅行', cls:'chip-travel', bg:'rgba(230,242,252,.92)', seed:'newtravel'},
@@ -2179,6 +2221,19 @@ var CAT_META = {
   resort:{label:'🏖️ 度假', cls:'chip-resort', bg:'rgba(253,239,224,.92)', seed:'newresort'}
 };
 var newTripCount = 0;
+// localStorage 旅程数据持久化
+var TRIPS_STORAGE_KEY = 'lantu_trips_data';
+function loadTripsFromStorage(){
+  try{
+    var data = localStorage.getItem(TRIPS_STORAGE_KEY);
+    return data ? JSON.parse(data) : [];
+  }catch(e){ return []; }
+}
+function saveTripsToStorage(trips){
+  try{
+    localStorage.setItem(TRIPS_STORAGE_KEY, JSON.stringify(trips));
+  }catch(e){ console.error('保存旅程数据失败', e); }
+}
 function createTrip(){
   var name = (document.getElementById('new-name').value || '').trim();
   var dest = (document.getElementById('new-dest').value || '').trim();
@@ -2187,11 +2242,25 @@ function createTrip(){
   if(!name){ alert('给这次旅程起个名字吧 ✏️'); document.getElementById('new-name').focus(); return; }
   var meta = CAT_META[SELECTED_CAT];
   newTripCount++;
+  var tripId = 'new'+newTripCount;
   var seed = meta.seed + newTripCount;
   var metaLine = (dest ? '📍 '+dest : '📍 待定') + (date && date!=='选择日期' ? '　|　🗓 '+date : '');
+  // 保存旅程数据到 localStorage
+  var tripData = {
+    id: tripId,
+    name: name,
+    dest: dest,
+    date: date,
+    category: SELECTED_CAT,
+    createdAt: new Date().toISOString()
+  };
+  var allTrips = loadTripsFromStorage();
+  allTrips.push(tripData);
+  saveTripsToStorage(allTrips);
+  // 创建卡片
   var card = document.createElement('article');
   card.className = 'pcard cat-'+SELECTED_CAT+' just-created';
-  card.setAttribute('data-trip', 'new'+newTripCount);
+  card.setAttribute('data-trip', tripId);
   card.setAttribute('draggable', 'true');
   card.setAttribute('onclick', "goDetailByCat('"+SELECTED_CAT+"')");
   card.innerHTML =
