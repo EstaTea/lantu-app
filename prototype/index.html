@@ -959,11 +959,11 @@ img.img-fallback{
 
       <!-- 内容 Tab -->
       <div class="tabs" id="detail-tabs">
-        <button class="tab active" onclick="switchTab(this,'tp-overview')">概览</button>
-        <button class="tab" onclick="switchTab(this,'tp-itin')">行程</button>
-        <button class="tab" onclick="switchTab(this,'tp-stay')">住宿</button>
-        <button class="tab" onclick="switchTab(this,'tp-budget')">预算</button>
-        <button class="tab" onclick="switchTab(this,'tp-check')">准备清单</button>
+        <button class="tab active" onclick="switchTabIn(this,'tp-overview','page-detail')">概览</button>
+        <button class="tab" onclick="switchTabIn(this,'tp-itin','page-detail')">行程</button>
+        <button class="tab" onclick="switchTabIn(this,'tp-stay','page-detail')">住宿</button>
+        <button class="tab" onclick="switchTabIn(this,'tp-budget','page-detail')">预算</button>
+        <button class="tab" onclick="switchTabIn(this,'tp-check','page-detail')">准备清单</button>
       </div>
 
       <!-- 概览 -->
@@ -1412,6 +1412,7 @@ img.img-fallback{
         <button class="tab" onclick="switchTabIn(this,'hp-route','page-hike')">路线</button>
         <button class="tab" onclick="switchTabIn(this,'hp-gear','page-hike')">装备清单</button>
         <button class="tab" onclick="switchTabIn(this,'hp-supply','page-hike')">补给点</button>
+        <button class="tab" onclick="switchTabIn(this,'hp-budget','page-hike')">预算</button>
       </div>
 
       <!-- 概览：海拔+难度（徒步专属） -->
@@ -1486,6 +1487,70 @@ img.img-fallback{
         </div>
       </div>
 
+      <!-- 预算（尼泊尔徒步） -->
+      <div class="tabpane" id="hp-budget">
+        <div class="block">
+          <h3>💰 预算明细</h3>
+          <p class="sm" style="color:var(--c-text-3);margin-bottom:14px">双币种显示 · 点击金额可调整 · 自动汇率 NPR → CNY（1 NPR ≈ ¥0.056）</p>
+          
+          <div class="budget-item">
+            <div class="bi-emoji">🎫</div>
+            <div class="bi-body">
+              <div class="bi-name">ACT 许可证 + TIMS</div>
+              <div class="bi-cat">证件费用</div>
+            </div>
+            <div class="bi-amount">
+              <input type="number" class="bi-amt-input" value="400" min="0" step="50" onchange="updateBudgetForeign(this, 0.056, 'NPR')"/>
+              <div class="bi-foreign">≈ NPR 7,140</div>
+            </div>
+          </div>
+
+          <div class="budget-item">
+            <div class="bi-emoji">🏠</div>
+            <div class="bi-body">
+              <div class="bi-name">茶馆住宿（12 晚）</div>
+              <div class="bi-cat">住宿</div>
+            </div>
+            <div class="bi-amount">
+              <input type="number" class="bi-amt-input" value="1400" min="0" step="100" onchange="updateBudgetForeign(this, 0.056, 'NPR')"/>
+              <div class="bi-foreign">≈ NPR 25,000</div>
+            </div>
+          </div>
+
+          <div class="budget-item">
+            <div class="bi-emoji">🍜</div>
+            <div class="bi-body">
+              <div class="bi-name">餐饮（12 天）</div>
+              <div class="bi-cat">饮食</div>
+            </div>
+            <div class="bi-amount">
+              <input type="number" class="bi-amt-input" value="2400" min="0" step="100" onchange="updateBudgetForeign(this, 0.056, 'NPR')"/>
+              <div class="bi-foreign">≈ NPR 42,850</div>
+            </div>
+          </div>
+
+          <div class="budget-item">
+            <div class="bi-emoji">🚐</div>
+            <div class="bi-body">
+              <div class="bi-name">加德满都往返交通</div>
+              <div class="bi-cat">交通</div>
+            </div>
+            <div class="bi-amount">
+              <input type="number" class="bi-amt-input" value="600" min="0" step="50" onchange="updateBudgetForeign(this, 0.056, 'NPR')"/>
+              <div class="bi-foreign">≈ NPR 10,700</div>
+            </div>
+          </div>
+
+          <div style="margin-top:var(--sp-5);padding-top:var(--sp-4);border-top:2px solid var(--c-border-strong);display:flex;justify-content:space-between;align-items:center">
+            <span style="font-weight:800;font-size:var(--fs-h3)">总计</span>
+            <div style="text-align:right">
+              <div id="hike-budget-total" style="font-size:var(--fs-h2);font-weight:800;color:var(--c-primary-700);font-variant-numeric:tabular-nums">¥ 4,800</div>
+              <div class="sm" style="color:var(--c-text-3);margin-top:2px">≈ NPR 85,690</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="action-row">
         <button class="btn btn-secondary" onclick="goPrint()">🖨 生成行程单（打印备份）</button>
         <button class="btn btn-secondary" style="flex:0 0 52px;padding:0" onclick="alert('已归档，可在「我的」中查看 📦')">📦</button>
@@ -1535,6 +1600,7 @@ img.img-fallback{
         <button class="tab" onclick="switchTabIn(this,'rp-relax','page-resort')">放松安排</button>
         <button class="tab" onclick="switchTabIn(this,'rp-book','page-resort')">餐厅预约</button>
         <button class="tab" onclick="switchTabIn(this,'rp-stay','page-resort')">住宿体验</button>
+        <button class="tab" onclick="switchTabIn(this,'rp-budget','page-resort')">预算</button>
       </div>
 
       <!-- 概览：慵懒时刻标签（度假专属） -->
@@ -1596,9 +1662,26 @@ img.img-fallback{
         </div>
       </div>
 
+      <!-- 预算（度假类） -->
+      <div class="tabpane" id="rp-budget">
+        <div class="block">
+          <h3>💰 预算明细</h3>
+          <div class="budget-cat">住宿</div>
+          <div class="bitem"><span class="bi-name">乌布别墅 4 晚</span><span class="bi-amt">28,000</span><span class="bi-cur">CNY</span></div>
+          <div class="budget-cat">餐饮 & 体验</div>
+          <div class="bitem"><span class="bi-name">Rock Bar 日落</span><span class="bi-amt">800</span><span class="bi-cur">CNY</span></div>
+          <div class="bitem"><span class="bi-name">丛林 SPA</span><span class="bi-amt">1,200</span><span class="bi-cur">CNY</span></div>
+          <div class="bitem"><span class="bi-name">金巴兰海鲜</span><span class="bi-amt">600</span><span class="bi-cur">CNY</span></div>
+          <div class="budget-cat">交通</div>
+          <div class="bitem"><span class="bi-name">机场-乌布接送</span><span class="bi-amt">400</span><span class="bi-cur">CNY</span></div>
+          <div class="budget-sum"><span>总计</span><span class="bsum-amt">31,000 <span style="font-size:13px;color:var(--c-text-3)">CNY</span></span></div>
+          <button class="btn btn-text" style="width:100%;margin-top:10px" onclick="alert('预算编辑功能演示：可调整金额、增删项目')">✏️ 编辑预算</button>
+        </div>
+      </div>
+
       <div class="action-row">
-        <button class="btn btn-secondary" onclick="goPrint()">🖨 生成行程单（打印备份）</button>
-        <button class="btn btn-secondary" style="flex:0 0 52px;padding:0" onclick="alert('已归档，可在「我的」中查看 📦')">📦</button>
+        <button class="btn btn-secondary" onclick="goPrint()">🖨 生成行程单(打印备份)</button>
+        <button class="btn btn-secondary" style="flex:0 0 52px;padding:0" onclick="alert('已归档,可在「我的」中查看 📦')">📦</button>
       </div>
       <div class="spacer"></div>
     </section>
