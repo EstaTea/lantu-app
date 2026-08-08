@@ -439,6 +439,25 @@ img.img-fallback{
 .bcat .bar.plan .track > i{background:var(--c-primary-200);}
 .bcat .bar.actual .track > i{background:var(--c-primary-500);}
 .bcat.is-over .bar.actual .track > i{background:var(--c-coral-500);}
+
+/* 可编辑预算项目列表 */
+.budget-item{display:flex;align-items:center;gap:var(--sp-3);padding:14px 0;border-bottom:1px solid var(--c-border);}
+.budget-item:last-child{border-bottom:none;}
+.budget-item .bi-emoji{font-size:24px;flex:0 0 auto;width:36px;text-align:center;}
+.budget-item .bi-body{flex:1;min-width:0;}
+.budget-item .bi-name{font-size:var(--fs-body);font-weight:700;color:var(--c-text-1);margin-bottom:2px;}
+.budget-item .bi-cat{font-size:var(--fs-xs);color:var(--c-text-3);font-weight:600;}
+.budget-item .bi-amount{flex:0 0 auto;text-align:right;}
+.budget-item .bi-amt-input{font-size:var(--fs-h3);font-weight:800;color:var(--c-primary-700);font-variant-numeric:tabular-nums;
+  background:transparent;border:none;outline:none;text-align:right;width:120px;cursor:pointer;padding:4px 8px;border-radius:8px;
+  transition:background .15s;}
+.budget-item .bi-amt-input:hover,.budget-item .bi-amt-input:focus{background:var(--c-surface-2);}
+.budget-item .bi-foreign{font-size:var(--fs-sm);color:var(--c-text-3);margin-top:2px;font-variant-numeric:tabular-nums;}
+.budget-item .bi-actions{flex:0 0 auto;opacity:0;transition:opacity .2s;}
+.budget-item:hover .bi-actions{opacity:1;}
+.btn-icon{background:transparent;border:none;cursor:pointer;padding:6px;border-radius:8px;transition:background .15s;color:var(--c-text-2);}
+.btn-icon:hover{background:var(--c-surface-2);color:var(--c-text-1);}
+.btn-icon:active{transform:scale(.9);}
 .bcat .bar .val{font-size:var(--fs-xs);font-weight:700;font-variant-numeric:tabular-nums;
   color:var(--c-text-2);width:52px;text-align:right;flex:0 0 auto;}
 .bcat.is-over{background:linear-gradient(90deg,rgba(255,111,82,.05),transparent);
@@ -1008,149 +1027,32 @@ img.img-fallback{
         <button class="tab" style="background:transparent;color:var(--c-text-2);padding-left:0" onclick="goDetail()">‹ 返回行程</button>
       </div>
       <div class="page-head" style="padding-top:4px">
-        <div class="display" style="font-size:22px">预算对比</div>
-        <div class="sub">伊斯坦布尔撸猫漫游 · 两人 · 计划 vs 实际花费</div>
+        <div class="display" style="font-size:22px">预算详情</div>
+        <div class="sub" id="budget-subtitle">伊斯坦布尔撸猫漫游 · 两人 · 预算规划</div>
       </div>
 
-      <!-- 总览：计划 vs 实际 -->
+      <!-- 总览：计划预算 -->
       <div class="bud-top">
-        <div class="bud-compare">
-          <div class="bc plan"><div class="lbl">计划预算</div><div class="amt mono">¥16,800</div></div>
-          <div class="vs">vs</div>
-          <div class="bc actual"><div class="lbl">实际花费</div><div class="amt mono">¥18,200</div></div>
+        <div class="bud-compare" style="justify-content:center">
+          <div class="bc plan"><div class="lbl">总预算</div><div class="amt mono" id="total-budget">¥16,800</div></div>
         </div>
-        <div class="bud-status over">
-          <span>⚠️ 超支</span><span class="n">¥1,400</span><span style="font-weight:600;font-size:var(--fs-sm)">（约 8.3%）</span>
+        <div class="bud-status saving" id="budget-status-summary" style="background:var(--c-surface-2);color:var(--c-text-2);font-size:var(--fs-sm)">
+          点击金额可编辑 · 自动保存
         </div>
       </div>
-      <!-- 分类双条对比 -->
+      
+      <!-- 预算项目列表（可编辑） -->
       <div class="block">
-        <h3>📊 分类预算对比</h3>
-        <div class="bud-legend">
-          <span class="lg"><span class="sw plan"></span>计划</span>
-          <span class="lg"><span class="sw actual"></span>实际</span>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp-3)">
+          <h3>💰 预算项目</h3>
+          <button class="btn-icon" onclick="addBudgetItem()" style="font-size:20px" title="添加项目">➕</button>
         </div>
-
-        <div class="bcat is-over">
-          <div class="bc-head">
-            <span class="bc-name"><span class="e">✈️</span>机票</span>
-            <span class="bc-diff over">+¥800 超支</span>
-          </div>
-          <div class="bar-wrap">
-            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:79%"></i></span><span class="val">¥6,800</span></div>
-            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:88%"></i></span><span class="val">¥7,600</span></div>
-          </div>
-        </div>
-
-        <div class="bcat">
-          <div class="bc-head">
-            <span class="bc-name"><span class="e">🏨</span>住宿</span>
-            <span class="bc-diff">-¥200 结余</span>
-          </div>
-          <div class="bar-wrap">
-            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:58%"></i></span><span class="val">¥5,000</span></div>
-            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:56%"></i></span><span class="val">¥4,800</span></div>
-          </div>
-        </div>
-
-        <div class="bcat is-over">
-          <div class="bc-head">
-            <span class="bc-name"><span class="e">🍢</span>餐饮</span>
-            <span class="bc-diff over">+¥400 超支</span>
-          </div>
-          <div class="bar-wrap">
-            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:30%"></i></span><span class="val">¥2,600</span></div>
-            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:35%"></i></span><span class="val">¥3,000</span></div>
-          </div>
-        </div>
-
-        <div class="bcat">
-          <div class="bc-head">
-            <span class="bc-name"><span class="e">⛴️</span>门票/渡轮</span>
-            <span class="bc-diff">-¥100 结余</span>
-          </div>
-          <div class="bar-wrap">
-            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:20%"></i></span><span class="val">¥1,700</span></div>
-            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:19%"></i></span><span class="val">¥1,600</span></div>
-          </div>
-        </div>
-
-        <div class="bcat is-over">
-          <div class="bc-head">
-            <span class="bc-name"><span class="e">🛍️</span>购物</span>
-            <span class="bc-diff over">+¥400 超支</span>
-          </div>
-          <div class="bar-wrap">
-            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:7%"></i></span><span class="val">¥600</span></div>
-            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:12%"></i></span><span class="val">¥1,000</span></div>
-          </div>
-        </div>
-
-        <div class="bcat is-over">
-          <div class="bc-head">
-            <span class="bc-name"><span class="e">🐟</span>猫零食</span>
-            <span class="bc-diff over">+¥100 超支</span>
-          </div>
-          <div class="bar-wrap">
-            <div class="bar plan"><span class="tag">计划</span><span class="track"><i style="width:1%"></i></span><span class="val">¥100</span></div>
-            <div class="bar actual"><span class="tag">实际</span><span class="track"><i style="width:2%"></i></span><span class="val">¥200</span></div>
-          </div>
+        <div id="budget-items-list">
+          <!-- 动态渲染预算项目 -->
         </div>
       </div>
-      <!-- 分类明细列表 -->
-      <div class="block">
-        <h3>🧾 花费明细</h3>
-        <div class="bexp">
-          <div class="e">✈️</div>
-          <div class="bx-body"><div class="n">往返机票（含中转）</div><div class="c">交通 · 土耳其航空</div></div>
-          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥6,800</span><span class="act">¥7,600</span></div><div class="df over">+¥800</div></div>
-        </div>
-        <div class="bexp">
-          <div class="e">🚋</div>
-          <div class="bx-body"><div class="n">Istanbulkart 交通 + 渡轮</div><div class="c">门票/渡轮 · 电车地铁通用</div></div>
-          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥900</span><span class="act">¥850</span></div><div class="df">-¥50</div></div>
-        </div>
-        <div class="bexp">
-          <div class="e">🏛️</div>
-          <div class="bx-body"><div class="n">老城民宿 4 晚</div><div class="c">住宿 · 苏丹艾哈迈德</div></div>
-          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥2,600</span><span class="act">¥2,500</span></div><div class="df">-¥100</div></div>
-        </div>
-        <div class="bexp">
-          <div class="e">🏨</div>
-          <div class="bx-body"><div class="n">卡迪柯伊公寓 4 晚</div><div class="c">住宿 · 亚洲区近渡轮</div></div>
-          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥2,400</span><span class="act">¥2,300</span></div><div class="df">-¥100</div></div>
-        </div>
-        <div class="bexp">
-          <div class="e">🥙</div>
-          <div class="bx-body"><div class="n">土耳其烤肉 + 海鲜</div><div class="c">餐饮 · 街边 + 餐厅</div></div>
-          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥1,800</span><span class="act">¥2,100</span></div><div class="df over">+¥300</div></div>
-        </div>
-        <div class="bexp">
-          <div class="e">🫖</div>
-          <div class="bx-body"><div class="n">土耳其茶 + 甜点</div><div class="c">餐饮 · 咖啡馆撸猫</div></div>
-          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥800</span><span class="act">¥900</span></div><div class="df over">+¥100</div></div>
-        </div>
-        <div class="bexp">
-          <div class="e">🕌</div>
-          <div class="bx-body"><div class="n">托普卡帕宫 · 地下水宫门票</div><div class="c">门票 · 老城景点</div></div>
-          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥800</span><span class="act">¥750</span></div><div class="df">-¥50</div></div>
-        </div>
-        <div class="bexp">
-          <div class="e">🛍️</div>
-          <div class="bx-body"><div class="n">大巴扎手信 · 猫主题纪念品</div><div class="c">购物 · 计划外</div></div>
-          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥600</span><span class="act">¥1,000</span></div><div class="df over">+¥400</div></div>
-        </div>
-        <div class="bexp">
-          <div class="e">🐟</div>
-          <div class="bx-body"><div class="n">猫零食 · 喂猫基金</div><div class="c">其他 · 一路撒欢</div></div>
-          <div class="bx-amt"><div class="row"><span class="plan">计划 ¥100</span><span class="act">¥200</span></div><div class="df over">+¥100</div></div>
-        </div>
-      </div>
-
-      <div style="padding:0 var(--sp-5) 4px">
-        <button class="btn btn-soft" onclick="alert('打开记账面板：选择类别 → 填金额 → 保存到明细 ✍️')">+ 记一笔</button>
-      </div>
-      <p class="hint">超支主要来自机票与计划外购物，下次可预留一点弹性 🌿</p>
+      
+      <p class="hint" style="margin-top:var(--sp-4)">💡 提示：点击金额可直接修改，国外旅程会显示当地货币换算 🌍</p>
       <div class="spacer"></div>
     </section>
 
@@ -1752,7 +1654,140 @@ function goHike(){ showPage('page-hike'); setTab(''); }
 function goResort(){ showPage('page-resort'); setTab(''); }
 function goHome(){ showPage('page-home'); setTab('home'); }
 /* 从详情页预算Tab进入完整预算对比页 */
-function goBudget(){ showPage('page-budget'); setTab(''); }
+function goBudget(){ 
+  showPage('page-budget'); 
+  setTab(''); 
+  loadBudgetItems(); 
+}
+
+/* ---------- 预算管理（可编辑 + 双币种） ---------- */
+var BUDGET_STORAGE_KEY = 'lantu_budget_items';
+var EXCHANGE_RATES = {
+  TRY: 2.33, // 土耳其里拉 1 TRY = 2.33 CNY（示例汇率）
+  USD: 7.0,  // 美元
+  EUR: 7.8,  // 欧元
+  JPY: 0.048 // 日元
+};
+var DEFAULT_BUDGET_ITEMS = [
+  {id:'b1', emoji:'✈️', name:'往返机票', category:'交通', amount:6800, currency:'CNY', foreignCurrency:'TRY'},
+  {id:'b2', emoji:'🏨', name:'酒店住宿（8晚）', category:'住宿', amount:5000, currency:'CNY', foreignCurrency:'TRY'},
+  {id:'b3', emoji:'🍢', name:'餐饮', category:'餐饮', amount:2600, currency:'CNY', foreignCurrency:'TRY'},
+  {id:'b4', emoji:'⛴️', name:'门票+交通卡', category:'门票', amount:1700, currency:'CNY', foreignCurrency:'TRY'},
+  {id:'b5', emoji:'🛍️', name:'购物预算', category:'购物', amount:600, currency:'CNY', foreignCurrency:'TRY'},
+  {id:'b6', emoji:'🐟', name:'猫零食基金', category:'其他', amount:100, currency:'CNY', foreignCurrency:'TRY'}
+];
+
+function loadBudgetData(){
+  try{
+    var data = localStorage.getItem(BUDGET_STORAGE_KEY);
+    return data ? JSON.parse(data) : DEFAULT_BUDGET_ITEMS;
+  }catch(e){ return DEFAULT_BUDGET_ITEMS; }
+}
+function saveBudgetData(items){
+  try{
+    localStorage.setItem(BUDGET_STORAGE_KEY, JSON.stringify(items));
+  }catch(e){ console.error('保存预算失败', e); }
+}
+
+function formatCNY(amount){
+  return '¥' + amount.toLocaleString('zh-CN');
+}
+function formatForeign(amount, currency){
+  var symbols = {TRY:'₺', USD:'$', EUR:'€', JPY:'¥'};
+  var symbol = symbols[currency] || currency;
+  return symbol + ' ' + amount.toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:0});
+}
+function convertToCNY(amount, fromCurrency){
+  if(fromCurrency === 'CNY') return amount;
+  var rate = EXCHANGE_RATES[fromCurrency] || 1;
+  return Math.round(amount * rate);
+}
+function convertFromCNY(cnyAmount, toCurrency){
+  if(toCurrency === 'CNY') return cnyAmount;
+  var rate = EXCHANGE_RATES[toCurrency] || 1;
+  return Math.round(cnyAmount / rate);
+}
+
+function loadBudgetItems(){
+  var items = loadBudgetData();
+  var container = document.getElementById('budget-items-list');
+  if(!container) return;
+  container.innerHTML = '';
+  items.forEach(function(item){
+    var div = document.createElement('div');
+    div.className = 'budget-item';
+    div.setAttribute('data-id', item.id);
+    var foreignAmount = item.foreignCurrency && item.foreignCurrency !== 'CNY' ? convertFromCNY(item.amount, item.foreignCurrency) : null;
+    var foreignHTML = foreignAmount ? '<div class="bi-foreign">' + formatForeign(foreignAmount, item.foreignCurrency) + '</div>' : '';
+    div.innerHTML = 
+      '<div class="bi-emoji">' + item.emoji + '</div>' +
+      '<div class="bi-body">' +
+        '<div class="bi-name">' + item.name + '</div>' +
+        '<div class="bi-cat">' + item.category + '</div>' +
+      '</div>' +
+      '<div class="bi-amount">' +
+        '<input type="number" class="bi-amt-input mono" value="' + item.amount + '" ' +
+        'onchange="updateBudgetItem(\'' + item.id + '\', this.value)" ' +
+        'onfocus="this.select()" />' +
+        foreignHTML +
+      '</div>' +
+      '<div class="bi-actions">' +
+        '<button class="btn-icon" onclick="deleteBudgetItem(\'' + item.id + '\')" title="删除">🗑️</button>' +
+      '</div>';
+    container.appendChild(div);
+  });
+  updateBudgetTotal();
+}
+
+function updateBudgetItem(id, newAmount){
+  var amount = parseFloat(newAmount) || 0;
+  var items = loadBudgetData();
+  var item = items.find(function(i){ return i.id === id; });
+  if(item){
+    item.amount = Math.round(amount);
+    saveBudgetData(items);
+    loadBudgetItems(); // 重新渲染以更新外币显示
+    showToast('已更新预算 ✨');
+  }
+}
+
+function deleteBudgetItem(id){
+  if(!confirm('确定删除这个预算项目吗？')) return;
+  var items = loadBudgetData();
+  items = items.filter(function(i){ return i.id !== id; });
+  saveBudgetData(items);
+  loadBudgetItems();
+  showToast('已删除 🗑️');
+}
+
+function addBudgetItem(){
+  var items = loadBudgetData();
+  var newId = 'b' + Date.now();
+  var name = prompt('项目名称：', '新项目');
+  if(!name) return;
+  var amount = prompt('预算金额（人民币）：', '1000');
+  if(!amount) return;
+  var item = {
+    id: newId,
+    emoji: '💰',
+    name: name,
+    category: '其他',
+    amount: Math.round(parseFloat(amount) || 0),
+    currency: 'CNY',
+    foreignCurrency: 'TRY'
+  };
+  items.push(item);
+  saveBudgetData(items);
+  loadBudgetItems();
+  showToast('已添加 ➕');
+}
+
+function updateBudgetTotal(){
+  var items = loadBudgetData();
+  var total = items.reduce(function(sum, item){ return sum + item.amount; }, 0);
+  var el = document.getElementById('total-budget');
+  if(el) el.textContent = formatCNY(total);
+}
 
 /* ---------- 首页进行中卡片拖拽排序 ---------- */
 var DRAG_KEY = 'lantu_trip_order';
