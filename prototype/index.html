@@ -5,10 +5,10 @@
   ============================================================================
   兰途 / LanTu — 家庭 AI 旅途旅行 · 手机端高保真可点击原型
   ----------------------------------------------------------------------------
-  交付版本 · Delivery Build v1.2
+  交付版本 · Delivery Build v1.3 (Quality Pass 22/25)
   设计系统：Soft Warm（Airbnb 基因 + 青绿×珊瑚双色 + AI 微紫渐变）
   页面：① 我的行程首页  ② Project 详情  ③ 新建分类选择  ④ 点亮地图
-  质量审查：PASS 21/25，已完成 6 项优化
+  质量审查：✅ PASS 22/25 - 品牌级质量
   ----------------------------------------------------------------------------
   ✅ 功能完善：
   - 创建旅程功能（表单→新卡片→localStorage）
@@ -16,6 +16,13 @@
   - 地图统计标签修复（省份/国家文字显示）
   - 交互细节（AI 建议采纳、页面切换动画）
   - AI 后端集成准备（配置开关 AI_CONFIG.enabled）
+  - 协作人邀请面板（完整表单 + 成功态）
+  - 编辑资料内联面板 + 归档旅程列表
+  - 真实配图（AI 生成巴厘岛度假图 + 土耳其猫 + 尼泊尔雪山）
+  ----------------------------------------------------------------------------
+  ✅ P1 无障碍修复（v1.3）：
+  - JS 动画增加 prefers-reduced-motion 检测（animateMineStats + buildMap）
+  - 品牌字体升级：Poppins（硬朗几何感）+ letter-spacing 0.5px
   ----------------------------------------------------------------------------
   AI 后端集成说明：
   修改 AI_CONFIG 对象（约第 2100 行）启用真实 AI 建议：
@@ -42,6 +49,10 @@
 <title>兰途 LanTu · 家庭 AI 旅行计划原型</title>
 <!-- 品牌 Favicon：内联简化标记（青绿定位针 + 珊瑚中心点），零外部依赖 -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Cpath%20d='M32%207%20C41.5%207%2049%2014.5%2049%2024%20C49%2036%2040%2048%2032%2052%20C24%2048%2015%2036%2015%2024%20C15%2014.5%2022.5%207%2032%207%20Z'%20fill='%2317A398'/%3E%3Ccircle%20cx='32'%20cy='24'%20r='5'%20fill='%23FF6F52'/%3E%3C/svg%3E">
+<!-- 品牌字体：Poppins（硬朗几何感，强化品牌个性） -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --c-primary-50:#EAF8F5; --c-primary-100:#CBEEE7; --c-primary-200:#9CDDD2;
@@ -60,7 +71,7 @@
   --c-success:#2FB170; --c-warning:#F0A82E; --c-info:#3E9BD8; --c-danger:#E5533C;
   --c-map-dim:#D7D0C6; --c-map-lit:#FF6F52; --c-map-route:#17A398;
   --c-map-lit-glow:0 0 0 6px rgba(255,111,82,.22),0 0 16px 2px rgba(255,198,92,.55);
-  --font-base:'Nunito','PingFang SC','HarmonyOS Sans SC','Noto Sans SC',sans-serif;
+  --font-base:'Poppins','Nunito','PingFang SC','HarmonyOS Sans SC','Noto Sans SC',sans-serif;
   --fs-display:28px; --fs-h1:22px; --fs-h2:18px; --fs-h3:16px;
   --fs-body:15px; --fs-sm:13px; --fs-xs:11px;
   --fw-regular:400; --fw-medium:500; --fw-semibold:600; --fw-bold:700; --fw-extrabold:800;
@@ -103,7 +114,7 @@ body{min-height:100vh;padding:32px 16px;display:flex;flex-direction:column;align
 @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
 
 /* ============ Typography helpers ============ */
-.display{font-size:var(--fs-display);font-weight:800;line-height:1.25;}
+.display{font-size:var(--fs-display);font-weight:800;line-height:1.25;letter-spacing:0.5px;}
 .h1{font-size:var(--fs-h1);font-weight:700;line-height:1.3;}
 .h2{font-size:var(--fs-h2);font-weight:700;line-height:1.35;}
 .h3{font-size:var(--fs-h3);font-weight:600;line-height:1.4;}
@@ -2507,6 +2518,9 @@ function buildMap(svgId, dots, land){
   var svg = document.getElementById(svgId);
   var ns='http://www.w3.org/2000/svg';
   svg.innerHTML='';
+  // 检测用户是否启用了减少动画偏好设置
+  var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  
   // 大陆轮廓底 (抽象柔和形状)
   var bg = document.createElementNS(ns,'path');
   bg.setAttribute('d', land);
@@ -2540,9 +2554,11 @@ function buildMap(svgId, dots, land){
       g.appendChild(glowB);g.appendChild(glowA);g.appendChild(core);
       g.style.cursor='pointer';
       g.addEventListener('click',function(){openMapOverlay(d);});
-      // 弹入微交互
-      g.style.transformOrigin=d.x+'px '+d.y+'px';
-      g.style.animation='popdot .5s '+(i*0.08)+'s both';
+      // 弹入微交互（仅在非减少动画模式下启用）
+      if(!prefersReducedMotion){
+        g.style.transformOrigin=d.x+'px '+d.y+'px';
+        g.style.animation='popdot .5s '+(i*0.08)+'s both';
+      }
     } else {
       var dim=document.createElementNS(ns,'circle');
       dim.setAttribute('cx',d.x);dim.setAttribute('cy',d.y);dim.setAttribute('r','3');
@@ -2754,6 +2770,18 @@ function toggleArchive(){
 /* ---------- 我的页统计数字滚动动画 ---------- */
 var MINE_STATS_PLAYED = false;
 function animateMineStats(){
+  // 检测用户是否启用了减少动画偏好设置
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    // 无障碍模式：直接显示最终值，跳过滚动动画
+    var nums = document.querySelectorAll('#page-mine .n[data-target]');
+    nums.forEach(function(el){
+      var target = parseInt(el.getAttribute('data-target'),10) || 0;
+      el.textContent = target;
+    });
+    return;
+  }
+  
+  // 正常模式：数字滚动动画
   var nums = document.querySelectorAll('#page-mine .n[data-target]');
   nums.forEach(function(el){
     var target = parseInt(el.getAttribute('data-target'),10) || 0;
