@@ -5,7 +5,7 @@
   ============================================================================
   兰途 / LanTu — 家庭 AI 旅途旅行 · 手机端高保真可点击原型
   ----------------------------------------------------------------------------
-  交付版本 · Delivery Build v1.3 (Quality Pass 22/25)
+  交付版本 · Delivery Build v1.4 (Quality Pass 22/25 + P2 优化)
   设计系统：Soft Warm（Airbnb 基因 + 青绿×珊瑚双色 + AI 微紫渐变）
   页面：① 我的行程首页  ② Project 详情  ③ 新建分类选择  ④ 点亮地图
   质量审查：✅ PASS 22/25 - 品牌级质量
@@ -23,6 +23,12 @@
   ✅ P1 无障碍修复（v1.3）：
   - JS 动画增加 prefers-reduced-motion 检测（animateMineStats + buildMap）
   - 品牌字体升级：Poppins（硬朗几何感）+ letter-spacing 0.5px
+  ----------------------------------------------------------------------------
+  ✅ P2 可选优化（v1.4）：
+  - hover/focus 状态补全（catcard + mine-item）
+  - 动态图片 alt 属性（openMapOverlay）
+  - 平板适配段落宽度限制（max-width: 65ch @768px+）
+  - CSS 媒体查询 prefers-reduced-motion 全局覆盖
   ----------------------------------------------------------------------------
   AI 后端集成说明：
   修改 AI_CONFIG 对象（约第 2100 行）启用真实 AI 建议：
@@ -282,6 +288,8 @@ body{min-height:100vh;padding:32px 16px;display:flex;flex-direction:column;align
 .catcard{display:flex;align-items:center;gap:14px;background:var(--c-surface);border:1px solid var(--c-border);
   border-radius:var(--r-card);padding:var(--sp-4);cursor:pointer;position:relative;
   transition:transform .16s ease,border-color .16s,background .16s;}
+.catcard:hover{border-color:var(--c-border-strong);background:var(--c-surface-2);}
+.catcard:focus-within{outline:2px solid var(--c-primary-500);outline-offset:2px;}
 .catcard .emo{font-size:34px;flex:0 0 auto;width:52px;height:52px;border-radius:16px;background:var(--c-surface-2);
   display:flex;align-items:center;justify-content:center;transition:background .16s;}
 .catcard .cc-body .n{font-size:var(--fs-h3);font-weight:700;}
@@ -600,7 +608,9 @@ img.img-fallback{
 .mine-item{display:flex;align-items:center;gap:14px;padding:15px var(--sp-4);cursor:pointer;
   border-bottom:1px solid var(--c-border);transition:background .15s;}
 .mine-item:last-child{border-bottom:none;}
-.mine-item:active{background:var(--c-surface-2);}
+.mine-item:hover{background:var(--c-surface-2);}
+.mine-item:focus-within{outline:2px solid var(--c-primary-500);outline-offset:-2px;}
+.mine-item:active{background:var(--c-primary-50);}
 .mine-item .mi-ico{width:38px;height:38px;flex:0 0 auto;border-radius:12px;background:var(--c-primary-50);
   display:flex;align-items:center;justify-content:center;font-size:18px;}
 .mine-item .mi-body{flex:1;min-width:0;}
@@ -755,6 +765,22 @@ img.img-fallback{
 .template-card { opacity:.88; }
 .template-card:hover { opacity:1; transform:translateY(-2px); transition:all .2s; }
 .chip-template { position:absolute;top:10px;right:10px; }
+
+/* ===== P2 优化：平板适配 ===== */
+@media (min-width: 768px) {
+  .body, .block p {
+    max-width: 65ch;
+  }
+}
+
+/* ===== 无障碍：减少动画模式 ===== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -2610,7 +2636,9 @@ function showToast(msg){
 var LAST_MAP_DOT = null;
 function openMapOverlay(d){
   LAST_MAP_DOT = d;
-  document.getElementById('mdc-img').src='https://picsum.photos/seed/'+d.img+'/600/360';
+  var imgEl = document.getElementById('mdc-img');
+  imgEl.src='https://picsum.photos/seed/'+d.img+'/600/360';
+  imgEl.alt = d.name + ' 封面照片';
   document.getElementById('mdc-ttl').textContent=d.name;
   document.getElementById('mdc-meta').textContent=(d.date||'计划中')+'  ·  '+(d.days||'?')+' 天';
   document.getElementById('mdc-quote').textContent=d.quote;
